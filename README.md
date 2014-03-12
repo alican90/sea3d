@@ -8,13 +8,13 @@ An open-source cross-platform file format for games.
 * Open-source | Cross-platform
 * Export Animation (Takes), Texture, Material, Geometry, Skeleton (Skin), Vertex Animation, Morph (+1000 slots), Camera, Lights, Environment and Helpers
 * Instancing of Geometry, Material, Texture and Animation
+* Lossy Compression
+* Native Scripting Language
 * Scene Hierarchy
-* Script Supports
+* Physics and Sound3D Supports
 * Multiple Channels Texture and Mapping
 * Native Support for DetailMap, LightMap and Multilayer Blend Texture
 * Streaming File Format (Progressive Loader)
-* Physics Support
-* Sound3D Support
 * Custom Shaders and Attributes
 * Automatic Bake
 * Cube Mapping and ATF Textures
