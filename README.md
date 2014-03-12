@@ -32,7 +32,7 @@ Free cross-platform 3D IDE for games.
 
 **Video** https://www.youtube.com/watch?v=lQ-VIni5Q68
 
-SEA3D Player GP 1.0
+SEA3D GP 1.0
 --
 http://sea3d.poonya.com/gp/
 
