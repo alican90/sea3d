@@ -30,13 +30,11 @@ Free cross-platform 3D IDE for games.
 
 **Video:** https://www.youtube.com/watch?v=lQ-VIni5Q68
 
-SEA3D 1.6.5
+SEA3D Exporter 1.6.5
 --
 Export easily entire scenes to Web with just few clicks.
 
-**Join now:** http://sea3d.poonya.com/studio/
-
-**Video:** https://www.youtube.com/watch?v=lQ-VIni5Q68
+**Video:** https://www.youtube.com/watch?v=dTCztYwwEdE
 
 SEA3D Lip Sync
 --
