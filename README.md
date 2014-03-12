@@ -38,7 +38,7 @@ SEA3D GP 1.0
 --
 SEA3D GP or SEA3D Game Player is an improvement from SEA3D Player with support for **Poonya Script** compiled by SEA3D Studio. Here you find several libraries to facilitate game development all integrated with SEA3D Studio.
 
-http://sea3d.poonya.com/gp/
+**Join now** http://sea3d.poonya.com/gp/
 
 *Click on the first button to open your file*
 
@@ -46,9 +46,9 @@ SEA3D Player 1.6.5
 --
 SE3D Player is focused artists be very useful to view models, animations and others. Not support **Poonya Script**.
 
-http://sea3d.poonya.com/player/
+**Flash** http://sea3d.poonya.com/player/
 
-http://sea3d.poonya.com/player-webgl/ - WebGL
+**WebGL** http://sea3d.poonya.com/player-webgl/
 
 *Click on the first button to open your file*
 
