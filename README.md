@@ -38,12 +38,6 @@ http://sea3d.poonya.com/gp/
 
 *Click on the first button to open your file*
 
-SEA3D Exporter 1.6.5
---
-Export easily entire scenes to Web with just few clicks.
-
-**Video** https://www.youtube.com/watch?v=dTCztYwwEdE
-
 SEA3D Player 1.6.5
 --
 http://sea3d.poonya.com/player/
@@ -51,6 +45,12 @@ http://sea3d.poonya.com/player/
 http://sea3d.poonya.com/player-webgl/ - WebGL
 
 *Click on the first button to open your file*
+
+SEA3D Exporter 1.6.5
+--
+Export easily entire scenes to Web with just few clicks.
+
+**Video** https://www.youtube.com/watch?v=dTCztYwwEdE
 
 SEA3D Lip Sync
 --
