@@ -30,6 +30,14 @@ Free cross-platform 3D IDE for games.
 
 **Video** https://www.youtube.com/watch?v=lQ-VIni5Q68
 
+**Debugger** http://sea3d.poonya.com/debugger/
+
+SEA3D Player GP 1.0
+--
+http://sea3d.poonya.com/gp/
+
+*Click on the first button to open your file*
+
 SEA3D Player 1.6.5
 --
 http://sea3d.poonya.com/player/
