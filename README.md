@@ -28,9 +28,9 @@ Free cross-platform 3D IDE for games.
 
 **Join now** http://sea3d.poonya.com/studio/
 
-**Video** https://www.youtube.com/watch?v=lQ-VIni5Q68
-
 **Debugger** http://sea3d.poonya.com/debugger/
+
+**Video** https://www.youtube.com/watch?v=lQ-VIni5Q68
 
 SEA3D Player GP 1.0
 --
