@@ -54,7 +54,7 @@ http://sea3d.poonya.com/player-webgl/ - WebGL
 
 SEA3D Exporter 1.6.5
 --
-Easy and wide range of support for 3D features, export entire scenes to SEA3D with just few clicks.
+Easy and wide range of features for 3D, export entire scenes to SEA3D with just few clicks.
 
 **Video** https://www.youtube.com/watch?v=dTCztYwwEdE
 
