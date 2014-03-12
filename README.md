@@ -38,6 +38,6 @@ Export easily entire scenes to Web with just few clicks.
 
 SEA3D Lip Sync
 --
-Runtime speech recognition and lip sync using MFCCs by Sunag Technology available soon on this year. 
+Runtime speech recognition and lip sync using MFCCs by Sunag Technology. 
 
 **Video:** https://www.youtube.com/watch?v=rfuGqHR2MK8
