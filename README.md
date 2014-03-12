@@ -44,6 +44,8 @@ http://sea3d.poonya.com/gp/
 
 SEA3D Player 1.6.5
 --
+SE3D Player is focused artists be very useful to view models, animations and others. Not support **Poonya Script**.
+
 http://sea3d.poonya.com/player/
 
 http://sea3d.poonya.com/player-webgl/ - WebGL
@@ -52,7 +54,7 @@ http://sea3d.poonya.com/player-webgl/ - WebGL
 
 SEA3D Exporter 1.6.5
 --
-Export easily entire scenes to Web with just few clicks.
+Export easily entire scenes to SEA3D with just few clicks.
 
 **Video** https://www.youtube.com/watch?v=dTCztYwwEdE
 
