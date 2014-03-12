@@ -44,7 +44,7 @@ SEA3D GP or SEA3D Game Player is an improvement from SEA3D Player with support f
 
 SEA3D Player 1.6.5
 --
-SE3D Player is focused artists be very useful to view models, animations and others. Not support **Poonya Script**.
+SE3D Player is focused for artists and very useful to view models, animations and others. Not support **Poonya Script**.
 
 **Flash** http://sea3d.poonya.com/player/
 
