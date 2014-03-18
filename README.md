@@ -22,6 +22,10 @@ An open-source cross-platform file format for games.
 * Transparent Materials
 * Binary format
 
+**Away3D** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D_Away3D
+
+**Three.JS** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D_ThreeJS
+
 SEA3D Studio 1.1 Viva!
 --
 Free cross-platform 3D IDE for games.
