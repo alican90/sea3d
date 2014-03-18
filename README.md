@@ -41,7 +41,7 @@ SDK Developers
 
 **SEA3D ThreeJS** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D_ThreeJS
 
-**SEA3D-GP + Away3D** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D-GP_Away3D
+**SEA3D-GP Away3D** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D-GP_Away3D
 
 SEA3D GP 1.0
 --
