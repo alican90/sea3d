@@ -22,15 +22,6 @@ An open-source cross-platform file format for games.
 * Transparent Materials
 * Binary format
 
-SDK Developers
---
-
-**SEA3D Away3D** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D_Away3D
-
-**SEA3D ThreeJS** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D_ThreeJS
-
-**SEA3D-GP + Away3D** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D-GP_Away3D
-
 SEA3D Studio 1.1 Viva!
 --
 Free cross-platform 3D IDE for games.
@@ -42,6 +33,15 @@ Free cross-platform 3D IDE for games.
 **Debugger - Player** http://sea3d.poonya.com/debugger-player/
 
 **Video** https://www.youtube.com/watch?v=lQ-VIni5Q68
+
+SDK Developers
+--
+
+**SEA3D Away3D** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D_Away3D
+
+**SEA3D ThreeJS** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D_ThreeJS
+
+**SEA3D-GP + Away3D** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D-GP_Away3D
 
 SEA3D GP 1.0
 --
