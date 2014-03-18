@@ -22,9 +22,14 @@ An open-source cross-platform file format for games.
 * Transparent Materials
 * Binary format
 
-**Away3D** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D_Away3D
+SDK Developers
+--
 
-**Three.JS** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D_ThreeJS
+**SEA3D Away3D** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D_Away3D
+
+**SEA3D ThreeJS** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D_ThreeJS
+
+**SEA3D-GP + Away3D** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D-GP_Away3D
 
 SEA3D Studio 1.1 Viva!
 --
