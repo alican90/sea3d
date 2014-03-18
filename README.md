@@ -34,15 +34,6 @@ Free cross-platform 3D IDE for games.
 
 **Video** https://www.youtube.com/watch?v=lQ-VIni5Q68
 
-SEA3D Developers
---
-
-**SEA3D Away3D** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D_Away3D
-
-**SEA3D ThreeJS** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D_ThreeJS
-
-**SEA3D-GP Away3D** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D-GP_Away3D
-
 SEA3D GP 1.0
 --
 SEA3D GP or SEA3D Game Player is an improvement from SEA3D Player with support for **Poonya Script** compiled by SEA3D Studio. Here you find several libraries to facilitate the game development all integrated with SEA3D Studio.
@@ -66,6 +57,15 @@ SEA3D Exporter 1.6.5
 Easy and wide range of features for 3D, export entire scenes to SEA3D with just few clicks.
 
 **Video** https://www.youtube.com/watch?v=dTCztYwwEdE
+
+SEA3D Developers
+--
+
+**SEA3D Away3D** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D_Away3D
+
+**SEA3D ThreeJS** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D_ThreeJS
+
+**SEA3D-GP Away3D** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D-GP_Away3D
 
 SEA3D Lip Sync
 --
