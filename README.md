@@ -34,7 +34,7 @@ Free cross-platform 3D IDE for games.
 
 **Video** https://www.youtube.com/watch?v=lQ-VIni5Q68
 
-SDK Developers
+SDK
 --
 
 **SEA3D Away3D** https://github.com/sunag/sea3d/tree/master/SEA3D/SEA3D_Away3D
