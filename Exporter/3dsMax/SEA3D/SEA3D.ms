@@ -948,7 +948,7 @@ struct SEASprite
 
 struct SEAMesh
 (	
-	obj, temp, tag, mats, skinObj, morphObj, morphAnmObj, normalObj, smoothing_group, vertexAnm, boneList, boneParentList, bindpos, mchs, mchsValue, instances=#(), skeleton, skeletonAnimation, morphAnimation, vertexAnimation, uvwAnimation
+	obj, temp, tag, mats, meshObj, normalObj, smoothing_group, skinObj, morphObj, morphAnmObj, vertexAnm, boneList, boneParentList, bindpos, mchs, mchsValue, instances=#(), skeleton, skeletonAnimation, morphAnimation, vertexAnimation, uvwAnimation
 	, geo_index = -1, mats_index, morph_index
 	, e_index, e_normal, c_vertex, c_index, c_weights, c_normal, c_uv, c_color, c_tangent, maxweight
 	, animation, instanceOf, frame_rate, attribs
@@ -3867,13 +3867,17 @@ fn compileObject n =
 				(
 					joinVertices = VertexWeld()
 					joinVertices.Name = "SEA3D Joint Identical Vertices"
-					joinVertices.threshold = .001
-				
-					addModifier n joinVertices
 					
-					append seaModifierList (SEAMod n joinVertices)
+					with animate off
+					(
+						joinVertices.threshold = .001
+					)
+				
+					addModifier n joinVertices					
+					
+					append seaModifierList (SEAMod n joinVertices)										
 				)
-			)
+			)						
 			
 			local obj = seaObjectTemp = copy n
 			
@@ -3922,6 +3926,13 @@ fn compileObject n =
 					(
 						morphAt = m
 						--warning2004 n.name				
+					)
+					else if (ClassOf obj.modifiers[m] == VertexWeld and obj.modifiers[m].enabled and joinVertices != undefined) then 
+					(
+						with animate off
+						(
+							obj.modifiers[m].threshold = joinVertices.threshold			
+						)						
 					)
 					else if 
 						(
@@ -4039,12 +4050,14 @@ fn compileObject n =
 				modPanel.setCurrentObject obj.modifiers[1]					
 			else modPanel.setCurrentObject obj
 			
+			local meshObj = undefined
+			
 			if classof n != Editable_Mesh then
 			(
-				local editMesh = Edit_Mesh()
-				editMesh.name = "SEA3D Mesh"
+				meshObj = Edit_Mesh()
+				meshObj.name = "SEA3D Mesh"
 				
-				modPanel.addModToSelection editMesh
+				modPanel.addModToSelection meshObj
 			)
 			
 			if isMeshAnimated and smoothAt > 0 then
@@ -4138,7 +4151,7 @@ fn compileObject n =
 				else bindpos = [0,0,0]
 			)
 			
-			selectMod obj undefined
+			selectMod obj meshObj
 			
 			-- Separate Material			
 			local polymats = #()		
@@ -4211,9 +4224,9 @@ fn compileObject n =
 			polymats = r_polymats				
 			mats = r_mats
 			
-			local sMesh = (seaobj = (SEAMesh n obj tag mats skinObj morphObj morphAnmObj normalObj smoothing_group vertexAnm boneList boneParentList bindpos mchs mchsValue))
+			local sMesh = (seaobj = (SEAMesh n obj tag mats meshObj normalObj smoothing_group skinObj morphObj morphAnmObj vertexAnm boneList boneParentList bindpos mchs mchsValue))
 			
-			sMesh.attribs = attribs
+			sMesh.attribs = attribs			
 			
 			if instanceIndex > 0 then
 			(
@@ -4391,7 +4404,7 @@ fn compileObject n =
 						for v = 1 to numNorms do
 						(
 							local normal = normalize ((normalObj.EditNormalsMod.GetNormal v) as point3)						
-							--normal = (cross obj.dir normal) + [0,0,1] -- interesting effect						
+							--normal = (cross obj.dir normal) + [0,0,1] -- pi effect						
 							append __normal #(normal.x, normal.z, normal.y)					
 						)
 					)
@@ -4411,11 +4424,6 @@ fn compileObject n =
 							append normalIndex (normalObj.EditNormalsMod.GetNormalID faceID 3)
 							append normalIndex (normalObj.EditNormalsMod.GetNormalID faceID 2)
 						)														
-					)
-					
-					if skinObj != undefined then
-					(
-						
 					)
 				)
 				else if usenormal then
@@ -5051,13 +5059,10 @@ function getMorphAsset sea =
 	if containsNormal do header += HEADER_NORMAL
 	
 	-- MORPH
-	
-	local usenormal = sea.useNormal()
+		
 	local mchs = sea.mchs
 	local mchsValue = sea.mchsValue
-	local vertexcount = getnumverts obj
-	local normalObj = sea.normalObj
-	
+			
 	if sea.skinObj != undefined do sea.skinObj.enabled = false		
 	sea.morphObj.enabled = true
 	
@@ -5067,6 +5072,12 @@ function getMorphAsset sea =
 	(	
 		WM3_MC_SetValue sea.morphObj mchs[ch] 0.0
 	)
+	
+	selectMod obj sea.meshObj	
+	
+	local usenormal = sea.useNormal()
+	local vertexcount = getnumverts obj
+	local normalObj = sea.normalObj
 	
 	-- VERTEX BASE
 	for v=1 to vertexcount do
@@ -5090,8 +5101,6 @@ function getMorphAsset sea =
 				local normal = normalObj.EditNormalsMod.Getnormal v				
 				append __normalBase (normalize normal as point3)
 			)
-			
-			selectMod obj sea.morphObj
 		)
 		else
 		(
@@ -5113,7 +5122,9 @@ function getMorphAsset sea =
 	data.WriteUInt16 mchs.count	
 	
 	for ch=1 to mchs.count do
-	(						
+	(	
+		selectMod obj sea.meshObj
+		
 		data.WriteUTF8 (WM3_MC_GetName sea.morphObj mchs[ch])
 		
 		WM3_MC_SetValue sea.morphObj mchs[ch] 100.0
@@ -5156,9 +5167,7 @@ function getMorphAsset sea =
 						normal.z - __normalBase[v].z, 
 						normal.y - __normalBase[v].y
 					)						
-				)
-				
-				selectMod obj sea.morphObj
+				)								
 			)
 			else
 			(
