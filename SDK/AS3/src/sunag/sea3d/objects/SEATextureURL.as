@@ -25,7 +25,7 @@ package sunag.sea3d.objects
 {
 	import sunag.sea3d.SEA;
 	
-	public class SEATextureURL extends SEAObject
+	public class SEATextureURL extends SEATexture
 	{
 		public static const TYPE:String = "urlT";
 		

@@ -38,7 +38,7 @@ package sunag.debugger
 			sunag::onInit = onInit;
 			sunag::onLoad = onLoad;
 						
-			addCircle("SEA3D Player Debugger");						
+			addCircle('SEA3D Player Debugger\n<font color="#999999">Waiting Studio</font>');						
 			
 			lc.allowDomain('*');
 			lc.connect("SEA3D-DEBUGGER");
@@ -176,7 +176,7 @@ package sunag.debugger
 				stage.addEventListener(Event.RESIZE, onCircleResize);											
 			}
 			
-			circle.text = message;
+			circle.htmlText = message;
 			
 			onCircleResize();
 		}

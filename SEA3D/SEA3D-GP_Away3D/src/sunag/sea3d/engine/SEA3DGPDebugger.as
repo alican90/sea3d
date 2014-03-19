@@ -6,6 +6,7 @@ package sunag.sea3d.engine
 	import flash.events.UncaughtErrorEvent;
 	import flash.net.LocalConnection;
 	import flash.net.URLRequest;
+	import flash.system.Capabilities;
 	import flash.utils.ByteArray;
 	import flash.utils.describeType;
 	import flash.utils.getQualifiedClassName;
@@ -40,7 +41,7 @@ package sunag.sea3d.engine
 			
 			SEA3DGPDebugger.loaderInfo = loaderInfo;
 			
-			SEA3DGPDebugger.addCircle("SEA3D-GP Debugger");						
+			SEA3DGPDebugger.addCircle('SEA3D-GP Debugger\n<font color="#999999">Waiting Studio</font>');						
 			
 			lc.allowDomain('*');
 			lc.connect("SEA3D-DEBUGGER");
@@ -60,7 +61,7 @@ package sunag.sea3d.engine
 			if (e.error is Error) msg = Error(e.error).message;
 			else msg = String(e.error) || 'Unknown error';
 				
-			error('error');
+			error(msg);
 			
 			e.preventDefault();
 		}
@@ -73,7 +74,12 @@ package sunag.sea3d.engine
 			
 			trace(message);
 			
-			send(message, 0x666666, true);								
+			send(message, 0x666666, true);	
+			
+			if (!Capabilities.isDebugger) 	
+			{
+				send('[WARN] Flash Player is not a debugger', 0xFF8800);
+			}
 		}
 		
 		private static function onStatus(e:StatusEvent):void
@@ -246,7 +252,7 @@ package sunag.sea3d.engine
 				onCircleResize();
 			}
 			
-			circle.text = message;
+			circle.htmlText = message;
 		}
 		
 		public static function removeCircle():void

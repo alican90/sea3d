@@ -14,7 +14,7 @@ package away3d.container
 	
 	public class DynamicScene3D extends away3d.containers.Scene3D
 	{
-		private static const _defaultLights : Array = new ThreePointLight(1.3, .9, .8).toArray();
+		private static const DefaultLights : Array = new ThreePointLight(1.3, .9, .8).toArray();
 		
 		private var _fog : FogMethod;
 		private var _lights : Array = [];			
@@ -80,7 +80,7 @@ package away3d.container
 			//	LIGHT
 			//
 
-			lightPicker.update(_lights.length > 0 || !_useDefaultLights ? _lights : _defaultLights);			
+			lightPicker.update(_lights.length > 0 || !_useDefaultLights ? _lights : DefaultLights);			
 		}
 		
 		override public function traversePartitions(traverser : PartitionTraverser) : void

@@ -422,6 +422,9 @@
 			
 			_scissorRectDirty = true;
 			_viewportDirty = true;
+			
+			if (hasEventListener(View3DEvent.CHANGE_CAMERA))
+				dispatchEvent(new View3DEvent(View3DEvent.CHANGE_CAMERA, this));
 		}
 		
 		/**

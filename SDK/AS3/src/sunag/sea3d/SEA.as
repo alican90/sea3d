@@ -69,6 +69,7 @@ package sunag.sea3d
 	import sunag.sea3d.objects.SEASingleCube;
 	import sunag.sea3d.objects.SEASkeleton;
 	import sunag.sea3d.objects.SEASkeletonAnimation;
+	import sunag.sea3d.objects.SEATextureURL;
 	import sunag.sea3d.objects.SEAUVWAnimation;
 	import sunag.sea3d.objects.SEAVertexAnimation;
 	import sunag.utils.ByteArrayUtils;
@@ -197,6 +198,7 @@ package sunag.sea3d
 			_typeClass[SEAContainer3D.TYPE] = SEAContainer3D;
 			_typeClass[SEAJointObject.TYPE] = SEAJointObject;
 			_typeClass[SEAPoonyaScript.TYPE] = SEAPoonyaScript;
+			_typeClass[SEATextureURL.TYPE] = SEATextureURL;
 						
 			_typeRead[SEAFileInfo.TYPE] = readFileInfo;
 		}
