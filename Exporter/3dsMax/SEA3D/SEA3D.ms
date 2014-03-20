@@ -1,5 +1,5 @@
 -- SEA3D Exporter (Sunag Entertainment Assets 3D)
--- Copyright (C) 2013 Sunag Entertainment
+-- Copyright (C) 2014 Sunag Entertainment
 
 -- SEA3D - A file format for games
 -- https://code.google.com/p/sea3d/
@@ -4833,19 +4833,23 @@ function getAnimationSequence obj =
 	return undefined
 )
 
-function getSequenceBounds obj =
+function getSequenceBounds obj sequence: =
 (		
-	local list = getAnimationSequence obj
-	if list == undefined do return undefined
+	if sequence == unsupplied do
+	(
+		sequence = getAnimationSequence obj
+	)
+	
+	if sequence == undefined or sequence == unsupplied do return undefined
 	
 	local found = false
 	
 	local m_start = 0
 	local m_end = 0		
 	
-	for i = 1 to list.Length do
+	for i = 1 to sequence.Length do
 	(
-		local seq = list.Get (i-1)
+		local seq = sequence.Get (i-1)
 		local enabled = seq.GetDef "enabled" true
 		
 		if enabled then
@@ -4870,7 +4874,7 @@ function getSequenceBounds obj =
 			)
 		)
 	)	
-
+	
 	if found then
 	(
 		return #(m_start, m_end)
@@ -4907,22 +4911,24 @@ function closeAnimation =
 
 function getSequenceData obj =
 (
-	local list = getAnimationSequence obj
-	if list == undefined do return undefined
+	local sequence = getAnimationSequence obj	 
+	local bounds = getSequenceBounds obj sequence:sequence
+	
+	if sequence == undefined do return undefined
 		
 	local body = newNode()
 	local names = #()
 	
-	for i = 1 to list.Length do
+	for i = 1 to sequence.Length do
 	(
-		local seq = list.Get (i-1)				
+		local seq = sequence.Get (i-1)				
 		local enabled = seq.GetDef "enabled" true
 		
 		if enabled then
 		(
 			local name = replaceChar (seq.GetDef "name" "") "\n" ""
-			local start = (seq.GetDef "start" seaTimeRange[1]) as integer
-			local end = (seq.GetDef "end" seaTimeRange[2]) as integer
+			local start = ((seq.GetDef "start" seaTimeRange[1]) as integer) - bounds[1]
+			local end = ((seq.GetDef "end" seaTimeRange[2]) as integer) - bounds[1]
 			local count = (end - start) + 1
 			local repeat = seq.GetDef "repeat" true
 			local intrpl = seq.GetDef "intrpl" true
