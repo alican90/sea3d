@@ -54,7 +54,7 @@ SE3D Player is focused for artists and very useful to view models, animations an
 
 SEA3D Exporter 1.6.5
 --
-Easy and wide range of features for 3D, export entire scenes to SEA3D with just few clicks.
+Easy and wide range of 3d features, export entire scenes to SEA3D with just few clicks.
 
 **Video** https://www.youtube.com/watch?v=dTCztYwwEdE
 
