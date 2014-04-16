@@ -21,7 +21,6 @@
 package sunag.player
 {
 	import flash.display.Sprite;
-	import flash.display.StageDisplayState;
 	import flash.geom.Point;
 
 	public class PlayerBase extends Sprite
@@ -31,7 +30,7 @@ package sunag.player
 		private var _playButton:PlayButton = new PlayButton();
 		private var _progressBar:ProgressBar = new ProgressBar();
 		private var _fullScreenButton:FullScreenButton;
-		private var _mouseLockButton:MouseLockButton = new MouseLockButton();
+		private var _modeButton:ModeButton = new ModeButton();
 		private var _marker:ProgressMarker = new ProgressMarker();
 		private var _uploadButton:UploadButton = new UploadButton();
 		private var _arButton:ARButton = new ARButton();
@@ -56,7 +55,7 @@ package sunag.player
 			_playerTools.addChild(_playButton);
 			_playerTools.addChild(_progressBar);
 			_playerTools.addChild(_fullScreenButton);
-			_playerTools.addChild(_mouseLockButton);
+			_playerTools.addChild(_modeButton);
 			_playerTools.addChild(_marker);			
 			
 			// Utils
@@ -86,7 +85,7 @@ package sunag.player
 				_uploadButton.buttonMode = 
 				_arButton.buttonMode =
 				_fullScreenButton.buttonMode =
-				_mouseLockButton.buttonMode = true;
+				_modeButton.buttonMode = true;
 		}
 		
 		override public function get buttonMode():Boolean
@@ -170,6 +169,11 @@ package sunag.player
 		public function get fullScreen():FullScreenButton
 		{
 			return _fullScreenButton;
+		}
+		
+		public function get mode():ModeButton
+		{
+			return _modeButton;
 		}
 		
 		public function get marker():ProgressMarker
@@ -275,30 +279,23 @@ package sunag.player
 			{				
 				var fullScreenX:int = _width - (_fullScreenButton.width + 20);
 				_fullScreenButton.y = Math.round((_playButton.height / 2) - (_fullScreenButton.height/2)) + 20;
-											
-				if (stage.displayState == StageDisplayState.FULL_SCREEN ||
-					stage.displayState == StageDisplayState.FULL_SCREEN_INTERACTIVE)
+							
+				if (_modeButton.visible)
 				{
-					_mouseLockButton.visible = true;
+					_modeButton.x = fullScreenX;
+					_modeButton.y = _fullScreenButton.y;
 					
-					_mouseLockButton.x = fullScreenX;
-					_mouseLockButton.y = _fullScreenButton.y;
-					
-					_fullScreenButton.x = (fullScreenX - 20) - _mouseLockButton.width;
+					_fullScreenButton.x = (fullScreenX - 20) - _modeButton.width;
 				}
 				else
 				{
 					_fullScreenButton.x = fullScreenX;
-					_mouseLockButton.visible = false;
 				}
 				
 				_progressBar.width = _fullScreenButton.x - (_progressBar.x + 20);
-				
-				_mouseLockButton.enabled = _fullScreenButton.enabled;
 			}
 			else
 			{
-				_mouseLockButton.visible = false;
 				_progressBar.width = _width - (_progressBar.x + 20);
 			}
 		}

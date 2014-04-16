@@ -20,16 +20,15 @@
 
 package sunag.controller 
 {
-    import away3d.cameras.Camera3D;
-    
     import flash.display.Stage;
-    import flash.events.FullScreenEvent;
     import flash.events.KeyboardEvent;
     import flash.events.MouseEvent;
+    import flash.geom.Matrix3D;
     import flash.geom.Vector3D;
     import flash.ui.Keyboard;
     
-    import sunag.utils.MathHelper;
+    import away3d.cameras.Camera3D;
+    import away3d.core.math.Matrix3DUtils;
 
 	public class FreeCameraController
 	{
@@ -42,8 +41,10 @@ package sunag.controller
 		private var _referenceY : Number = 0;
 		private var _shift:Boolean = false;
 		private var _ctrl:Boolean = false;
+		private var _pivot:Vector3D;
 		private var _mouseLock:Boolean = false;
-		private var _keys:Array = [];
+		private var _keys:Object = {};
+		private var _orbit:Matrix3D = new Matrix3D();
 
 		public function FreeCameraController(camera : Camera3D, stage : Stage)
 		{
@@ -61,6 +62,15 @@ package sunag.controller
 			stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);				
 		}
 
+		public function set pivot(val:Vector3D):void
+		{
+			_pivot = val;
+		}
+		
+		public function get mode():Vector3D
+		{
+			return _pivot;
+		}
 	
 		public function dispose() : void
 		{
@@ -114,12 +124,33 @@ package sunag.controller
 			{
 				_speed.w -= value;
 			}
-						
-			_camera.rotationY = MathHelper.angle(_camera.rotationY - _speed.x);
-			_camera.rotationX = MathHelper.angle(_camera.rotationX - _speed.y);
+									
+			
+			
+			var t:Matrix3D = _camera.transform.clone();
+			
+			if (_pivot)
+			{
+				_camera.moveLeft(_speed.w);
 				
-			_camera.moveLeft(_speed.w);
-			_camera.moveForward(_speed.z);
+				t.appendRotation(-_speed.x, Vector3D.Y_AXIS, _pivot);
+				t.appendRotation(-_speed.y, Matrix3DUtils.getRight(t), _pivot);
+				
+				_camera.transform = t;
+				_camera.lookAt(_pivot);
+				
+				_camera.moveForward(_speed.z * (Vector3D.distance(_pivot, t.position) / 1000));
+			}
+			else
+			{						
+				t.appendRotation(-_speed.x, Vector3D.Y_AXIS, _camera.transform.position);
+				t.appendRotation(-_speed.y, Matrix3DUtils.getRight(t), _camera.transform.position);		
+				
+				_camera.transform = t;
+				
+				_camera.moveLeft(_speed.w);
+				_camera.moveForward(_speed.z);
+			}																
 			
 			_speed.scaleBy(.70);
 			_speed.w *= .70;
@@ -129,7 +160,7 @@ package sunag.controller
 		{
 			if (_mouseLock)
 			{
-				_speed.x += (Math.abs(MathHelper.angle(_camera.rotationZ)) > 90 ? e.movementX : -e.movementX) / 30;
+				_speed.x += -e.movementX / 30;
 				_speed.y += -e.movementY / 30;
 			}
 			_mouseLock = stage.mouseLock;
@@ -140,7 +171,7 @@ package sunag.controller
 			var mouseX : Number = _stage.mouseX;
 			var mouseY : Number = _stage.mouseY;
 			
-			_speed.x += (_referenceX - mouseX) / (Math.abs(MathHelper.angle(_camera.rotationZ)) > 90 ? -18 : 18);
+			_speed.x += (_referenceX - mouseX) / 18;
 			_speed.y += (_referenceY - mouseY) / 18;
 			
 			_referenceX = _stage.mouseX;
@@ -151,14 +182,14 @@ package sunag.controller
 		{
 			_shift = e.shiftKey;
 			_ctrl = e.ctrlKey;
-			_keys[e.keyCode.toString()] = true;
+			_keys[e.keyCode] = true;
 		}
 		
 		private function onKeyUp(e:KeyboardEvent):void
 		{
 			_shift = e.shiftKey;
 			_ctrl = e.ctrlKey;
-			delete _keys[e.keyCode.toString()];
+			delete _keys[e.keyCode];
 		}
 		
 		private function onMouseDown(event : MouseEvent) : void
@@ -177,7 +208,7 @@ package sunag.controller
 
         private function onMouseWheel(event:MouseEvent) : void
         {
-            _speed.z = event.delta;
+            _speed.z += event.delta;
         }
 	}
 }

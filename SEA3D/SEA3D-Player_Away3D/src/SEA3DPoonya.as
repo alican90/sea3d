@@ -20,42 +20,31 @@
 
 package
 {
-	import flash.utils.ByteArray;
-	
-	import sunag.debugger.SEA3DPlayerDebugger;
-	
-
 	[SWF(width="1024", height="632", backgroundColor="0x2f3032", frameRate="60")]
-	public class SEA3DDebugger extends SEA3DPlayer
+	public class SEA3DPoonya extends SEA3DPlayer
 	{
-		public function SEA3DDebugger()
+		private var params:Object;
+		
+		public function SEA3DPoonya()
 		{
 			autoPlay = true;
 						
+			player.status = false;
 			player.upload.visible = false;
 			player.updatePanel();
-			player.logo.getChildAt(0).y -= 150;
-			player.logo.visible = false;			
 			
-			SEA3DPlayerDebugger.init(stage, 
-				function(msg:String):void
-				{
-					unload();
-				},
-				function(data:ByteArray):void
-				{
-					loadBytes(data);
-				});
-		}
-		
-		override public function printError(msg:String):void
+			params = loaderInfo.parameters;
+			
+			if (params.watchID)
+			{
+				loadSEA3D(params.watchID, params.watch);
+			}
+		}	
+				
+		protected function loadSEA3D(id:String, name:String):void
 		{
-			SEA3DPlayerDebugger.error(msg); 
-		}
-		
-		override public function printWarn(msg:String):void
-		{
-			SEA3DPlayerDebugger.print( msg, 0xFF8800);
+			//load("http://localhost/poonya/files/" + id + "." + name + ".sea");
+			load("http://www.poonya.com/files/" + id + "." + name + ".sea");
 		}
 	}
 }

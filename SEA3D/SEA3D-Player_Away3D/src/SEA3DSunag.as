@@ -90,7 +90,7 @@ package
 						break;										
 					
 					case "cameraController":
-						enabledCameraController = isTrue;
+						player.mode.visible = isTrue;
 						break;	
 					
 					case "compactGeometry":

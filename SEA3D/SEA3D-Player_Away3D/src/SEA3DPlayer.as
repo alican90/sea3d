@@ -26,6 +26,7 @@ package
 	import flash.display3D.Context3DProfile;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
+	import flash.events.MouseEvent;
 	import flash.events.UncaughtErrorEvent;
 	import flash.external.ExternalInterface;
 	import flash.geom.Point;
@@ -42,8 +43,11 @@ package
 	import away3d.animators.VertexAnimator;
 	import away3d.animators.nodes.SkeletonClipNode;
 	import away3d.animators.nodes.VertexClipNode;
+	import away3d.bounds.BoundingSphere;
 	import away3d.cameras.Camera3D;
+	import away3d.cameras.lenses.PerspectiveLens;
 	import away3d.container.DynamicScene3D;
+	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.Scene3D;
 	import away3d.containers.View3D;
 	import away3d.core.managers.Stage3DManager;
@@ -76,6 +80,7 @@ package
 	import sunag.events.SEA3DDebugEvent;
 	import sunag.events.SEAEvent;
 	import sunag.filters.ColorMatrix;
+	import sunag.player.ModeButton;
 	import sunag.player.PlayerEvent;
 	import sunag.player.PlayerState;
 	import sunag.progressbar.ProgressCircleLoader;
@@ -92,7 +97,6 @@ package
 	import sunag.sea3d.modules.PhysicsModule;
 	import sunag.sea3d.modules.RTTModule;
 	import sunag.sea3d.modules.SoundModuleDebug;
-	import sunag.sea3d.objects.SEACamera;
 	import sunag.sea3d.objects.SEAFileInfo;
 	import sunag.sea3d.player.Player;
 	import sunag.utils.TimeStep;
@@ -101,27 +105,31 @@ package
 	public class SEA3DPlayer extends Sprite
 	{
 		protected var player:Player;		
-		private var sea3d:SEA3D;				
-		private var rttModule:RTTModule;
-		private var sea3dDebug:IDebug;
-		private var sea3dConfig:IConfig;
-		private var scene:Scene3D;
-		private var view:View3D;
+		protected var sea3d:SEA3D;		
+		
+		protected var sea3dDebug:IDebug;
+		protected var sea3dConfig:IConfig;
+		
+		protected var scene:Scene3D;
+		protected var view:View3D;
+		
+		private var rttModule:RTTModule;				
 		private var controller:FreeCameraController;
 		private var defaultCamera:Camera3D;
-		private var progressBar:ProgressCircleLoader;		
-		private var lastCamera:Camera3D;			
+		private var orbitCamera:Camera3D;
+		private var progressBar:ProgressCircleLoader;						
 		private var stage3DManager:Stage3DManager;
 		private var isPPAPI:Boolean;
 		private var defaultLights:ThreePointLight;
 		private var timer:TimeStep = new TimeStep(stage.frameRate, false);
+		private var center:Vector3D;
+		private var container:ObjectContainer3D = new ObjectContainer3D;
 		
 		private var physicsWorld:AWPDynamicsWorld; 
 		private var debugDraw:AWPDebugDraw;
 		
 		protected var actualCamera:String = "";
-		protected var autoPlay:Boolean = false;
-		protected var enabledCameraController:Boolean = true;
+		protected var autoPlay:Boolean = false;		
 		protected var forceCPU:Boolean = true;
 		protected var enabledFog:Boolean = true;
 		protected var shadowMethod:String = ShadowMethod.NEAR;
@@ -143,14 +151,23 @@ package
 			stage.showDefaultContextMenu = false;	
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
+			stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, function(e:MouseEvent):void {} );
 			
-			Security.allowDomain("*");
+			try
+			{
+				Security.allowDomain("*");
+			}
+			catch(e:Error)
+			{
+				
+			}
 			
 			//
 			//	AWAY3D CONFIG
 			//
 			
 			scene = dynamicMode ? new DynamicScene3D() : new Scene3D();
+			scene.addChild( container );
 			
 			stage3DManager = Stage3DManager.getInstance(stage);
 						
@@ -194,7 +211,7 @@ package
 			
 			sea3dConfig.updateGlobalPose = true;			
 			sea3dConfig.autoUpdate = false;			
-			sea3dConfig.container = view.scene;			
+			sea3dConfig.container = container;			
 			
 			//
 			//	SEA3D
@@ -239,7 +256,8 @@ package
 			player = new Player();				
 			player.console.background.visible = false;
 			player.upload.addEventListener(PlayerEvent.UPLOAD, onUpload);
-			player.ar.visible = false;
+			player.mode.addEventListener(Event.CHANGE, onMode);
+			player.ar.visible = false;			
 			
 			addChild(player);
 			
@@ -299,8 +317,6 @@ package
 			player.logo.visible = false;
 			
 			setTitle(null);
-			
-			lastCamera = null;
 			
 			if (sea3d)
 			{			
@@ -362,6 +378,25 @@ package
 				ExternalInterface.call("setTitle", value);			
 		}
 		
+		private function onMode(e:Event):void
+		{		
+			if (view.camera != orbitCamera && view.camera != defaultCamera)
+			{				
+				orbitCamera.transform = defaultCamera.transform = view.camera.transform;
+			}			
+			
+			if (player.mode.mode == ModeButton.ORBIT)
+			{
+				orbitCamera.transform = defaultCamera.transform;
+			}
+			else
+			{
+				defaultCamera.transform = orbitCamera.transform;
+			}
+			
+			setCamera();
+		}
+		
 		private function onUpload(e:PlayerEvent):void
 		{						
 			load(player.upload.data);	
@@ -378,7 +413,7 @@ package
 			player.tips += '<b><font color="#FF9900">GPU Warning:</font></b> ' + e.message + '\n';
 		}
 		
-		private function onCompleteObject(e:SEAEvent):void
+		protected function onCompleteObject(e:SEAEvent):void
 		{
 			trace(e.object.name + "." + e.object.type, e.time);
 			
@@ -408,14 +443,10 @@ package
 						player.title = title.join("\n"); 
 					}
 					break;
-				
-				case SEACamera.TYPE:
-					setCamera(sea3d.cameras[0]);
-					break;
 			}
 		}
 		
-		private function alignCameraToMesh(mesh:Mesh):void
+		protected function alignCameraToMesh(mesh:Mesh):void
 		{		
 			Bounds.getMeshBounds(mesh);
 			
@@ -438,7 +469,7 @@ package
 			defaultCamera.lookAt(mesh.position.add(offset));
 		}
 		
-		private function onComplete(e:SEAEvent):void
+		protected function onComplete(e:SEAEvent):void
 		{
 			trace("SEA3D: " + sea3d.totalTime + "ms, " + sea3d.objects.length + " objects");
 					
@@ -526,22 +557,52 @@ package
 						}
 					}
 				}
-			}									
+			}		
 			
-			var camera:Camera3D;			
-			if (sea3d.cameras)
-			{
-				if (actualCamera && sea3d.getCamera(actualCamera))
-				{
-					camera = sea3d.getCamera(actualCamera);
-				}
-				else
-				{				
-					camera = sea3d.cameras[0];
-				}
-			}
+			//
+			// Fit camera over scene (Orbit Camera)
+			//
 			
-			setCamera(camera);
+			orbitCamera = new Camera3D();			
+			orbitCamera.name = "Orbit Camera";
+			
+			Bounds.getObjectContainerBounds(container, true, false, true);
+			
+			var bounding:BoundingSphere = new BoundingSphere();
+			bounding.fromExtremes(Bounds.minX, Bounds.minY, Bounds.minZ, Bounds.maxX, Bounds.maxY, Bounds.maxZ);
+			
+			center = Bounds.getCenter();						
+			
+			var fov:Number = PerspectiveLens(orbitCamera.lens).fieldOfView = 60;				
+			var distanceToCenter:Number = bounding.radius / Math.sin(fov / 2);			
+			distanceToCenter *= 1.333;
+			
+			orbitCamera.lens.near = .5;
+			orbitCamera.lens.far = bounding.radius * 4;
+			
+			orbitCamera.position = 
+				new Vector3D
+				(
+					-distanceToCenter, 
+					-distanceToCenter / 2, 
+					-distanceToCenter
+				);
+			
+			orbitCamera.lookAt( new Vector3D() );
+			
+			//var sphere:WireframeSphere = new WireframeSphere(bounding.radius);
+			//sphere.position = center;
+			//scene.addChild( sphere );
+			
+			//
+			// Camera
+			//
+			
+			setCamera(actualCamera ? sea3d.getCamera(actualCamera) : null);						
+			
+			//
+			// Animation
+			//
 			
 			player.target = sea3d.player as AnimationPlayer;		
 			
@@ -555,16 +616,19 @@ package
 		
 		private function setCamera(camera:Camera3D=null):void
 		{					
-			camera ||= defaultCamera;			
+			camera ||= !orbitCamera || player.mode.mode == ModeButton.FREE ? defaultCamera : orbitCamera;			
 			
 			player.camera = camera.name;
 			
 			if (controller) controller.dispose();
 			
-			view.camera = lastCamera = camera;	
+			view.camera = camera;	
 			
-			if (enabledCameraController) 
+			if (player.mode.visible)
+			{				
 				controller = new FreeCameraController(camera, stage);
+				controller.pivot = camera == orbitCamera ? center : null;
+			}
 		}
 		
 		private function getDefaultCamera():Camera3D
@@ -572,7 +636,7 @@ package
 			var cam:Camera3D = new Camera3D();
 			cam.lens.near = 1;
 			cam.lens.far = 6000;
-			cam.name = "DefaultCamera";
+			cam.name = "Default Camera";
 			cam.position = new Vector3D(150, 125, 150);
 			cam.lookAt(new Vector3D());
 			
@@ -827,7 +891,7 @@ package
 			render();
 		}
 				
-		private function renderReflections():void
+		protected function renderReflections():void
 		{
 			for each(var cube:CubeReflectionTextureTarget in rttModule.cubeReflections)			
 			{
@@ -842,6 +906,7 @@ package
 			}
 		}
 		
+		/*
 		private function render():void
 		{
 			timer.update();
@@ -857,8 +922,8 @@ package
 			
 			view.render();
 		}
-		
-		/*
+		*/
+				
 		private function render():void
 		{		
 			try
@@ -875,8 +940,6 @@ package
 				debugDraw.debugDrawWorld();
 				
 				view.render();
-				
-				//trace(view.renderedFacesCount);
 			}
 			catch(er:Error)
 			{
@@ -895,6 +958,5 @@ package
 				}
 			}
 		}
-		*/
 	}
 }
