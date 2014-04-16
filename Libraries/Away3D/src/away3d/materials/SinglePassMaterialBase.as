@@ -52,6 +52,22 @@
 		}
 		
 		/**
+		 * Indicate whether this pass should write to the depth buffer or not. Ignored when blending is enabled. Use autoWriteDepth for disable blending depth mode.
+		 */
+		override public function set writeDepth(value:Boolean):void
+		{
+			super.writeDepth = _screenPass.writeDepth = value;
+		}
+		
+		/**
+		 * Write depth is ignored if blending is enabled.  
+		 */
+		override public function set autoWriteDepth(value:Boolean):void
+		{
+			super.autoWriteDepth = _screenPass.autoWriteDepth = value;
+		}
+		
+		/**
 		 * The minimum alpha value for which pixels should be drawn. This is used for transparency that is either
 		 * invisible or entirely opaque, often used with textures for foliage, etc.
 		 * Recommended values are 0 to disable alpha, or 0.5 to create smooth edges. Default value is 0 (disabled).
@@ -67,7 +83,7 @@
 			_depthPass.alphaThreshold = value;
 			_distancePass.alphaThreshold = value;
 		}
-
+				
 		/**
 		 * @inheritDoc
 		 */

@@ -23,6 +23,10 @@ package away3d.materials
 		
 		function get bothSides() : Boolean
 		
+		function set writeDepth(value : Boolean) : void
+		
+		function get writeDepth() : Boolean
+		
 		function set alphaPremultiplied(value : Boolean) : void
 		
 		function get alphaPremultiplied() : Boolean

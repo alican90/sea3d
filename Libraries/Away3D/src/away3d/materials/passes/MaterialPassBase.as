@@ -84,7 +84,7 @@ package away3d.materials.passes
 		protected var _UVSource:String;
 		
 		protected var _writeDepth:Boolean = true;
-		protected var _autoWriteDepth:Boolean = true;
+		protected var _autoWriteDepth:Boolean;
 		
 		public var animationRegisterCache:AnimationRegisterCache;
 		
@@ -111,19 +111,6 @@ package away3d.materials.passes
 		public function set material(value:MaterialBase):void
 		{
 			_material = value;
-		}
-		
-		/**
-		 * Indicate whether this pass should write to the depth buffer or not. Ignored when blending is enabled. Use autoWriteDepth for disable blending depth mode.
-		 */
-		public function get writeDepth():Boolean
-		{
-			return _writeDepth;
-		}
-		
-		public function set writeDepth(value:Boolean):void
-		{
-			_writeDepth = value;
 		}
 		
 		/**
@@ -215,6 +202,19 @@ package away3d.materials.passes
 			_depthCompareMode = value;
 		}
 
+		/**
+		 * Indicate whether this pass should write to the depth buffer or not. Ignored when blending is enabled. Use autoWriteDepth for disable blending depth mode.
+		 */
+		public function get writeDepth():Boolean
+		{
+			return _writeDepth;
+		}
+		
+		public function set writeDepth(value:Boolean):void
+		{
+			_writeDepth = value;
+		}
+		
 		/**
 		 * Returns the animation data set adding animations to the material.
 		 */

@@ -134,6 +134,7 @@ package sunag.sea3d
 	import sunag.sea3d.objects.SEASkeleton;
 	import sunag.sea3d.objects.SEASkeletonAnimation;
 	import sunag.sea3d.objects.SEATexture;
+	import sunag.sea3d.objects.SEATextureURL;
 	import sunag.sea3d.objects.SEAUVWAnimation;
 	import sunag.sea3d.objects.SEAVertexAnimation;
 	import sunag.sea3d.textures.Layer;
@@ -203,7 +204,8 @@ package sunag.sea3d
 			_typeRead[SEAFileInfo.TYPE] = readFileInfo;
 			_typeRead[SEAJointObject.TYPE] = readJointObject;
 			_typeRead[SEAContainer3D.TYPE] = readContainer3D;
-				
+			_typeRead[SEATextureURL.TYPE] = readTextureURL;
+			
 			// UNIVERSAL
 			_typeRead[SEAJPEG.TYPE] = 
 			_typeRead[SEAJPEGXR.TYPE] = 
@@ -244,6 +246,7 @@ package sunag.sea3d
 			mat.repeat = true;
 			mat.smooth = true;			
 			mat.mipmap = _config.mipmap;
+			mat.writeDepth = sea.depthMask;
 			
 			mat.bothSides = sea.doubleSided;
 			
@@ -635,6 +638,15 @@ package sunag.sea3d
 		protected function readATFTexture(sea:SEAATF):void
 		{
 			var tex:ATFTexture = new ATFTexture( sea.data );
+			tex.name = sea.name;	
+			
+			_texture ||= new Vector.<Texture2DBase>();
+			_texture.push(object[sea.name + '.tex'] = sea.tag = tex);	
+		}
+		
+		protected function readTextureURL(sea:SEATextureURL):void
+		{
+			var tex:AsynBitmapTexture = new AsynBitmapTexture( sea.url );
 			tex.name = sea.name;	
 			
 			_texture ||= new Vector.<Texture2DBase>();

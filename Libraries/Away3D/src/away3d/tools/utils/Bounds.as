@@ -6,6 +6,7 @@ package away3d.tools.utils
 	
 	import away3d.arcane;
 	import away3d.containers.ObjectContainer3D;
+	import away3d.core.base.IMaterialOwner;
 	import away3d.core.math.Matrix3DUtils;
 	import away3d.entities.Entity;
 	import away3d.entities.Mesh;
@@ -36,7 +37,7 @@ package away3d.tools.utils
 		 */
 		public static function getMeshBounds(mesh:Mesh):void
 		{
-			getObjectContainerBounds(mesh);
+			getObjectContainerBounds(mesh, true, false, true);
 		}
 		
 		/**
@@ -44,10 +45,11 @@ package away3d.tools.utils
 		 * @param container        ObjectContainer3D. The ObjectContainer3D to get the bounds from.
 		 * Use the getters of this class to retrieve the results
 		 */
-		public static function getObjectContainerBounds(container:ObjectContainer3D, worldBased:Boolean = true, ignorePosition:Boolean = false):void
+		public static function getObjectContainerBounds(container:ObjectContainer3D, worldBased:Boolean = true, ignorePosition:Boolean = false, onlyRenderable : Boolean = true):void
 		{
 			reset();
-			parseObjectContainerBounds(container);
+			
+			parseObjectContainerBounds(container, null, onlyRenderable);
 			
 			if (isInfinite(_minX) || isInfinite(_minY) || isInfinite(_minZ) ||
 				isInfinite(_maxX) || isInfinite(_maxY) || isInfinite(_maxZ)) {
@@ -212,24 +214,25 @@ package away3d.tools.utils
 			_defaultPosition.z = 0.0;
 		}
 		
-		private static function parseObjectContainerBounds(obj:ObjectContainer3D, parentTransform:Matrix3D = null):void
+		private static function parseObjectContainerBounds(obj:ObjectContainer3D, parentTransform:Matrix3D = null, onlyRenderable:Boolean = false):void
 		{
 			if (!obj.visible)
 				return;
 			
 			var containerBounds:Vector.<Number> = _containers[obj] ||= Vector.<Number>([Infinity, Infinity, Infinity, -Infinity, -Infinity, -Infinity]);
+			var isValid:Boolean = !onlyRenderable || onlyRenderable && obj is IMaterialOwner;
 			
 			var child:ObjectContainer3D;
 			var isEntity:Entity = obj as Entity;
 			var containerTransform:Matrix3D = new Matrix3D();
 			
-			if (isEntity && parentTransform) {
+			if (isValid && isEntity && parentTransform) {
 				parseObjectBounds(obj, parentTransform);
 				
 				containerTransform = obj.transform.clone();
 				if (parentTransform)
 					containerTransform.append(parentTransform);
-			} else if (isEntity && !parentTransform) {
+			} else if (isValid && isEntity && !parentTransform) {
 				var mat:Matrix3D = obj.transform.clone();
 				mat.invert();
 				parseObjectBounds(obj, mat);
@@ -237,11 +240,11 @@ package away3d.tools.utils
 			
 			for (var i:uint = 0; i < obj.numChildren; ++i) {
 				child = obj.getChildAt(i);
-				parseObjectContainerBounds(child, containerTransform);
+				parseObjectContainerBounds(child, containerTransform, onlyRenderable);
 			}
 			
 			var parentBounds:Vector.<Number> = _containers[obj.parent];
-			if (!isEntity && parentTransform)
+			if (isValid && !isEntity && parentTransform)
 				parseObjectBounds(obj, parentTransform, true);
 			
 			if (parentBounds) {

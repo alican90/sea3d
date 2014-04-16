@@ -80,7 +80,9 @@ package away3d.materials
 
 		arcane var _animationSet:IAnimationSet;
 		
-		private var _bothSides:Boolean;		
+		private var _bothSides:Boolean;
+		private var _writeDepth:Boolean = true;
+		private var _autoWriteDepth:Boolean;
 
 		/**
 		 * A list of material owners, renderables or custom Entities.
@@ -247,6 +249,33 @@ package away3d.materials
 			
 			_depthPass.bothSides = value;
 			_distancePass.bothSides = value;
+		}
+		
+		
+		/**
+		 * Write depth is ignored if blending is enabled.  
+		 */
+		public function get autoWriteDepth():Boolean
+		{
+			return _autoWriteDepth;
+		}
+		
+		public function set autoWriteDepth(value:Boolean):void
+		{
+			_autoWriteDepth = value;
+		}
+		
+		/**
+		 * Indicate whether this pass should write to the depth buffer or not. Ignored when blending is enabled. Use autoWriteDepth for disable blending depth mode.
+		 */
+		public function get writeDepth():Boolean
+		{
+			return _writeDepth;
+		}
+		
+		public function set writeDepth(value:Boolean):void
+		{
+			_writeDepth = value;
 		}
 		
 		/**
@@ -605,6 +634,8 @@ package away3d.materials
 			pass.repeat = _repeat;
 			pass.lightPicker = _lightPicker;
 			pass.bothSides = _bothSides;
+			pass.writeDepth = _writeDepth;
+			pass.autoWriteDepth = _autoWriteDepth;
 			pass.addEventListener(Event.CHANGE, onPassChange);
 			invalidatePasses(null);
 		}

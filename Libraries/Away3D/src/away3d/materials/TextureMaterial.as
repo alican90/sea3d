@@ -66,32 +66,6 @@
 		}
 		
 		/**
-		 * Indicate whether this pass should write to the depth buffer or not. Ignored when blending is enabled. Use autoWriteDepth for disable blending depth mode.
-		 */
-		public function get writeDepth():Boolean
-		{
-			return _screenPass.writeDepth;
-		}
-		
-		public function set writeDepth(value:Boolean):void
-		{
-			_screenPass.writeDepth = value;
-		}
-		
-		/**
-		 * Write depth is ignored if blending is enabled.  
-		 */
-		public function get autoWriteDepth():Boolean
-		{
-			return _screenPass.autoWriteDepth;
-		}
-		
-		public function set autoWriteDepth(value:Boolean):void
-		{
-			_screenPass.autoWriteDepth = value;
-		}
-		
-		/**
 		 * The texture object to use for the albedo colour.
 		 */
 		public function get texture():Texture2DBase
