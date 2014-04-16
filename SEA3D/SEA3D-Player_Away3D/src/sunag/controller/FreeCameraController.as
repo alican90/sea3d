@@ -108,32 +108,30 @@ package sunag.controller
 			if (_ctrl) value /= 10;
 			if (_shift) value *= 5;
 			
-			if (_keys[Keyboard.W.toString()] || _keys[Keyboard.UP.toString()])
+			if (_keys[Keyboard.W] || _keys[Keyboard.UP])
 			{
 				_speed.z += value;
 			}
-			if (_keys[Keyboard.S.toString()] || _keys[Keyboard.DOWN.toString()])
+			if (_keys[Keyboard.S] || _keys[Keyboard.DOWN])
 			{
 				_speed.z -= value;
 			}			
-			if (_keys[Keyboard.A.toString()] || _keys[Keyboard.LEFT.toString()])
+			if (_keys[Keyboard.A] || _keys[Keyboard.LEFT])
 			{
 				_speed.w += value;
 			}
-			if (_keys[Keyboard.D.toString()] || _keys[Keyboard.RIGHT.toString()])
+			if (_keys[Keyboard.D] || _keys[Keyboard.RIGHT])
 			{
 				_speed.w -= value;
 			}
 									
-			
+			// update
 			
 			var t:Matrix3D = _camera.transform.clone();
 			
 			if (_pivot)
 			{
-				_camera.moveLeft(_speed.w);
-				
-				t.appendRotation(-_speed.x, Vector3D.Y_AXIS, _pivot);
+				t.appendRotation(-_speed.x + (_speed.w/3), Vector3D.Y_AXIS, _pivot);
 				t.appendRotation(-_speed.y, Matrix3DUtils.getRight(t), _pivot);
 				
 				_camera.transform = t;
