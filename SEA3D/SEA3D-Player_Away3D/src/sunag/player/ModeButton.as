@@ -65,12 +65,14 @@ package sunag.player
 		public function set mode(val:String):void
 		{
 			stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+			stage.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			
 			switch(_mode = val)
 			{				
 				case FIXED:
 					stage.mouseLock = true;
 					stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+					stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 					break;
 				
 				default:
@@ -93,7 +95,9 @@ package sunag.player
 		{
 			switch(_mode)
 			{
-				case FREE: mode = ORBIT; break;
+				case FREE: 
+					mode = ORBIT; 
+					break;
 				case ORBIT: 
 					if (stage.displayState == StageDisplayState.FULL_SCREEN ||
 						stage.displayState == StageDisplayState.FULL_SCREEN_INTERACTIVE)
@@ -105,20 +109,22 @@ package sunag.player
 						mode = FREE;
 					}					
 					break;
-				case FIXED: mode = FREE; break;
+				case FIXED: 
+					mode = FREE; 
+					break;
 			}
+		}
+		
+		private function onMouseDown(e:MouseEvent):void
+		{
+			mode = FREE;		
 		}
 		
 		private function onKeyDown(e:KeyboardEvent):void
 		{
-			switch(_mode)
+			if (e.keyCode == Keyboard.ESCAPE)
 			{
-				case FIXED:					
-					if (e.keyCode == Keyboard.ESCAPE)
-					{
-						mode = FREE;								
-					}					
-					break;
+				mode = FREE;								
 			}
 		}
 				

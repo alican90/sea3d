@@ -20,6 +20,9 @@
 
 package
 {
+	import flash.display.BitmapData;
+	import flash.display.GradientType;
+	import flash.display.Graphics;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -29,6 +32,7 @@ package
 	import flash.events.MouseEvent;
 	import flash.events.UncaughtErrorEvent;
 	import flash.external.ExternalInterface;
+	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Vector3D;
 	import flash.net.URLRequest;
@@ -65,6 +69,7 @@ package
 	import away3d.materials.methods.DynamicFogMethod;
 	import away3d.sea3d.animation.SkeletonAnimation;
 	import away3d.sea3d.animation.VertexAnimation;
+	import away3d.textures.BitmapTexture;
 	import away3d.textures.CubeReflectionTextureTarget;
 	import away3d.textures.PlanarReflectionTextureTarget;
 	import away3d.tools.utils.Bounds;
@@ -92,7 +97,7 @@ package
 	import sunag.sea3d.config.ShadowMethod;
 	import sunag.sea3d.debug.DefaultDebug;
 	import sunag.sea3d.debug.IDebug;
-	import sunag.sea3d.modules.ActionModule;
+	import sunag.sea3d.modules.ActionModuleDebug;
 	import sunag.sea3d.modules.HelperModule;
 	import sunag.sea3d.modules.PhysicsModule;
 	import sunag.sea3d.modules.RTTModule;
@@ -113,6 +118,7 @@ package
 		protected var scene:Scene3D;
 		protected var view:View3D;
 		
+		private var background:BitmapTexture;
 		private var rttModule:RTTModule;				
 		private var controller:FreeCameraController;
 		private var defaultCamera:Camera3D;
@@ -176,6 +182,7 @@ package
 			view.backgroundColor = stage.color;
 			view.antiAlias = 4;
 			view.rightClickMenuEnabled = false;	
+			view.background = background = new BitmapTexture( getRadialBitmap() );
 			
 			addChild(view);																		
 			
@@ -221,7 +228,7 @@ package
 			sea3d.addModule(new SoundModuleDebug());
 			sea3d.addModule(new HelperModule());			
 			sea3d.addModule(rttModule = new RTTModule());
-			sea3d.addModule(new ActionModule(view));
+			sea3d.addModule(new ActionModuleDebug(view));
 			sea3d.addModule(new PhysicsModule(physicsWorld));
 			
 			if (isDebug) scene.addChild(sea3dDebug.container);	
@@ -268,6 +275,24 @@ package
 			
 			reloadTips();
 			updateAlign();
+		}
+		
+		private function getRadialBitmap(size:int=1024):BitmapData
+		{
+			var s:Sprite = new Sprite;
+			var g:Graphics = s.graphics;
+			
+			var r:Number = size;
+			
+			var m:Matrix = new Matrix();
+			m.createGradientBox(r*2,r*2,0,-r/2,-r/2);
+			g.beginGradientFill(GradientType.RADIAL, [0x555555, 0x111111], [1,1], [0,255], m);
+			g.drawCircle(r/2,r/2,r);
+			
+			var bitmap:BitmapData = new BitmapData(size, size, false, 0x000000);			
+			bitmap.draw( s );
+			
+			return bitmap;
 		}
 		
 		private function reloadTips():void
@@ -380,6 +405,8 @@ package
 		
 		private function onMode(e:Event):void
 		{		
+			if (!orbitCamera || !defaultCamera) return;
+			
 			if (view.camera != orbitCamera && view.camera != defaultCamera)
 			{				
 				orbitCamera.transform = defaultCamera.transform = view.camera.transform;
@@ -616,7 +643,7 @@ package
 		
 		private function setCamera(camera:Camera3D=null):void
 		{					
-			camera ||= !orbitCamera || player.mode.mode == ModeButton.FREE ? defaultCamera : orbitCamera;			
+			camera ||= orbitCamera && player.mode.mode == ModeButton.ORBIT ? orbitCamera : defaultCamera;			
 			
 			player.camera = camera.name;
 			

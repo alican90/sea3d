@@ -35,16 +35,10 @@ package
 			
 			params = loaderInfo.parameters;
 			
-			if (params.watchID)
+			if (params.host && params.id)
 			{
-				loadSEA3D(params.watchID, params.watch);
+				load(params.host + '/sea/file.php?q=' + params.id);
 			}
 		}	
-				
-		protected function loadSEA3D(id:String, name:String):void
-		{
-			//load("http://localhost/poonya/files/" + id + "." + name + ".sea");
-			load("http://www.poonya.com/files/" + id + "." + name + ".sea");
-		}
 	}
 }
