@@ -24,7 +24,7 @@ miniGUI.Slide.prototype = {
     init:function(){
         var _this = this;
         this.zone = document.createElement('div');
-        this.zone.style.cssText = "position:absolute; left:"+this.x+"px; top:"+this.y+"px; width:120px; height:30px; cursor:pointer; ";
+        this.zone.style.cssText = "position:absolute; left:"+this.x+"px; top:"+this.y+"px; width:120px; height:30px; cursor:pointer;";
         this.zone.id="name";
         this.container.appendChild(this.zone);
 
@@ -42,7 +42,7 @@ miniGUI.Slide.prototype = {
         this.zone.appendChild(this.pin);
 
         this.txt = document.createElement('div');
-        this.txt.style.cssText = "position:absolute; left:10px; top:0px; width:120px; height:10px; pointer-events:none; color:#eeeeee; font-family: monospace; font-size:12px;";
+        this.txt.style.cssText = "position:absolute; left:10px; top:0px; width:120px; height:10px; pointer-events:none; font-size:11px;";
         this.zone.appendChild(this.txt);
         this.txt.textContent = this.name+ ":"+ this.value;
 
@@ -101,7 +101,7 @@ miniGUI.OnOff.prototype = {
         var p = 0;
         if(this.value){tx = "on"; p = 30;}
         this.zonen = document.createElement('div');
-        this.zonen.style.cssText = "position:absolute; left:"+this.x+"px; top:"+this.y+"px; width:120px; height:30px; cursor:pointer; ";
+        this.zonen.style.cssText = "position:absolute; left:"+this.x+"px; top:"+this.y+"px; width:120px; height:30px; cursor:pointer;";
         this.container.appendChild(this.zonen);
 
         this.bg = document.createElement('div');
@@ -117,7 +117,7 @@ miniGUI.OnOff.prototype = {
         this.zonen.appendChild(this.pin);
 
         this.txt = document.createElement('div');
-        this.txt.style.cssText = "position:absolute; left:10px; top:0px; width:120px; height:10px; pointer-events:none; color:#eeeeee; font-family: monospace; font-size:12px;";
+        this.txt.style.cssText = "position:absolute; left:10px; top:0px; width:120px; height:10px; pointer-events:none; font-size:11px;";
         this.zonen.appendChild(this.txt);
         
         this.txt.textContent = this.name+ " "+ tx;

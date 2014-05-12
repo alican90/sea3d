@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 <style>
     * {  margin: 0; padding: 0; border: 0;}
-    body { background-color: #444444; overflow: hidden; color: #eeeeee; font-family: monospace; font-size: 12px; }
+    body { background-color: #adaaa6; overflow: hidden; color:#202125; font-family:Verdana; font-size: 12px; }
     input{ margin:0; padding:4px; height:30px;}
-    #interface{ position: absolute; left:0px; top:90px; width:0px; height:0px; }
-    #info{ pointer-events:none; position: absolute; left:10px; top:15px; width: 350px; height: 120px; }
+    #interface{ position: absolute; left:10px; top:90px; width:0px; height:0px; }
+    #info{ pointer-events:none; position: absolute; left:20px; top:15px; width: 350px; height: 120px; }
     #logo{ pointer-events:none; position: absolute; left:-10px; bottom:-10px; width: 300px; height: 150px; }
 </style>
 
@@ -38,7 +38,7 @@ var sourceInfo = "<h3>DROID + ANIM BLENDING & MORPH</h3><br>";
 var container, camera, scene, renderer, cam, mouse, key, clock, pool;
 var fps = [0,0,0,0];
 
-var bgcolor = 0x444444;
+var bgcolor = 0xadaaa6;
 var meshs = [];
 var anims = [];
 var squel = [];
@@ -64,7 +64,7 @@ function init() {
 
     clock = new THREE.Clock();
 
-    renderer = new THREE.WebGLRenderer( {precision: "lowp", antialias: false } );
+    renderer = new THREE.WebGLRenderer( { antialias:true } );
     renderer.setSize( window.innerWidth, window.innerHeight );
     renderer.setClearColor( bgcolor, 1 );
 
@@ -75,7 +75,7 @@ function init() {
     renderer.gammaOutput = true;
     renderer.shadowMapCullFace = THREE.CullFaceBack;
     renderer.shadowMapEnabled = true;
-    renderer.autoClearColor = false;
+    //renderer.autoClearColor = false;
     renderer.autoClear = false;
 
     scene = new THREE.Scene();
@@ -89,7 +89,8 @@ function init() {
 
     var light = new THREE.DirectionalLight( 0xffffff, 1 );
     var d = 20;
-    light.position.set( d, d, d );
+    light.position.set( d/3, d, d);
+    light.target = new THREE.Object3D(0,3,0);
     light.castShadow = true;
     //light.shadowCameraVisible = true;
 
@@ -101,9 +102,9 @@ function init() {
     light.shadowCameraTop = d;
     light.shadowCameraBottom = -d;
 
-    light.shadowCameraFar = 3*d;
+    light.shadowCameraFar = d*2;
     light.shadowCameraNear = d;
-    light.shadowDarkness = 0.5;
+    light.shadowDarkness = 0.25;
     light.shadowBias =  -0.002;
     scene.add( light );
 
@@ -118,9 +119,6 @@ function init() {
     mesh.receiveShadow = true;
     mesh.rotation.x = -90 * ToRad;
     scene.add( mesh );
-
-    // load sea3d model
-    pool = new SEA3D.Pool('assets/model/droid.sea', populate);
 
     // events
     var body = document.body;
@@ -137,6 +135,9 @@ function init() {
     }
 
     loop();
+
+    // load sea3d model
+    pool = new SEA3D.Pool('assets/model/droid.sea', populate);
 }
 
 function resize() {
@@ -175,7 +176,7 @@ function displayInfo(){
 
     var txtinfo =[
         sourceInfo,
-        "Three Render: " + fps[3] +" fps"
+        "Three: " + fps[3] +" fps"
     ].join("\n");
     info.innerHTML = txtinfo;
 }
@@ -190,7 +191,7 @@ function populate(){
     dTexture.anisotropy = renderer.getMaxAnisotropy();
     dTexture.repeat.set( 1,-1);
 
-    var mat = new THREE.MeshPhongMaterial({ ambient: 0x202020, map: dTexture, specular: 0x505050, shininess: 60, skinning: true, morphTargets: true });
+    var mat = new THREE.MeshPhongMaterial({ ambient:bgcolor, specular:0x606060, shininess:160, map:dTexture, skinning:true, morphTargets:true, metal:true });
 
     var model = pool.getGeometry("droid");
     animations = pool.getAnimations("droid");
@@ -229,11 +230,12 @@ function populate(){
     }
 
     initInterface();
+
 }
 
 function initInterface(){
     gui[0] = new miniGUI.OnOff ({ container:menu, value:isSkeletonVisible, y:0,name:"Skeleton", onChange: function(value){ toogleSkeleton(value) } });
-    gui[1] = new miniGUI.Slide ({ container:menu, value:0, y:30,  color:[30, 230, 125], name:"DoorMorph", onChange: morphModels });
+    gui[1] = new miniGUI.Slide ({ container:menu, value:0, y:30,  color:[75, 200, 75], name:"DoorMorph", onChange: morphModels });
     gui[2] = new miniGUI.Slide ({ container:menu, value:1, y:30*2, name:"Time", onChange: function(value){ animControl.timeScale = value; }  });
 
     var name, i=0;
@@ -243,7 +245,7 @@ function initInterface(){
             loopAnimations[i] =  animations[0][j];
             animWeights[i] = 0;
             if(name=='walk') animWeights[i]=1; 
-            gui[i+3] = new miniGUI.Slide ({ container:menu, value:animWeights[i], y:40*(3+i), id:i, name:name, color:[230, 125, 30], onChange: function(value){ animWeights[this.id] = value;  weight();}  });
+            gui[i+3] = new miniGUI.Slide ({ container:menu, value:animWeights[i], y:30*(3+i)+20, id:i, name:name, color:[230, 125, 30], onChange: function(value){ animWeights[this.id] = value;  weight();}  });
             i++;
         }
     }
