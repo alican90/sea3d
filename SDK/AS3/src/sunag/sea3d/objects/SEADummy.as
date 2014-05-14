@@ -41,9 +41,9 @@ package sunag.sea3d.objects
 		public var height:Number;
 		public var depth:Number;
 		
-		public function SEADummy(name:String, sea:SEA, type:String="dmy")
+		public function SEADummy(name:String, sea:SEA)
 		{
-			super(name, type, sea);						
+			super(name, TYPE, sea);						
 		}		
 		
 		protected override function read(data:ByteArray):void

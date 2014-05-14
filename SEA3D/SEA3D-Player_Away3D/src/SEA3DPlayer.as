@@ -602,11 +602,11 @@ package
 			
 			var fov:Number = PerspectiveLens(orbitCamera.lens).fieldOfView = 60;				
 			var distanceToCenter:Number = bounding.radius / Math.sin(fov / 2);			
-			distanceToCenter *= 1.333;
+			distanceToCenter *= 1;
 			
 			orbitCamera.lens.near = .5;
-			orbitCamera.lens.far = bounding.radius * 4;
-			
+			orbitCamera.lens.far = bounding.radius * 10;
+						
 			orbitCamera.position = 
 				new Vector3D
 				(

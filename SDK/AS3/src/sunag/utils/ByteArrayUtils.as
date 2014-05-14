@@ -14,6 +14,26 @@ package sunag.utils
 		//	READER
 		//
 		
+		public static function readUInteger(data:IDataInput):uint
+		{
+			var v:int = data.readUnsignedByte(),
+				r:int = v & 0x7F;
+			
+			if ((v & 0x80) != 0)
+			{
+				v = data.readUnsignedByte();
+				r |= (v & 0x7F) << 7;
+				
+				if ((v & 0x80) != 0)
+				{
+					v = data.readUnsignedByte();
+					r |= (v & 0x7F) << 13;
+				}
+			}
+			
+			return r;
+		}
+		
 		public static function readUnsignedInt24(data:IDataInput):uint
 		{
 			return data.readUnsignedByte() | 
@@ -110,6 +130,31 @@ package sunag.utils
 		//
 		//	WRITER
 		//
+		
+		public static function writeUInteger(data:IDataOutput, value:int):void
+		{
+			var abs:uint = Math.abs(value);
+			
+			if (abs > 0x3F)
+			{
+				data.writeByte((value & 0x7F) | 0x80);
+				
+				if (abs > 0x1FFF)
+				{
+					data.writeByte(((value >> 7) & 0x7F) | 0x80);
+					
+					data.writeByte((value >> 13) & 0x7F);
+				}
+				else
+				{
+					data.writeByte((value >> 7) & 0x7F);
+				}
+			}
+			else
+			{
+				data.writeByte(value & 0x7F);
+			}
+		}
 		
 		public static function writeVector3D(data:IDataOutput, val:Vector3D):void
 		{

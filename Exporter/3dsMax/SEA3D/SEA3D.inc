@@ -5,8 +5,9 @@
 -- Global
 --
 
-global 
-	sea_rawversion = 16500, --VVSSBB
+global 	
+	sea_rawversion = 16510, --VVSSBB
+	sea_version = 16500, --VVSSBB
 	
 	seaconfig = undefined, 
 	seaconfig_file = undefined

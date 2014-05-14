@@ -289,6 +289,7 @@ if (LoadSEAConfig() == false) then
 	seaconfig.AddBoolean "vertexanimation" true
 	seaconfig.AddBoolean "warning" false
 	seaconfig.AddBoolean "auto_rename" true
+	seaconfig.AddBoolean "positive_scale" true
 	seaconfig.AddBoolean "parent" true
 	seaconfig.AddBoolean "bindoffset" true
 	seaconfig.AddBoolean "snapshot" false
@@ -309,7 +310,7 @@ if (LoadSEAConfig() == false) then
 	seaconfig.AddString "bakeoutput" "completemap"
 	seaconfig.AddBoolean "relativesize" false
 	seaconfig.AddBoolean "meshoptimizer" true	
-	seaconfig.AddBoolean "joinvertices" false
+	seaconfig.AddBoolean "joinvertices" false	
 	seaconfig.AddBoolean "forcelights" false
 	seaconfig.AddBoolean "fileinfo" false
 	seaconfig.AddString "fileinfo-title" ""
@@ -368,6 +369,7 @@ fn LoadSEA3DExporterConfig seaconfig =
 	seaconfig_vertexanimation = seaconfig.GetBoolean "vertexanimation",
 	seaconfig_warning = seaconfig.GetBoolean "warning",
 	seaconfig_auto_rename = seaconfig.GetBoolean "auto_rename",
+	seaconfig_positive_scale = seaconfig.GetBoolean "positive_scale",
 	seaconfig_parent = seaconfig.GetBoolean "parent",	
 	seaconfig_bindoffset = seaconfig.GetBoolean "bindoffset",
 	seaconfig_snapshot = seaconfig.GetBoolean "snapshot",
@@ -460,6 +462,7 @@ fn SaveSEA3DExporterConfig seaconfig =
 	seaconfig.AddBoolean "vertexanimation" seaconfig_vertexanimation
 	seaconfig.AddBoolean "warning" seaconfig_warning
 	seaconfig.AddBoolean "auto_rename" seaconfig_auto_rename
+	seaconfig.AddBoolean "positive_scale" seaconfig_positive_scale
 	seaconfig.AddBoolean "parent" seaconfig_parent
 	seaconfig.AddBoolean "bindoffset" seaconfig_bindoffset
 	seaconfig.AddBoolean "snapshot" seaconfig_snapshot
@@ -1826,10 +1829,10 @@ fn rotateMatrix t offset =
 	return r	
 )
 
-fn getInstanceIndex n returnnode: =
+fn getInstanceIndex n returnnode: positivescale: =
 (
 	InstanceMgr.GetInstances n &instances	
-	
+		
 	for j=1 to instances.count do		
 	(
 		local inst = instances[j]
@@ -1840,8 +1843,19 @@ fn getInstanceIndex n returnnode: =
 			
 			if obj == inst do
 			(
+				if positivescale == true then
+				(
+					local objS = obj.scale.x < 0 or obj.scale.y < 0 or obj.scale.z < 0	
+					local instS = inst.scale.x < 0 or inst.scale.y < 0 or inst.scale.z < 0	
+					
+					if objS != instS do
+					(
+						exit
+					)
+				)
+				
 				if obj.modifiers.count == inst.modifiers.count then
-				(				
+				(
 					local validInst = true
 					
 					for m=1 to obj.modifiers.count do				
@@ -2185,7 +2199,7 @@ function removeObjectTransform object =
 	object.rotation = eulerangles 0 0 0 --quat 0 0 0 1	
 	
 	object.scale.controller = Bezier_Scale()
-	object.scale = [1,1,1]		
+	object.scale = [1,1,1]	
 )
 
 function colorNotEqual c v =
@@ -3838,10 +3852,12 @@ fn compileObject n =
 		(
 			appendSceneObject n
 			
+			local instanceIndex = undefined
+			
 			if seaconfig_instances and seaconfig_snapshot == false then 				
-				local instanceIndex = getInstanceIndex n
+				instanceIndex = getInstanceIndex n positivescale:seaconfig_positive_scale
 			else
-				local instanceIndex = 0
+				instanceIndex = 0
 			
 			local skinAt = 0
 			local morphAt = 0					
@@ -4047,17 +4063,28 @@ fn compileObject n =
 				deleteModifier obj smoothAt											
 			
 			if obj.modifiers.count > 0 then
-				modPanel.setCurrentObject obj.modifiers[1]					
+				modPanel.setCurrentObject obj.modifiers[1]
 			else modPanel.setCurrentObject obj
 			
 			local meshObj = undefined
+			
+			local invertedScale = obj.scale.x < 0 or obj.scale.y < 0 or obj.scale.z < 0
+			local invertNormal = (seaconfig_snapshot or seaconfig_positive_scale) and invertedScale
+			
+			if invertNormal do
+			(
+				local flipNormal = NormalModifier flip:true
+				flipNormal.name = "SEA3D Invert Normal"
+				
+				addmodifier obj flipNormal
+			)
 			
 			if classof n != Editable_Mesh then
 			(
 				meshObj = Edit_Mesh()
 				meshObj.name = "SEA3D Mesh"
 				
-				modPanel.addModToSelection meshObj
+				modPanel.addModToSelection meshObj		
 			)
 			
 			if isMeshAnimated and smoothAt > 0 then
@@ -4240,7 +4267,7 @@ fn compileObject n =
 				local usenormal = sMesh.useNormal()
 				local useskin = seaconfig_skeleton and skinObj != undefined
 				
-				if skinObj == undefined then					
+				if seaconfig_snapshot == false and skinObj == undefined then					
 					removeObjectTransform obj																	
 				
 				-- Get Struct
@@ -5225,7 +5252,8 @@ function getVertexAnimationAsset sea =
 	local vertexcount = getnumverts obj
 	local normalObj = sea.normalObj
 	
-	removeObjectTransform obj
+	if seaconfig_snapshot == false then
+		removeObjectTransform obj
 	
 	selectMod obj undefined
 	
@@ -6258,9 +6286,11 @@ function getSplineAsset sea =
 		
 		if (isClosed obj 1) do header += HEADER_CLOSED
 		
-		writeMatrix body obj
+		if seaconfig_snapshot then writeMatrix3x4 body (matrix3 1)
+		else writeMatrix body obj
 		
-		removeObjectTransform obj
+		if seaconfig_snapshot == false then
+			removeObjectTransform obj
 		
 		local splinestep = seaconfig_splinestep as float		
 		
@@ -7014,7 +7044,8 @@ function getMeshAsset sea =
 	if sea.skinObj != undefined then 
 	(
 		-- SKELETON MATRIX
-		writeMatrix body obj position:sea.bindpos ignoreRotation:true
+		if seaconfig_snapshot then writeMatrix3x4 body (matrix3 1)
+		else writeMatrix body obj position:sea.bindpos ignoreRotation:true
 	)
 	else
 	(
@@ -7039,10 +7070,11 @@ function getMeshAsset sea =
 		else
 		(
 			-- DEFAULT MATRIX
-			writeMatrix body obj
+			if seaconfig_snapshot then writeMatrix3x4 body (matrix3 1)
+			else writeMatrix body obj
 		)			
 	)
-	
+		
 	-- BODY	
 	body.WriteInt32 sea.geo_index		
 	
@@ -7774,7 +7806,7 @@ fn exportSEA3DCore =
 	seaTempFileList = #()
 	seaModifierList = #()
 	
-	sea3d = (dotNetObject "Sunag.SEA3D.SEA3DWriter" sea_rawversion)
+	sea3d = (dotNetObject "Sunag.SEA3D.SEA3DWriter" sea_version)
 	
 	if seaconfig_fileinfo[1] and ((fileInfo = getFileInfoAsset()) != undefined) then
 	(
@@ -7927,7 +7959,7 @@ rollout _SEAGlobal "Global"
 	on extMethod changed s do
 	(		
 		seaconfig_snapshot = s == 3
-		seaconfig_parent = s == 1		
+		seaconfig_parent = s == 1			
 	)
 	
 	on _SEAGlobal open do
@@ -8624,11 +8656,12 @@ rollout _SEAUtils "Utils"
 	checkbox _warning "Show Warning" pos:[7,7] checked:seaconfig_warning	
 	checkbox _instances "Enabled Instances" pos:[7,27] checked:seaconfig_instances		
 	checkbox _optimizer "Mesh Optimizer" pos:[7,47] checked:seaconfig_meshoptimizer	
-	checkbox _joinVertices "Join Identical Vertices" pos:[7,67] checked:seaconfig_joinvertices
+	checkbox _joinVertices "Join Identical Vertices" pos:[7,67] checked:seaconfig_joinvertices	
 	checkbox _autoRename "Auto Rename" pos:[7,87] checked:seaconfig_auto_rename
-	checkbox _colorMat "Replace empty Material to Color" pos:[7,107] checked:seaconfig_materialcolor	 
-	checkbox _exception "Exception Protection" pos:[7,127] checked:seaconfig_exceptionprotection tooltip:"Protects your scene against unknown errors (debug mode). Use with caution!"	
-	button saveButton "Save Config" pos:[135,147] 		
+	checkbox _positiveScale "Force Positive Scale" pos:[7,107] checked:seaconfig_positive_scale
+	checkbox _colorMat "Replace empty Material to Color" pos:[7,127] checked:seaconfig_materialcolor	 
+	checkbox _exception "Exception Protection" pos:[7,147] checked:seaconfig_exceptionprotection tooltip:"Protects your scene against unknown errors (debug mode). Use with caution!"	
+	button saveButton "Save Config" pos:[135,167] 		
 	
 	on saveButton pressed do
 	(
@@ -8649,6 +8682,11 @@ rollout _SEAUtils "Utils"
 	on _autoRename changed s do
 	(
 		seaconfig_auto_rename = s
+	)
+	
+	on _positiveScale changed s do
+	(
+		seaconfig_positive_scale = s
 	)
 	
 	on _colorMat changed s do

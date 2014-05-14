@@ -247,6 +247,7 @@ package sunag.sea3d
 			mat.smooth = true;			
 			mat.mipmap = _config.mipmap;
 			mat.writeDepth = sea.depthMask;
+			mat.autoWriteDepth = false;
 			
 			mat.bothSides = sea.doubleSided;
 			

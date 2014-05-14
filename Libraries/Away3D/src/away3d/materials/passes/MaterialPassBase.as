@@ -84,7 +84,7 @@ package away3d.materials.passes
 		protected var _UVSource:String;
 		
 		protected var _writeDepth:Boolean = true;
-		protected var _autoWriteDepth:Boolean;
+		protected var _autoWriteDepth:Boolean = true;
 		
 		public var animationRegisterCache:AnimationRegisterCache;
 		

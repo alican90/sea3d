@@ -82,7 +82,7 @@ package away3d.materials
 		
 		private var _bothSides:Boolean;
 		private var _writeDepth:Boolean = true;
-		private var _autoWriteDepth:Boolean;
+		private var _autoWriteDepth:Boolean = true;
 
 		/**
 		 * A list of material owners, renderables or custom Entities.

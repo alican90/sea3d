@@ -27,6 +27,10 @@ package away3d.materials
 		
 		function get writeDepth() : Boolean
 		
+		function set autoWriteDepth(value : Boolean) : void
+		
+		function get autoWriteDepth() : Boolean
+		
 		function set alphaPremultiplied(value : Boolean) : void
 		
 		function get alphaPremultiplied() : Boolean

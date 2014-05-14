@@ -49,8 +49,6 @@ package sunag.sea3d.objects
 		{
 			super.read(data);
 			
-			var type:uint;
-			
 			autoPlay = (attrib & 64) != 0;
 			
 			if (attrib & 128) 

@@ -24,43 +24,22 @@
 package sunag.sea3d.objects
 {
 	import sunag.sea3d.SEA;
+	import sunag.utils.ByteArrayUtils;
 	
 	public class SEAGeometryDelta extends SEAGeometryBase 
 	{
 		public static const TYPE:String = "geDL";				
-								
-		public static var JOINT_STRIDE:uint = 3;
 		
 		public function SEAGeometryDelta(name:String, sea:SEA)
 		{
 			super(name, TYPE, sea);
 		}			
 		
-		protected function readInteger():uint
-		{
-			var v:int = data.readUnsignedByte(),
-				r:int = v & 0x7F;
-			
-			if ((v & 0x80) != 0)
-			{
-				v = data.readUnsignedByte();
-				r |= (v & 0x7F) << 7;
-				
-				if ((v & 0x80) != 0)
-				{
-					v = data.readUnsignedByte();
-					r |= (v & 0x7F) << 13;
-				}
-			}
-			
-			return r;
-		}
-		
 		override public function load():void
 		{
 			attrib = data.readUnsignedShort();
 			
-			numVertex = readInteger();
+			numVertex = ByteArrayUtils.readUInteger(data);
 			
 			var i:int, j:int, len:uint = numVertex*3, vec:Vector.<Number>,
 				readNumber:Function,  delta:Number, numDiv:Number;
@@ -68,12 +47,12 @@ package sunag.sea3d.objects
 			if (attrib & 1)
 			{
 				readNumber = data.readByte;
-				numDiv = 0xFF / 2; // compiler optimize this
+				numDiv = 0xFF / 2; // compiler optimize
 			}
 			else
 			{
 				readNumber = data.readShort;
-				numDiv = 0xFFFF / 2; // compiler optimize this
+				numDiv = 0xFFFF / 2; // compiler optimize
 			}
 			
 			// NORMAL
@@ -128,8 +107,8 @@ package sunag.sea3d.objects
 				weight = new Vector.<Number>(jntLen);
 				
 				i = 0;
-				while (i < jntLen) 		
-					joint[i++] = readInteger() * JOINT_STRIDE;
+				while (i < jntLen) 
+					joint[i++] = ByteArrayUtils.readUInteger(data) * SEAGeometryBase.JOINT_STRIDE;
 				
 				i = 0;
 				while (i < jntLen) 		
@@ -222,16 +201,16 @@ package sunag.sea3d.objects
 				
 				for (i=0;i<indexes.length;i++)
 				{
-					var polyCount:uint = readInteger();
+					var polyCount:uint = ByteArrayUtils.readUInteger(data);
 					
 					indexes[i] = vecUint = new Vector.<uint>();
 										
 					for(j = 0; j < polyCount; j++) 
 					{
-						var a:int = readInteger(),
-							b:int = readInteger(),
-							c:int = readInteger(),
-							d:int = readInteger();
+						var a:int = ByteArrayUtils.readUInteger(data),
+							b:int = ByteArrayUtils.readUInteger(data),
+							c:int = ByteArrayUtils.readUInteger(data),
+							d:int = ByteArrayUtils.readUInteger(data);
 						
 						
 						vecUint.push(a);
@@ -254,10 +233,10 @@ package sunag.sea3d.objects
 				
 				for (i=0;i<indexes.length;i++)
 				{
-					indexes[i] = vecUint = new Vector.<uint>(readInteger() * 3);	
+					indexes[i] = vecUint = new Vector.<uint>(ByteArrayUtils.readUInteger(data) * 3);	
 					j = 0; 
 					while(j < vecUint.length) 
-						vecUint[j++] = readInteger();			
+						vecUint[j++] = ByteArrayUtils.readUInteger(data);			
 				}
 			}
 		}			

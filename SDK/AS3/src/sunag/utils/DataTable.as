@@ -61,7 +61,7 @@ package sunag.utils
 		
 		public static const COLOR_FLOAT:int = 112;	
 		
-		// Undefined Values = 128 at 256
+		// Variable Size = 128 at 256
 		public static const STRING_TINY:int = 128;
 		public static const STRING_SHORT:int = 129;
 		public static const STRING_LONG:int = 130;
@@ -155,7 +155,7 @@ package sunag.utils
 					return ByteArrayUtils.readVector4D(data);						
 					break;
 				
-				// Undefined Values
+				// Variable Size
 				case STRING_TINY:
 					return ByteArrayUtils.readUTFTiny(data);						
 					break;
@@ -222,7 +222,7 @@ package sunag.utils
 					ByteArrayUtils.writeVector4D(data, val);						
 					break;
 				
-				// Undefined Values
+				// Variable Size
 				case STRING_TINY:
 					ByteArrayUtils.writeUTFTiny(data, val);						
 					break;
