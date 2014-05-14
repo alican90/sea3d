@@ -47,15 +47,15 @@ SEA3D GP or SEA3D Game Player is an improvement from SEA3D Player with support f
 SEA3D WebGL
 --
 
-**Mascot** http://sunag.github.io/sea3d/
+**Mascot** http://sunag.github.io/sea3d/webgl/
 
-**Soccer Player** http://sunag.github.io/sea3d/skin.html
+**Soccer Player** http://sunag.github.io/sea3d/webgl/skin.html
 
-**Car** http://sunag.github.io/sea3d/car.html
+**Car** http://sunag.github.io/sea3d/webgl/car.html
 
-**Keyframe Animation** http://sunag.github.io/sea3d/keyframe.html
+**Keyframe Animation** http://sunag.github.io/sea3d/webgl/keyframe.html
 
-**Sound3D** http://sunag.github.io/sea3d/sound3d.html
+**Sound3D** http://sunag.github.io/sea3d/webgl/sound3d.html
 
 SEA3D Player 1.6.5
 --
