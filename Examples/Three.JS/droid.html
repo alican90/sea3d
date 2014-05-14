@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Assets lab 5</title>
+    <title>Sea3d Droid</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 <style>
     * {  margin: 0; padding: 0; border: 0;}
-    body { background-color: #adaaa6; overflow: hidden; color:#202125; font-family:Verdana; font-size: 12px; }
+    body { background-color: #444444; overflow: hidden; color:#c8c8c8; font-family:Verdana; font-size: 12px; }
     input{ margin:0; padding:4px; height:30px;}
     #interface{ position: absolute; left:10px; top:90px; width:0px; height:0px; }
     #info{ pointer-events:none; position: absolute; left:20px; top:15px; width: 350px; height: 120px; }
@@ -25,7 +25,8 @@
 <div id='container'></div>
 <div id="info"></div>
 <div id='interface'></div>
-<!--<div id='logo'><object type="image/svg+xml" data="assets/sea3d.svg" id="logo"></object></div>-->
+<div id='logo'><object type="image/svg+xml" data="assets/sea3db.svg" id="logo"></object></div>
+
 <script>
 
 // Parameters
@@ -38,7 +39,7 @@ var sourceInfo = "<h3>DROID + ANIM BLENDING & MORPH</h3><br>";
 var container, camera, scene, renderer, cam, mouse, key, clock, pool;
 var fps = [0,0,0,0];
 
-var bgcolor = 0xadaaa6;
+var bgcolor = 0x444444;
 var meshs = [];
 var anims = [];
 var squel = [];
@@ -87,7 +88,7 @@ function init() {
 
     scene.add( new THREE.AmbientLight( bgcolor ) );
 
-    var light = new THREE.DirectionalLight( 0xffffff, 1 );
+    var light = new THREE.DirectionalLight( 0xffffff, 1.1 );
     var d = 20;
     light.position.set( d/3, d, d);
     light.target = new THREE.Object3D(0,3,0);
@@ -107,6 +108,11 @@ function init() {
     light.shadowDarkness = 0.25;
     light.shadowBias =  -0.002;
     scene.add( light );
+
+    var lightPoint = new THREE.PointLight ( 0x4488ff, 1 );
+    lightPoint.position.set( -d/3, d, -d);
+    scene.add( lightPoint );
+
 
     var backMat = new THREE.MeshBasicMaterial( { color: bgcolor, side:THREE.BackSide, depthWrite: false } );
     var backGeo = new THREE.Mesh( new THREE.SphereGeometry( 500, 6, 6 ), backMat );
