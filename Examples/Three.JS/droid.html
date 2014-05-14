@@ -143,7 +143,7 @@ function init() {
     loop();
 
     // load sea3d model
-    pool = new SEA3D.Pool('assets/model/droid.sea', populate);
+    pool = new SEA3D.Pool('assets/model/droid.sea', populate, true);
 }
 
 function resize() {
@@ -278,7 +278,7 @@ function toogleSkeleton(value){
 
 function morphModels(value){
     var i = meshs.length;
-    while(i--){ meshs[i].setWeightByName("droid001", value); }
+    while(i--){ meshs[i].setWeight("droid001", value); }
 }
 
 function onStartAnimation( event ) {

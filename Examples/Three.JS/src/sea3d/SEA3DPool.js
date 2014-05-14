@@ -1,18 +1,22 @@
-SEA3D.Pool = function(url, endFunction){
+SEA3D.Pool = function(url, endFunction, Morph){
 	this.models = [];
     this.endFunction = endFunction ||  function() {};
-    this.load(url);
+    this.load(url, Morph || false);
 }
 
 SEA3D.Pool.prototype = {
     constructor: SEA3D.Pool,
 
-    load : function(url){
+    load : function(url, Morph){
     	var SeaLoader = new THREE.SEA3D( true );
         var parent = this;
     	SeaLoader.onComplete = function( e ) {
             setTimeout( parent.detectMesh, 100, SeaLoader, parent);
     	}
+        
+        // THREE.SEA3D.BUFFER is not compatible with morpher
+        if(Morph){ SeaLoader.parser = THREE.SEA3D.DEFAULT; }
+        
     	SeaLoader.load( url );
     },
 
@@ -32,6 +36,7 @@ SEA3D.Pool.prototype = {
             if(m.geometry.morphTargets){
                 for ( j=0; j < m.geometry.morphTargets.length; j++){
                     morph[i] = m.geometry.morphTargets[j].name;
+                    console.log(m.geometry.morphTargets[j].name)
                 }
             }
 
