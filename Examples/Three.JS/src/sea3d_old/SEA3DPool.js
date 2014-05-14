@@ -71,10 +71,7 @@ SEA3D.Pool.prototype = {
                 g = this.models[i].geo;
             }
         }
-        if(autoScale){
-            if(g.vertices == undefined) this.scaleBufferGeometry(g, Scale, Axe);
-            else  this.scaleGeometry(g, Scale, Axe);
-        }
+        if(autoScale)this.scaleGeometry(g, Scale, Axe);
         return g;
     },
 
@@ -94,29 +91,5 @@ SEA3D.Pool.prototype = {
         geometry.computeFaceNormals();
         geometry.computeVertexNormals();
         geometry.verticesNeedUpdate = true;
-        
-    },
-
-    scaleBufferGeometry : function (geometry, Scale, Axe) {
-        var s = Scale || 1;
-        var axe = Axe || 'z';
-        var pos = geometry.attributes.position;
-        //var colors = geometry.attributes.color.array;
-        var v = pos.array;
-
-        for( var i = 0; i < v.length; i++) {
-            if(axe==='x')v[i+0] *= -s;
-            else v[i+0] *= s;
-            if(axe==='y')v[i+1] *= -s;
-            else v[i+1] *= s;
-            if(axe==='z')v[i+2] *= -s;
-            else v[i+2] *= s;
-        }
-       // geometry.computeFaceNormals();
-        geometry.computeVertexNormals();
-        geometry.verticesNeedUpdate = true;
-
-        pos.needsUpdate = true;
-        //geometry.attributes.color.needsUpdate = true;
     }
 }
