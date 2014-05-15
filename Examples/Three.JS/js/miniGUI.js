@@ -71,7 +71,7 @@ miniGUI.Slide.prototype = {
     },
     move:function(e){
         if(this.isMove){
-            this.set((e.offsetX-10)/100)
+            this.set((e.clientX-10)/100)
             this.onChange(this.value);
         }
     }
