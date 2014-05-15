@@ -419,38 +419,40 @@ function addP(i, n) {
 //-----------------------------------
 
 function removeP(i) {
-	var n = meshs[i].name;
-	var m = meshs[i].matrixWorld.clone();
-	//console.log(type);
+    if(meshs[i]){
+    	var n = meshs[i].name;
+    	var m = meshs[i].matrixWorld.clone();
+    	//console.log(type);
 
-	
+    	
 
-	// creat copy and play dead
-	var mesh = new THREE.Object3D();
-	var child = new THREE.SkinnedMesh( hgeo[n], pmat[n] );
-	child.scale.set(PeopleSize,PeopleSize,-PeopleSize);
-	child.quaternion.copy(meshs[i].children[0].quaternion);
-	child.castShadow = true;
-    child.receiveShadow = true;
-    mesh.add(child);
-    content.add( mesh );
-    mesh.position.copy(meshs[i].position);
-    mesh.lookAt(new THREE.Vector3());
+    	// creat copy and play dead
+    	var mesh = new THREE.Object3D();
+    	var child = new THREE.SkinnedMesh( hgeo[n], pmat[n] );
+    	child.scale.set(PeopleSize,PeopleSize,-PeopleSize);
+    	child.quaternion.copy(meshs[i].children[0].quaternion);
+    	child.castShadow = true;
+        child.receiveShadow = true;
+        mesh.add(child);
+        content.add( mesh );
+        mesh.position.copy(meshs[i].position);
+        mesh.lookAt(new THREE.Vector3());
 
-    var an = new THREE.Animation( child, hname[n]+ '/death' );
-    an.loop = false;
-    an.play();
+        var an = new THREE.Animation( child, hname[n]+ '/death' );
+        an.loop = false;
+        an.play();
 
-    deadanim.push(an);
-	deadMeshs.push(mesh);
+        deadanim.push(an);
+    	deadMeshs.push(mesh);
 
 
 
-	panim[i].stop();
-	panim[i].reset();
-	meshs[i].remove( meshs[i].children[0]);
-	content.remove( meshs[i] );
-	meshs.splice(i, 1);
+    	panim[i].stop();
+    	panim[i].reset();
+    	meshs[i].remove( meshs[i].children[0]);
+    	content.remove( meshs[i] );
+    	meshs.splice(i, 1);
+    }
 }
 
 //-----------------------------------
