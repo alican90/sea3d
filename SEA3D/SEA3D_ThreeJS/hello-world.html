@@ -88,7 +88,7 @@
 
 				//	Environment Light
 				
-				var ambient = new THREE.AmbientLight( 0x111111 );
+				var ambient = new THREE.AmbientLight( 0x666666 );
 				scene.add( ambient );												
 				
 				//	Renderer
@@ -129,14 +129,20 @@
 						camera.rotation = cam.rotation;
 					}
 					
+					// reset time for keyframe animation
 					SEA3D.AnimationHandler.setTime( 0 );
 					
+					// loading element and total load time
 					document.getElementById('loading').style.visibility = 'hidden';
 					
 					console.log( new Date().getTime() - time );
 				}
-												
+				
 				loader.container = scene;
+				
+				// toggle ambient light to emissive light
+				//loader.emissive = true;
+				
 				loader.load( 'hello-world.sea' );
 			}
 			
@@ -153,10 +159,12 @@
 			function animate() {	
 				delta = clock.getDelta();
 				
+				controls.update();
+				
 				SEA3D.AnimationHandler.update( delta );
 				THREE.AnimationHandler.update( delta );	
 				
-				controls.update();
+				THREE.Sound3D.update( camera );						
 				
 				renderer.render( scene, camera );
 
