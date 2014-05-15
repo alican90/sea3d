@@ -17,8 +17,9 @@
 <script src="js/BufferGeometryUtils.js"></script>
 <script src="js/Detector.js"></script>
 <script src="js/miniGUI.js"></script>
-<script src="build/loaders/Sea3dLoader.min.js"></script>
 
+<script src="js/loaders/sea3d.min.js"></script>
+<script src="js/loaders/animatorClone.js"></script>
 </head>
 
 <body>
@@ -76,7 +77,6 @@ function init() {
     renderer.gammaOutput = true;
     renderer.shadowMapCullFace = THREE.CullFaceBack;
     renderer.shadowMapEnabled = true;
-    //renderer.autoClearColor = false;
     renderer.autoClear = false;
 
     scene = new THREE.Scene();
@@ -143,7 +143,7 @@ function init() {
     loop();
 
     // load sea3d model
-    pool = new SEA3D.Pool('assets/model/droid.sea', populate, true);
+    loadSea3d();
 }
 
 function resize() {
@@ -187,57 +187,66 @@ function displayInfo(){
     info.innerHTML = txtinfo;
 }
 
-//--------------------------------
-// SEA3D
-//--------------------------------
+//-----------------------------------
+// SEA3D LOADING
+//-----------------------------------
 
-function populate(){
-    var dTexture = THREE.ImageUtils.loadTexture( 'assets/texture/droid.jpg' );
-    dTexture.wrapS = dTexture.wrapT = THREE.RepeatWrapping;
-    dTexture.anisotropy = renderer.getMaxAnisotropy();
-    dTexture.repeat.set( 1,-1);
-
-    var mat = new THREE.MeshPhongMaterial({ ambient:bgcolor, specular:0x606060, shininess:160, map:dTexture, skinning:true, morphTargets:true, metal:true });
-
-    var model = pool.getGeometry("droid");
-    animations = pool.getAnimations("droid");
-    morphs = pool.getMorphs("droid");
-
-    /*
-    console.log(animation[0]);// animation name
-    console.log(animation[1]);// animation loop
-    console.log(morphs);// morph name
-    */
-
-    var NumberModel = 5;
-    var size = 0.05;
-    var mesh, helper;
-
-    var i = NumberModel;
-    while(i--){
-        mesh = new THREE.SkinnedMesh(model, mat, false );
-        mesh.scale.set(size,size,-size);
-
-        helper = new THREE.SkeletonHelper( mesh );
-        helper.material.linewidth = 3;
-        mesh.add( helper );
-        squel[i] = helper;
-        squel[i].visible = isSkeletonVisible;
-
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-        mesh.position.x = -10+i*5;
-        scene.add(mesh);
-        meshs[i] = mesh; 
+function loadSea3d(){
+    var loader = new THREE.SEA3D( true );
+    loader.onComplete = function( e ) {
+        var m = loader.meshes[0];
+        var geoDroid = loader.meshes[0].geometry;
+        // get animation name and loop
+        animations = [[], []];
+        var i = m.animations.length;
+        while(i--){
+            animations[0][i] = m.animations[i].name;
+            animations[1][i] = m.animations[i].loop;
+        }
         
-        anims[i] = new SEA3D.Animator(mesh, "droid");
-        anims[i].addAnimations( animations );
+        var dTexture = THREE.ImageUtils.loadTexture( 'assets/texture/droid.jpg' );
+        dTexture.wrapS = dTexture.wrapT = THREE.RepeatWrapping;
+        dTexture.anisotropy = renderer.getMaxAnisotropy();
+        dTexture.repeat.set( 1,-1);
 
+        var matDroid = new THREE.MeshPhongMaterial({ ambient:bgcolor, specular:0x606060, shininess:160, map:dTexture, skinning:true, morphTargets:true, metal:true });
+
+        var NumberModel = 5;
+        var size = 0.05;
+        var mesh, helper;
+
+        i = NumberModel;
+        while(i--){
+            mesh = new THREE.SkinnedMesh(geoDroid, matDroid, false );
+            mesh.scale.set(size,size,-size);
+
+            helper = new THREE.SkeletonHelper( mesh );
+            helper.material.linewidth = 3;
+            mesh.add( helper );
+            squel[i] = helper;
+            squel[i].visible = isSkeletonVisible;
+
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            mesh.position.x = -10+i*5;
+            scene.add(mesh);
+
+            anims[i] = new SEA3D.Animator(mesh, "droid");
+            anims[i].addAnimations( animations );
+
+            meshs[i] = mesh;
+        }
+
+        initInterface();
     }
-
-    initInterface();
-
+    // THREE.SEA3D.BUFFER is not compatible with morpher
+    loader.parser = THREE.SEA3D.DEFAULT;
+    loader.load( 'assets/model/droid.sea' );
 }
+
+//-----------------------------------
+// MINI GUI
+//-----------------------------------
 
 function initInterface(){
     gui[0] = new miniGUI.OnOff ({ container:menu, value:isSkeletonVisible, y:0,name:"Skeleton", onChange: function(value){ toogleSkeleton(value) } });

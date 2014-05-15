@@ -14,10 +14,9 @@
 </style>
 
 <script src="js/three.min.js"></script>
-<script src="js/BufferGeometryUtils.js"></script>
+<script src="js/loaders/sea3d.min.js"></script>
 <script src="js/Detector.js"></script>
 <script src="js/miniGUI.js"></script>
-<script src="build/loaders/Sea3dLoader.min.js"></script>
 
 </head>
 
@@ -121,18 +120,14 @@ function init() {
     var backGeo = new THREE.Mesh( new THREE.SphereGeometry( 500, 6, 6 ), backMat );
     scene.add( backGeo );
 
-    var material = new THREE.MeshBasicMaterial( { color: bgcolor } );
-
-    geometry = THREE.BufferGeometryUtils.fromGeometry( new THREE.PlaneGeometry( 400, 400, 1, 1 ) );
-    
-    var mesh = new THREE.Mesh( geometry, material );
+    var mesh = new THREE.Mesh(  new THREE.PlaneGeometry( 400, 400, 1, 1 ), new THREE.MeshBasicMaterial( { color: bgcolor } ) );
     mesh.castShadow = false;
     mesh.receiveShadow = true;
     mesh.rotation.x = -90 * ToRad;
     scene.add( mesh );
 
-
-    Pool = new SEA3D.Pool('assets/model/dragon.sea', populate);
+    // load sea3d model
+    loadSea3d();
 
 
     var body = document.body;
@@ -186,10 +181,18 @@ function displayInfo(){
     info.innerHTML = txtinfo;
 }
 
+//-----------------------------------
+// SEA3D LOADING
+//-----------------------------------
 
-//--------------------------------
-// SEA3D
-//--------------------------------
+function loadSea3d(){
+    var loader = new THREE.SEA3D( true );
+    loader.onComplete = function( e ) {
+        var m = loader.meshes[0];
+        populate(m.geometry);
+    }
+    loader.load( 'assets/model/dragon.sea' );
+}
 
 function toogleSkeleton(value){
     for(var i=0, j=squel.length; i<j; i++){
@@ -198,7 +201,7 @@ function toogleSkeleton(value){
     }
 }
 
-function populate(){
+function populate(geometry){
     var dTexture = THREE.ImageUtils.loadTexture( 'assets/texture/dragon.jpg' );
     dTexture.wrapS = dTexture.wrapT = THREE.RepeatWrapping;
     dTexture.anisotropy = renderer.getMaxAnisotropy();
@@ -206,26 +209,19 @@ function populate(){
     dTexture.offset.set( 1, 1 );
 
     var mat = new THREE.MeshPhongMaterial({ ambient: 0x202020, map: dTexture, specular: 0x505050, shininess: 60, skinning: true });
-
-    var model = Pool.getGeometry("dragon");
-
-
-    //console.log(Pool.models[0].anim);
-
     var i, rx, rz, m, w;
 
     var nnn, anim, rand, bone;
     var num = 40;
 
     var skeletonHelper;
-    
 
     for(i=0; i<num; i++){
         rand = Math.floor(Math.random()*5);
         rx =  -100+(Math.random()*200);
         rz =  -100+(Math.random()*200);
 
-        m = new THREE.SkinnedMesh(model, mat, false );
+        m = new THREE.SkinnedMesh(geometry, mat, false );
         m.scale.set(0.1,0.1,-0.1);
 
         skeletonHelper = new THREE.SkeletonHelper( m );
@@ -241,7 +237,6 @@ function populate(){
         else m.position.y = 1;
         m.position.z = -rz;
 
-        //m.position.copy( Orbit(center,rz,rx, 105));
         m.castShadow = true;//m.receiveShadow = true;
         nnn = Math.round(Math.random()*2);
         if(nnn>0){ anim = "dragon/fly"; m.position.y += 10+ (Math.random()*5)}

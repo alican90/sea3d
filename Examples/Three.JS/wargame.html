@@ -15,7 +15,7 @@
 </style>
 
 <script src="js/three.min.js"></script>
-<script src="build/loaders/Sea3dLoader.min.js"></script>
+<script src="js/loaders/sea3d.min.js"></script>
 <script src="js/Detector.js"></script>
 <script src="js/miniGUI.js"></script>
 
@@ -168,7 +168,7 @@ var info = document.getElementById("info");
 var menu = document.getElementById("interface");
 
 // THREE var
-var container, camera, scene, renderer, cam, mouse, key, clock, pool, contentRay, content, projector, raycaster, marker;
+var container, camera, scene, renderer, cam, mouse, key, clock, contentRay, content, projector, raycaster, marker;
 var vsize = { x:window.innerWidth, y:window.innerHeight, z:window.innerWidth/window.innerHeight };
 var fps = [0,0,0,0];
 var ToRad = Math.PI / 180;
@@ -177,6 +177,7 @@ var meshs = [];
 var deadMeshs = [];
 var deadanim=[];
 var planete;
+var planetegeo;
 var axeY, axeZ;
 var sourceInfo = "";
 var nloop = 0;
@@ -291,8 +292,8 @@ function init3D() {
     marker.receiveShadow = true;
     
 
-    // load sea3d model
-    pool = new SEA3D.Pool('assets/model/wargame.sea', populate);
+    // LOAD SEA3D MESH
+    loadSea3d();
 
     // events
     var body = document.body;
@@ -343,9 +344,39 @@ function displayInfo(){
     info.innerHTML = txtinfo;
 }
 
-function populate(){
+//-----------------------------------
+// SEA3D LOADING
+//-----------------------------------
+
+function loadSea3d(){
+    var loader = new THREE.SEA3D( true );
+    loader.onComplete = function( e ) {
+        hname = ["hero_1_warrior", "hero_2_valkyrie", "monster_zombi", "monster_nurce" ];
+        var m;
+        var i = loader.meshes.length;
+        while(i--){
+            m = loader.meshes[i];
+            switch(m.name){
+                case hname[0]: hgeo[0] = m.geometry; break;
+                case hname[1]: hgeo[1] = m.geometry; break;
+                case hname[2]: hgeo[2] = m.geometry; break;
+                case hname[3]: hgeo[3] = m.geometry; break;
+                case "weapon0": wgeo[0] = m.geometry; break;
+                case "weapon1": wgeo[1] = m.geometry; break;
+                case "planete": planetegeo = m.geometry; break;
+            }
+        }
+        initMaterial();
+
+        // start war worker
+        sendDataToWarWorker(document.location.href.replace(/\/[^/]*$/,"/") + "js/war.min.js");
+    }
+    loader.load( 'assets/model/wargame.sea' );
+}
+
+function initMaterial(){
 	var planeteMat = new THREE.MeshPhongMaterial( {  specular: 0x505050, shininess: 10, color:0x555555, metal:true} );
-    var pplanete= new THREE.Mesh( pool.getGeometry("planete"), planeteMat );
+    var pplanete= new THREE.Mesh( planetegeo, planeteMat );
     pplanete.scale.set(0.25,0.25,-0.25);
     pplanete.castShadow = true;
     pplanete.receiveShadow = true;
@@ -364,23 +395,7 @@ function populate(){
     pmat[1] = new THREE.MeshPhongMaterial({ map:avatarTexture, specular: 0x303030, shininess: 30, skinning: true });
     pmat[2] = new THREE.MeshPhongMaterial({ map:avatarTexture2, specular: 0x303030, shininess: 30, skinning: true });
     pmat[3] = new THREE.MeshPhongMaterial({ map:avatarTexture2, specular: 0x303030, shininess: 30, skinning: true });
-
-    pmat[4] = new THREE.MeshPhongMaterial({ specular:0x909090, shininess:30, color: 0x505030  });
-
-    hname = ["hero_1_warrior", "hero_2_valkyrie", "monster_zombi", "monster_nurce" ]
-
-    hgeo[0] = pool.getGeometry(hname[0]);
-    hgeo[1] = pool.getGeometry(hname[1]);
-    hgeo[2] = pool.getGeometry(hname[2]);
-    hgeo[3] = pool.getGeometry(hname[3]);
-
-    wgeo[0] = pool.getGeometry("weapon0");
-    wgeo[1] = pool.getGeometry("weapon1");
-    wgeo[3] = null;
-    wgeo[4] = null;
-    
-    // init worker
-    sendDataToWarWorker(document.location.href.replace(/\/[^/]*$/,"/") + "js/war.min.js");
+    pmat[4] = new THREE.MeshPhongMaterial({ specular:0x909090, shininess:30, color: 0x505030  });   
 }
 
 //-----------------------------------
@@ -394,7 +409,7 @@ function addP(i, n) {
 	child.scale.set(PeopleSize,PeopleSize,-PeopleSize);
 
 	// add weapon
-	if(wgeo[n]!==null){
+	if(wgeo[n]){
         w = new THREE.Mesh( wgeo[n], pmat[4], false );
         bone = child.skeleton.bones[12];
         w.name = bone.name;
@@ -422,9 +437,6 @@ function removeP(i) {
     if(meshs[i]){
     	var n = meshs[i].name;
     	var m = meshs[i].matrixWorld.clone();
-    	//console.log(type);
-
-    	
 
     	// creat copy and play dead
     	var mesh = new THREE.Object3D();

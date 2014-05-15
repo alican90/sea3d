@@ -14,10 +14,9 @@
 </style>
 
 <script src="js/three.min.js"></script>
-<script src="js/BufferGeometryUtils.js"></script>
+<script src="js/loaders/sea3d.min.js"></script>
 <script src="js/Detector.js"></script>
 <script src="js/miniGUI.js"></script>
-<script src="build/loaders/Sea3dLoader.min.js"></script>
 
 </head>
 <body>
@@ -116,12 +115,8 @@ function init() {
     var backMat = new THREE.MeshBasicMaterial( { color: bgcolor, side:THREE.BackSide, depthWrite: false } );
     var backGeo = new THREE.Mesh( new THREE.SphereGeometry( 500, 6, 6 ), backMat );
     scene.add( backGeo );
-
-    var material = new THREE.MeshBasicMaterial( { color: bgcolor } );
-
-    geometry = THREE.BufferGeometryUtils.fromGeometry( new THREE.PlaneGeometry( 400, 400, 1, 1 ) );
     
-    var mesh = new THREE.Mesh( geometry, material );
+    var mesh = new THREE.Mesh( new THREE.PlaneGeometry( 400, 400, 1, 1 ), new THREE.MeshBasicMaterial( { color: bgcolor } ) );
     mesh.castShadow = false;
     mesh.receiveShadow = true;
     mesh.rotation.x = -90 * ToRad;
@@ -129,7 +124,9 @@ function init() {
     scene.add( mesh );
        
 
-    pool = new SEA3D.Pool('assets/model/game.sea', populate);
+    //pool = new SEA3D.Pool('assets/model/game.sea', populate);
+    // load sea3d model
+    loadSea3d();
 
 
     var body = document.body;
@@ -182,9 +179,39 @@ function displayInfo(){
     info.innerHTML = txtinfo;
 }
 
-//--------------------------------
-// SEA3D
-//--------------------------------
+//-----------------------------------
+// SEA3D LOADING
+//-----------------------------------
+
+function loadSea3d(){
+    var loader = new THREE.SEA3D( true );
+    loader.onComplete = function( e ) {
+        var models = ["hero_1_warrior", "hero_2_valkyrie", "hero_3_wizard", "hero_4_elf", "monster_chicken", "monster_nurce", "monster_zombi"];
+        modelsGeo=[];
+        weaponsGeo=[];
+        var m;
+        var i = loader.meshes.length;
+        while(i--){
+            m = loader.meshes[i];
+            switch(m.name){
+                case models[0]: modelsGeo[0] = m.geometry; break;
+                case models[1]: modelsGeo[1] = m.geometry; break;
+                case models[2]: modelsGeo[2] = m.geometry; break;
+                case models[3]: modelsGeo[3] = m.geometry; break;
+                case models[4]: modelsGeo[4] = m.geometry; break;
+                case models[5]: modelsGeo[5] = m.geometry; break;
+                case models[6]: modelsGeo[6] = m.geometry; break;
+                case "weapon0": weaponsGeo[0] = m.geometry; break;
+                case "weapon1": weaponsGeo[1] = m.geometry; break;
+                case "weapon2": weaponsGeo[2] = m.geometry; break;
+                case "weapon3": weaponsGeo[3] = m.geometry; break;
+            }
+        }
+        var m = loader.meshes[0];
+        populate(models, modelsGeo, weaponsGeo);
+    }
+    loader.load( 'assets/model/game.sea' );
+}
 
 function toogleSkeleton(value){
     for(var i=0, j=squel.length; i<j; i++){
@@ -193,7 +220,7 @@ function toogleSkeleton(value){
     }
 }
 
-function populate(){
+function populate(models, modelsGeo, weaponsGeo){
 
     var avatarTexture = THREE.ImageUtils.loadTexture( 'assets/texture/game/avatar.jpg' );
     avatarTexture.wrapS = avatarTexture.wrapT = THREE.RepeatWrapping;
@@ -217,38 +244,15 @@ function populate(){
     var mat5 = new THREE.MeshLambertMaterial({ ambient:bgcolor, specular:0x909090, shininess:30, map:avatarTexture4, skinning:true });
     var mat6 = new THREE.MeshLambertMaterial({ ambient:bgcolor, specular:0x909090, shininess:30, color: 0x805030  });
     var mat7 = new THREE.MeshLambertMaterial({ ambient:bgcolor, specular:0x909090, shininess:30, map:avatarTexture3, skinning:true });
-
-    
-    
-    var models = ["hero_1_warrior", "hero_2_valkyrie", "hero_3_wizard", "hero_4_elf", "monster_chicken", "monster_nurce", "monster_zombi"];
-   
+ 
     var materials = [mat3, mat3, mat4, mat4, mat5, mat7, mat7];
 
-    var h0 = pool.getGeometry(models[0]);
-    var h1 = pool.getGeometry(models[1]);
-    var h2 = pool.getGeometry(models[2]);
-    var h3 = pool.getGeometry(models[3]);
-    var h4 = pool.getGeometry(models[4]);
-    var h5 = pool.getGeometry(models[5]);
-    var h6 = pool.getGeometry(models[6]);
-
-
-    var w0 = THREE.BufferGeometryUtils.fromGeometry(pool.getGeometry("weapon0"));
-    var w1 = THREE.BufferGeometryUtils.fromGeometry(pool.getGeometry("weapon1"));
-    var w2 = THREE.BufferGeometryUtils.fromGeometry(pool.getGeometry("weapon2"));
-    var w3 = THREE.BufferGeometryUtils.fromGeometry(pool.getGeometry("weapon3"));
-
-    var modelsGeo = [h0, h1, h2, h3, h4, h5, h6];
-    var weapons = [w0, w1, w2, w3, null, null, null];
-
     var i, rx, rz, m, w;
-
     var nnn, anim, rand, bone;
     var num = 66;
     var size=0.1;
 
     var skeletonHelper;
-    
 
     for(i=0; i<num; i++){
         rand = Math.floor(Math.random()*7);
@@ -264,10 +268,10 @@ function populate(){
         squel[i] = skeletonHelper;
         squel[i].visible = isSkeletonVisible;
 
-        if(weapons[rand]!==null){
-            w = new THREE.Mesh( weapons[rand], mat6, false );
+        if(weaponsGeo[rand]){
+            w = new THREE.Mesh( weaponsGeo[rand], mat6, false );
             bone = m.skeleton.bones[12];
-            w.name = bone.name;
+            //w.name = bone.name;
             w.matrix = bone.skinMatrix;
             w.matrixAutoUpdate = false;
             m.add( w );
@@ -280,8 +284,6 @@ function populate(){
         m.position.y = 2.5;
         if(rand==4)m.position.y = 0.6;
         
-
-       // m.position.copy( Orbit(center,rz,rx, 105));
         m.castShadow = m.receiveShadow = true;
         nnn = Math.round(Math.random()*2);
         if(nnn>0) anim = models[rand]+"/walk";
