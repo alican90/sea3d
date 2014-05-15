@@ -930,10 +930,10 @@ THREE.SEA3D.prototype.readGeometry = function(sea) {
 			}
 			else
 			{
-				geometry.faceVertexUvs[ 0 ].push( [
-					new THREE.UV( 0, 0 ),
-					new THREE.UV( 0, 1 ),
-					new THREE.UV( 1, 1 )
+				geo.faceVertexUvs[ 0 ].push( [
+					new THREE.Vector2( 0, 0 ),
+					new THREE.Vector2( 0, 1 ),
+					new THREE.Vector2( 1, 1 )
 				] );
 			}
 		}				
