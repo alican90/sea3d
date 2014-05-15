@@ -448,10 +448,11 @@ function removeP(i) {
 
 
     	panim[i].stop();
-    	panim[i].reset();
+    	//panim[i].reset();
     	meshs[i].remove( meshs[i].children[0]);
     	content.remove( meshs[i] );
     	meshs.splice(i, 1);
+        panim.splice(i, 1);
     }
 }
 
