@@ -7,9 +7,6 @@
 
 var SEA3D = { VERSION : 16500, REVISION : 1 }
 
-//undeclared var error for use strict
-var buffer, tangent, numVertex, color, castShadows, vec, type, j, i, methodAttrib;
-
 //
 //	Timer
 //
@@ -1960,8 +1957,8 @@ SEA3D.SkeletonLocal = function(name, data, sea) {
 				qw:data.readFloat(),
 				// SCALE
 				sx:data.readFloat(),
-				sy:data.readFloat(),
-				sz:data.readFloat()						
+				sx:data.readFloat(),
+				sx:data.readFloat()						
 			}
 	}
 }
