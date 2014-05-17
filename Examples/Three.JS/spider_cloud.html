@@ -1,33 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Spider Cloud</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<title>Spider Cloud</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 <style>
-    * {  margin: 0; padding: 0; border: 0;}
-    body { background-color: #383838; overflow: hidden; color: #eeeeee; font-family: monospace; font-size: 12px; }
-    input{ margin:0; padding:4px; }
-    #interface{ position: absolute; left:10px; top:10px; width:456px; height:20px; }
-    #info{ pointer-events:none; position: absolute; left:10px; top:10px; width: 400px; height: 400px; }
-    #logo{ pointer-events:none; position: absolute; left:-10px; bottom:-10px; width: 300px; height: 150px; }
+    * {  margin:0; padding:0; border:0;}
+    body { background-color:#444444; overflow:hidden; color:#c8c8c8; font-family:Verdana; font-size:12px; }
+    #container { overflow:hidden; }
+    #interface{ position:absolute; left:10px; top:10px; width:0px; height:0px; }
+    #info{ pointer-events:none; position:absolute; left:10px; top:10px; width:400px; height:400px; }
+    #logo{ pointer-events:none; position:absolute; left:-10px; bottom:-10px; width:300px; height:150px; }
 </style>
 
 <script src="js/three.min.js"></script>
-<script src="js/Detector.js"></script>
 <script src="js/loaders/sea3d.min.js"></script>
+<script src="js/Detector.js"></script>
 
 </head>
+
+<!-- Author CODE & MODEL: loth - http://3dflashlo.wordpress.com/ -->
+<!-- Author RVO: Samuel Girardin - http://www.visualiser.fr/     -->
+
 <body>
 <div id='container'></div>
 <div id="info"></div>
 <div id='logo'><object type="image/svg+xml" data="assets/sea3db.svg" id="logo"></object></div>
 
-<!--++++++++++++++++++++++++++++++++-->
+<!--                                -->
 <!--           RVO WORKER           -->
-<!--++++++++++++++++++++++++++++++++-->
+<!--                                -->
 
 <script id="workerRvo" type="javascript/worker">
+
 var simulator = null;
 var perf = "";
 var ToRad = Math.PI / 180;
@@ -38,14 +43,11 @@ var goals = [];
 self.onmessage = function(e) {
 
     var rvoMatrixs = e.data.rvoMatrixs;
-
-    //var clock, newTime=0, oldTime=0
-
     var N = e.data.N;
     var t = 0;
 
     if ( simulator == null && e.data.url !== "") { // init
-        // Load rvo script
+        // import rvo script
         importScripts(e.data.url);
 
         simulator = new RVO.Simulator();
@@ -102,15 +104,14 @@ self.onmessage = function(e) {
     }
     //oldTime = Date.now();
     self.postMessage({ perf:perf, oldTime:t, rvoMatrixs:rvoMatrixs }, [rvoMatrixs.buffer]);
-
 }
+
 </script>
 
 
-
-<!--++++++++++++++++++++++++++++++++-->
+<!--                                -->
 <!--          MAIN SCRIPT           -->
-<!--++++++++++++++++++++++++++++++++-->
+<!--                                -->
 
 <script>
 

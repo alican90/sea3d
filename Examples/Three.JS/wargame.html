@@ -1,17 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>War Game</title>
-<meta name="Description" content="" />
-<meta name="Keywords"  content="" />
+<title>WarGame</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 <style>
-    * {  margin: 0; padding: 0; border: 0;}
-    body { background-color: #444444; overflow: hidden; color:#c8c8c8; font-family:Verdana; font-size: 12px; }
-    input{ margin:0; padding:4px; }
-    #interface{ position: absolute; left:0px; top:90px; width:0px; height:0px; }
-    #info{ pointer-events:none; position: absolute; left:10px; top:10px; width: 400px; height: 400px; }
-    #logo{ pointer-events:none; position: absolute; left:-10px; bottom:-10px; width: 300px; height: 150px; }
+    * {  margin:0; padding:0; border:0;}
+    body { background-color:#444444; overflow:hidden; color:#c8c8c8; font-family:Verdana; font-size:12px; }
+    #container { overflow:hidden; }
+    #interface{ position:absolute; left:10px; top:90px; width:0px; height:0px; }
+    #info{ pointer-events:none; position:absolute; left:10px; top:10px; width:400px; height:400px; }
+    #logo{ pointer-events:none; position:absolute; left:-10px; bottom:-10px; width:300px; height:150px; }
 </style>
 
 <script src="js/three.min.js"></script>
@@ -20,19 +19,21 @@
 <script src="js/miniGUI.js"></script>
 
 </head>
+
+<!-- Author CODE & MODEL: loth - http://3dflashlo.wordpress.com/ -->
+<!-- Author BOID WAR: akm2 - http://jsdo.it/akm2/                -->
+
 <body>
 <div id='container'></div>
 <div id="info"></div>
 <div id='interface'></div>
 <div id='logo'><object type="image/svg+xml" data="assets/sea3db.svg" id="logo"></object></div>
 
-<!--++++++++++++++++++++++++++++++++-->
+<!--                                -->
 <!--           WAR WORKER           -->
-<!--++++++++++++++++++++++++++++++++-->
+<!--                                -->
 
 <script id="workerWar" type="javascript/worker">
-
-// BOID WAR Author akm2 - http://jsdo.it/akm2
 
 var simulator = null;
 var perf = "";
@@ -94,9 +95,9 @@ self.onmessage = function(e) {
 }
 </script>
 
-<!--++++++++++++++++++++++++++++++++-->
+<!--                                -->
 <!--          MAIN SCRIPT           -->
-<!--++++++++++++++++++++++++++++++++-->
+<!--                                -->
 
 <script>
 var SimSetting = { people:30, max:250, worldScale:4 };
