@@ -14,7 +14,6 @@
 </style>
 
 <script src="js/three.min.js"></script>
-<script src="js/BufferGeometryUtils.js"></script>
 <script src="js/Detector.js"></script>
 <script src="js/miniGUI.js"></script>
 
@@ -113,14 +112,13 @@ function init() {
     lightPoint.position.set( -d/3, d, -d);
     scene.add( lightPoint );
 
-
+    // background
     var backMat = new THREE.MeshBasicMaterial( { color: bgcolor, side:THREE.BackSide, depthWrite: false } );
     var backGeo = new THREE.Mesh( new THREE.SphereGeometry( 500, 6, 6 ), backMat );
     scene.add( backGeo );
 
-    var material = new THREE.MeshBasicMaterial( { color: bgcolor } );
-    geometry = THREE.BufferGeometryUtils.fromGeometry( new THREE.PlaneGeometry( 400, 400, 1, 1 ) );
-    var mesh = new THREE.Mesh( geometry, material );
+    // ground
+    var mesh = new THREE.Mesh( new THREE.PlaneGeometry( 400, 400, 1, 1 ), new THREE.MeshBasicMaterial( { color: bgcolor } ) );
     mesh.castShadow = false;
     mesh.receiveShadow = true;
     mesh.rotation.x = -90 * ToRad;
