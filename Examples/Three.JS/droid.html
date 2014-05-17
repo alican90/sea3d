@@ -178,6 +178,7 @@ function loadSea3d(){
     loader.onComplete = function( e ) {
         var m = loader.meshes[0];
         var geoDroid = loader.meshes[0].geometry;
+        var matDroid = loader.meshes[0].material;
         // get animation name and loop
         animations = [[], []];
         var i = m.animations.length;
@@ -185,13 +186,6 @@ function loadSea3d(){
             animations[0][i] = m.animations[i].name;
             animations[1][i] = m.animations[i].loop;
         }
-        
-        var dTexture = THREE.ImageUtils.loadTexture( 'assets/texture/droid.jpg' );
-        dTexture.wrapS = dTexture.wrapT = THREE.RepeatWrapping;
-        dTexture.anisotropy = renderer.getMaxAnisotropy();
-        dTexture.repeat.set( 1,-1);
-
-        var matDroid = new THREE.MeshPhongMaterial({ ambient:bgcolor, specular:0x606060, shininess:160, map:dTexture, skinning:true, morphTargets:true, metal:true });
 
         var NumberModel = 5;
         var size = 0.05;
