@@ -247,7 +247,7 @@ package sunag.sea3d
 			mat.smooth = true;			
 			mat.mipmap = _config.mipmap;
 			mat.writeDepth = sea.depthMask;
-			mat.autoWriteDepth = false;
+			mat.autoWriteDepth = _config.autoWriteDepth;
 			
 			mat.bothSides = sea.doubleSided;
 			
@@ -258,9 +258,8 @@ package sunag.sea3d
 			{
 				ITranslucentMaterial(mat).alpha = sea.alpha;					
 			}
-									
-			if (sea.blendMode)
-				mat.blendMode = sea.blendMode;
+				
+			mat.blendMode = sea.blendMode;
 			
 			if (_config.lightPicker && sea.receiveLights)
 				mat.lightPicker = _config.lightPicker;

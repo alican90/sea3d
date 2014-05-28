@@ -38,6 +38,7 @@ package sunag.sea3d.config
 		private var _enabledShadow:Boolean = true;
 		private var _enabledFog:Boolean = true;
 		private var _mipmap:Boolean = true;		
+		private var _autoWriteDepth:Boolean = false;
 		private var _timeLimit:int = 16;		
 		private var _cameraNear:Number = 1;
 		private var _cameraFar:Number = 6000;
@@ -82,6 +83,16 @@ package sunag.sea3d.config
 		public function get normalDisplacement():Number
 		{
 			return _normalDisplacement;
+		}
+				
+		public function set autoWriteDepth(value:Boolean):void
+		{
+			_autoWriteDepth = value;
+		}
+		
+		public function get autoWriteDepth():Boolean
+		{
+			return _autoWriteDepth;
 		}
 		
 		public function set cameraNear(value:Number):void

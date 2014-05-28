@@ -19,6 +19,9 @@ package sunag.sea3d.config
 		function set normalDisplacement(value:Number):void;
 		function get normalDisplacement():Number;
 		
+		function set autoWriteDepth(value:Boolean):void;
+		function get autoWriteDepth():Boolean;
+		
 		function set cameraNear(value:Number):void;
 		function get cameraNear():Number;				
 		
