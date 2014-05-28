@@ -42,6 +42,7 @@ var sourceInfo = "<h3>DRAGON</h3><br>";
 var container, camera, scene, renderer, controls, clock;
 var fps = [0,0,0,0];
 var bgcolor = 0x444444;
+var dragonSkin;
 var meshs = [];
 var squel = [];
 var nloop = 0;
@@ -176,6 +177,7 @@ function loadSea3d(){
     var loader = new THREE.SEA3D( true );
     loader.onComplete = function( e ) {
         var m = loader.meshes[0];
+        dragonSkin = m.material;
         populate(m.geometry);
     }
     loader.load( 'assets/model/dragon.sea' );
@@ -189,13 +191,6 @@ function toogleSkeleton(value){
 }
 
 function populate(geometry){
-    var dTexture = THREE.ImageUtils.loadTexture( 'assets/texture/dragon.jpg' );
-    dTexture.wrapS = dTexture.wrapT = THREE.RepeatWrapping;
-    dTexture.anisotropy = renderer.getMaxAnisotropy();
-    dTexture.repeat.set( 1, -1 );
-    dTexture.offset.set( 1, 1 );
-
-    var mat = new THREE.MeshPhongMaterial({ ambient: 0x202020, map: dTexture, specular: 0x505050, shininess: 60, skinning: true });
     var i, rx, rz, m, w;
 
     var nnn, anim, rand, bone;
@@ -208,7 +203,7 @@ function populate(geometry){
         rx =  -100+(Math.random()*200);
         rz =  -100+(Math.random()*200);
 
-        m = new THREE.SkinnedMesh(geometry, mat, false );
+        m = new THREE.SkinnedMesh(geometry, dragonSkin, false );
         m.scale.set(0.1,0.1,-0.1);
 
         skeletonHelper = new THREE.SkeletonHelper( m );

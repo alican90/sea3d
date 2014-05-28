@@ -109,6 +109,7 @@ var bgcolor = 0x444444;
 var meshs = [];
 var deadMeshs = [];
 var deadanim = [];
+
 var planete;
 var planetegeo;
 var sourceInfo = "";
@@ -119,7 +120,8 @@ var sim;
 var People = 60;
 var PlaneteSize = 5;
 var PeopleSize = 0.01;
-var hname=[], wgeo=[], hgeo=[], pmat=[], panim=[];
+var hname=[], wgeo=[], hgeo=[], panim=[];
+var materials = [];
 var SimSetting = { people:30, max:250, worldScale:4 };
 var q0 = new THREE.Quaternion();
 var q1 = new THREE.Quaternion();
@@ -228,10 +230,9 @@ function init() {
     projector = new THREE.Projector();
 	raycaster = new THREE.Raycaster();
 
-    var light, materials;
     scene.add( new THREE.AmbientLight( bgcolor ) );
 
-    light = new THREE.DirectionalLight( 0xffffff, 1.3 );
+    var light = new THREE.DirectionalLight( 0xffffff, 1.3 );
     var d = 10;
 
     light.position.set( d, d, d );
@@ -266,6 +267,12 @@ function init() {
     planete = new THREE.Mesh( new THREE.SphereGeometry( PlaneteSize, 20, 20 ), new THREE.MeshBasicMaterial() );
     contentRay.add( planete );
     planete.visible=false;
+
+    var planeteMat = new THREE.MeshPhongMaterial( {  specular: 0x505050, shininess: 10, color:0x555555, metal:true} );
+    var pplanete= new THREE.Mesh( new THREE.SphereGeometry( 5,60,50), planeteMat );
+    pplanete.castShadow = true;
+    pplanete.receiveShadow = true;
+    content.add( pplanete );
 
     // MARKER
     var geometry = new THREE.CylinderGeometry( 0, 0.15, 0.5, 3 );
@@ -333,45 +340,19 @@ function loadSea3d(){
         while(i--){
             m = loader.meshes[i];
             switch(m.name){
-                case hname[0]: hgeo[0] = m.geometry; break;
-                case hname[1]: hgeo[1] = m.geometry; break;
-                case hname[2]: hgeo[2] = m.geometry; break;
-                case hname[3]: hgeo[3] = m.geometry; break;
-                case "weapon0": wgeo[0] = m.geometry; break;
+                case hname[0]: hgeo[0] = m.geometry; materials[0] = m.material; break;
+                case hname[1]: hgeo[1] = m.geometry; materials[1] = m.material;break;
+                case hname[2]: hgeo[2] = m.geometry; materials[2] = m.material;break;
+                case hname[3]: hgeo[3] = m.geometry; materials[3] = m.material;break;
+                case "weapon0": wgeo[0] = m.geometry; materials[4] = m.material;break;
                 case "weapon1": wgeo[1] = m.geometry; break;
-                case "planete": planetegeo = m.geometry; break;
             }
         }
-        initMaterial();
 
         // start war worker
         sendDataToWarWorker(document.location.href.replace(/\/[^/]*$/,"/") + "js/war.min.js");
     }
-    loader.load( 'assets/model/wargame.sea' );
-}
-
-function initMaterial(){
-	var planeteMat = new THREE.MeshPhongMaterial( {  specular: 0x505050, shininess: 10, color:0x555555, metal:true} );
-    var pplanete= new THREE.Mesh( planetegeo, planeteMat );
-    pplanete.scale.set(0.25,0.25,-0.25);
-    pplanete.castShadow = true;
-    pplanete.receiveShadow = true;
-    content.add( pplanete );
-
-	var avatarTexture = THREE.ImageUtils.loadTexture( 'assets/texture/game/avatar.jpg' );
-    avatarTexture.wrapS = avatarTexture.wrapT = THREE.RepeatWrapping;
-    avatarTexture.anisotropy = renderer.getMaxAnisotropy();
-    avatarTexture.repeat.set( 1, -1 );
-    var avatarTexture2 = THREE.ImageUtils.loadTexture( 'assets/texture/game/avatar3.jpg' );
-    avatarTexture2.wrapS = avatarTexture2.wrapT = THREE.RepeatWrapping;
-    avatarTexture2.anisotropy = renderer.getMaxAnisotropy();
-    avatarTexture2.repeat.set( 1, -1 );
-
-    pmat[0] = new THREE.MeshPhongMaterial({ map:avatarTexture, specular: 0x303030, shininess: 30, skinning: true });
-    pmat[1] = new THREE.MeshPhongMaterial({ map:avatarTexture, specular: 0x303030, shininess: 30, skinning: true });
-    pmat[2] = new THREE.MeshPhongMaterial({ map:avatarTexture2, specular: 0x303030, shininess: 30, skinning: true });
-    pmat[3] = new THREE.MeshPhongMaterial({ map:avatarTexture2, specular: 0x303030, shininess: 30, skinning: true });
-    pmat[4] = new THREE.MeshPhongMaterial({ specular:0x909090, shininess:30, color: 0x505030  });   
+    loader.load( 'assets/model/game.low.sea' );
 }
 
 //-----------------------------------
@@ -381,12 +362,12 @@ function initMaterial(){
 function addP(i, n) {
 	var mesh = new THREE.Object3D();
 	mesh.name = n;
-	var child = new THREE.SkinnedMesh( hgeo[n], pmat[n] );
+	var child = new THREE.SkinnedMesh( hgeo[n], materials[n] );
 	child.scale.set(PeopleSize,PeopleSize,-PeopleSize);
 
 	// add weapon
 	if(wgeo[n]){
-        w = new THREE.Mesh( wgeo[n], pmat[4], false );
+        w = new THREE.Mesh( wgeo[n], materials[4], false );
         bone = child.skeleton.bones[12];
         w.name = bone.name;
         w.matrix = bone.skinMatrix;
@@ -416,7 +397,7 @@ function removeP(i) {
 
     	// creat copy and play dead
     	var mesh = new THREE.Object3D();
-    	var child = new THREE.SkinnedMesh( hgeo[n], pmat[n] );
+    	var child = new THREE.SkinnedMesh( hgeo[n], materials[n] );
     	child.scale.set(PeopleSize,PeopleSize,-PeopleSize);
     	child.quaternion.copy(meshs[i].children[0].quaternion);
     	child.castShadow = true;
