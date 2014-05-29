@@ -1,3 +1,17 @@
+SEA3D Exporter - (C) Sunag Entertainment - http://www.sunag.com.br/
+
+1. Open 3dsMax
+2. Click in MaxScript -> Run Script...
+3. Select SEA3D.ms
+#Use the Setup.ms to install.
+
+SEA3D.ms (Exporter)
+SEA3DAnimation.ms (Animation Editor)
+SEA3DMaterial.ms (Material Editor)
+Setup.ms (Installer)
+
+-- License -----------------------------------------------------------
+
 The MIT License (MIT)
 
 Copyright (c) Sunag Entertainment - http://www.sunag.com.br/

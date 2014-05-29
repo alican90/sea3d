@@ -1829,7 +1829,7 @@ fn rotateMatrix t offset =
 	return r	
 )
 
-fn getInstanceIndex n returnnode: positivescale: =
+fn getInstanceIndex n returnnode: =
 (
 	InstanceMgr.GetInstances n &instances	
 		
@@ -1843,17 +1843,6 @@ fn getInstanceIndex n returnnode: positivescale: =
 			
 			if obj == inst do
 			(
-				if positivescale == true then
-				(
-					local objS = obj.scale.x < 0 or obj.scale.y < 0 or obj.scale.z < 0	
-					local instS = inst.scale.x < 0 or inst.scale.y < 0 or inst.scale.z < 0	
-					
-					if objS != instS do
-					(
-						exit
-					)
-				)
-				
 				if obj.modifiers.count == inst.modifiers.count then
 				(
 					local validInst = true
@@ -1863,8 +1852,15 @@ fn getInstanceIndex n returnnode: positivescale: =
 						if obj.modifiers[m] != inst.modifiers[m] then
 						(
 							validInst = false
-							exit
 						)
+					)
+					
+					if validInst and seaconfig_positive_scale then
+					(
+						local objS = obj.scale.x < 0 or obj.scale.y < 0 or obj.scale.z < 0	
+						local instS = inst.scale.x < 0 or inst.scale.y < 0 or inst.scale.z < 0	
+						
+						validInst = objS != instS
 					)
 					
 					if validInst then 
@@ -2081,7 +2077,7 @@ fn getDepth obj =
 	)
 	
 	InstanceMgr.GetInstances obj &instances		
-			
+	
 	if instances.count > 1 then
 	(
 		local skinAt = 0
@@ -3015,6 +3011,19 @@ function writeScale data obj useparent: p: t:t =
 	write3D data trans.scale
 )
 
+function positiveMatrixScale &t =
+(
+	local x = t.scale.x,
+			y = t.scale.y,
+			z = t.scale.z
+		
+	if x < 0 do x = -x
+	if y < 0 do y = -y
+	if z < 0 do z = -z
+		
+	t.scale = [x, y, z]
+)
+
 function writeMatrix3x4 data t =
 (
 	local r = t.row1
@@ -3061,6 +3070,9 @@ function writeMatrix data obj useparent: p: position: offset: ignoreRotation: =
 	(
 		t.position = position
 	)
+	
+	if seaconfig_positive_scale do 
+		positiveMatrixScale &t
 	
 	writeMatrix3x4 data t
 )
@@ -3601,20 +3613,21 @@ fn compileStandardMaterial mat =
 		)
 	)
 	
-	if (seaconfig_texture and mat.opacityMapEnable and mat.opacityMap  != undefined) then
-	(
-		local tex = appendTexture mat.opacityMap mat.name "Opacity Map" false
-		
-		if tex != undefined then
-		(
-			append sea.maps tex
-			
-			append tech #(		
-				MAT_OPACITY_MAP,			
-				#(tex.type(),tex)
-			)
-		)
-	)
+--
+--	if (seaconfig_texture and mat.opacityMapEnable and mat.opacityMap != undefined) then
+--	(
+--		local tex = appendTexture mat.opacityMap mat.name "Opacity Map" false
+--		
+--		if tex != undefined then
+--		(
+--			append sea.maps tex
+--			
+--			append tech #(		
+--				MAT_OPACITY_MAP,			
+--				#(tex.type(),tex)
+--			)
+--		)
+--	)
 			
 	return sea
 )
@@ -3855,7 +3868,7 @@ fn compileObject n =
 			local instanceIndex = undefined
 			
 			if seaconfig_instances and seaconfig_snapshot == false then 				
-				instanceIndex = getInstanceIndex n positivescale:seaconfig_positive_scale
+				instanceIndex = getInstanceIndex n
 			else
 				instanceIndex = 0
 			
@@ -6173,6 +6186,9 @@ function getRTTAsset sea type =
 	(
 		local t = obj.transform
 		t.position = obj.center
+		
+		if seaconfig_positive_scale do 
+			positiveMatrixScale &t
 		
 		writeMatrix3x4 data t
 	)
