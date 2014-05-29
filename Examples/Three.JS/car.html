@@ -11,7 +11,7 @@ body { background:#444; font:14px sans-serif; width:100%; height:100%;}
 #threeCanvas{ position:absolute; top:0; left:0px; display:block;}
 #canvas{ position:absolute; top:10px; left:10px; display:none;}
 #top{ position:absolute; top:10px; left:10px;width:300px; height:150px; pointer-events:auto;}
-#debug{ position:absolute; top:10px; left:300px; }
+#debug{ position:absolute; top:10px; right:10px; text-align:right; pointer-events:none;}
 #logo{ pointer-events:none; position:absolute; left:0; bottom:0; width:300px; height:150px; }
 select { display: inline-block; padding: 4px 3px 5px 5px; width: 70px; outline: none; color: #74646e; border: 1px solid #C8BFC4; border-radius: 4px; box-shadow: inset 1px 1px 2px #ddd8dc; background-color: #fff;}
 </style>
@@ -119,10 +119,10 @@ function init(){
     document.getElementById('canvas')
     var groundtexture = new THREE.Texture(canvas);
     groundtexture.needsUpdate = true;
-    ground = new THREE.Mesh( new THREE.PlaneGeometry( 43, 43, 4, 4 ), new THREE.MeshBasicMaterial( { map: groundtexture, transparent: true, blending:THREE[ "MultiplyBlending" ], depthWrite: false  } ) );
+    ground = new THREE.Mesh( new THREE.PlaneGeometry( 43, 43, 4, 4 ), new THREE.MeshBasicMaterial( { map: groundtexture, transparent: true, blending:THREE[ "MultiplyBlending" ]}));
+    ground.geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-90*ToRad));
     ground.castShadow = false;
     ground.receiveShadow = true;
-    ground.rotation.x = -90 * ToRad;
     ground.position.y = -17*worldSize;
     scene.add( ground );
     
@@ -197,7 +197,6 @@ function loadSea3d(){
 
         isFullLoaded = true;
     }
-    loader.parser = THREE.SEA3D.DEFAULT;
     loader.load( seaModel );
 }
 
