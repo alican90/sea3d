@@ -28,13 +28,13 @@ SEA3D Studio 1.1 Viva!
 --
 Free cross-platform 3D IDE for games.
 
+[![SEA3D Studio](http://img.youtube.com/vi/lQ-VIni5Q68/0.jpg)](http://www.youtube.com/watch?v=lQ-VIni5Q68)
+
 **Join now** http://sea3d.poonya.com/studio/
 
 **Debugger - GP** http://sea3d.poonya.com/debugger/
 
 **Debugger - Player** http://sea3d.poonya.com/debugger-player/
-
-**YouTube** https://www.youtube.com/watch?v=lQ-VIni5Q68
 
 **SDK Framework** https://github.com/sunag/sea3d_studio_sdk
 
@@ -73,7 +73,7 @@ SEA3D Exporter 1.6.5.10
 --
 Easy and wide range of 3d features, export entire scenes to SEA3D with just few clicks.
 
-**Video** https://www.youtube.com/watch?v=dTCztYwwEdE
+[![SEA3D Exporter](http://img.youtube.com/vi/dTCztYwwEdE/0.jpg)](http://www.youtube.com/watch?v=dTCztYwwEdE)
 
 SEA3D Developers
 --
@@ -88,7 +88,7 @@ SEA3D Lip Sync
 --
 Runtime speech recognition and lip sync using MFCCs by Sunag Technology. **(soon)**
 
-**Video** https://www.youtube.com/watch?v=rfuGqHR2MK8
+[![SEA3D Lip Sync](http://img.youtube.com/vi/rfuGqHR2MK8/0.jpg)](http://www.youtube.com/watch?v=rfuGqHR2MK8)
 
 SEA3D Social Pages
 --
