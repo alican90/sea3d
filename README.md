@@ -34,7 +34,7 @@ Free cross-platform 3D IDE for games.
 
 **Debugger - Player** http://sea3d.poonya.com/debugger-player/
 
-**Video** https://www.youtube.com/watch?v=lQ-VIni5Q68
+**YouTube** https://www.youtube.com/watch?v=lQ-VIni5Q68
 
 **SDK Framework** https://github.com/sunag/sea3d_studio_sdk
 
