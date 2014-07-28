@@ -36,6 +36,8 @@ Free cross-platform 3D IDE for games.
 
 **Video** https://www.youtube.com/watch?v=lQ-VIni5Q68
 
+**SDK Framework** https://github.com/sunag/sea3d_studio_sdk
+
 SEA3D GP 1.0
 --
 SEA3D GP or SEA3D Game Player is an improvement from SEA3D Player with support for **Poonya Script** compiled by SEA3D Studio. Here you find several libraries to facilitate the game development all integrated with SEA3D Studio.
