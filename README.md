@@ -21,7 +21,6 @@ An open-source cross-platform file format for games.
 * Automatic Bake
 * Cube Mapping and ATF Textures
 * Deflate and Lzma Compression
-* Transparent Materials
 * Binary format
 
 SEA3D Studio 1.1 Viva!
