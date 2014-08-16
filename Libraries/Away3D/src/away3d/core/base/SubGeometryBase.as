@@ -1,22 +1,21 @@
 package away3d.core.base
 {
-	import away3d.arcane;
-	import away3d.core.base.ISubGeometry;
-	import away3d.core.managers.Stage3DProxy;
-	import away3d.errors.AbstractMethodError;
-	
 	import flash.display3D.Context3D;
 	import flash.display3D.IndexBuffer3D;
 	import flash.display3D.VertexBuffer3D;
 	import flash.geom.Matrix3D;
 	import flash.geom.Vector3D;
 	
+	import away3d.arcane;
+	import away3d.core.managers.Stage3DProxy;
+	import away3d.errors.AbstractMethodError;
+	
 	use namespace  arcane;
 	
 	public class SubGeometryBase
 	{
 		private var _parentGeometry:Geometry;
-		protected var _vertexData:Vector.<Number>;
+		protected var _vertexData:Vector.<Number>;		
 		
 		protected var _faceNormalsDirty:Boolean = true;
 		protected var _faceTangentsDirty:Boolean = true;

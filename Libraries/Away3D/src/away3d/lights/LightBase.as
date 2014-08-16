@@ -1,16 +1,16 @@
 package away3d.lights
 {
-	import away3d.arcane;
-	import away3d.core.base.IRenderable;
-	import away3d.core.partition.EntityNode;
-	import away3d.core.partition.LightNode;
-	import away3d.entities.Entity;
-	import away3d.errors.AbstractMethodError;
-	import away3d.events.LightEvent;
-	import away3d.library.assets.AssetType;
-	import away3d.lights.shadowmaps.ShadowMapperBase;
+	import away3d.*;
+	import away3d.cameras.*;
+	import away3d.core.base.*;
+	import away3d.core.partition.*;
+	import away3d.entities.*;
+	import away3d.errors.*;
+	import away3d.events.*;
+	import away3d.library.assets.*;
+	import away3d.lights.shadowmaps.*;
 	
-	import flash.geom.Matrix3D;
+	import flash.geom.*;
 	
 	use namespace arcane;
 	
@@ -91,8 +91,8 @@ package away3d.lights
 		
 		public function set specular(value:Number):void
 		{
-			if (value < 0)
-				value = 0;
+			/*if (value < 0)
+				value = 0;*/
 			_specular = value;
 			updateSpecular();
 		}
@@ -107,8 +107,8 @@ package away3d.lights
 		
 		public function set diffuse(value:Number):void
 		{
-			if (value < 0)
-				value = 0;
+			/*if (value < 0)
+				value = 0;*/
 			//else if (value > 1) value = 1;
 			_diffuse = value;
 			updateDiffuse();
@@ -142,10 +142,10 @@ package away3d.lights
 		
 		public function set ambient(value:Number):void
 		{
-			if (value < 0)
+			/*if (value < 0)
 				value = 0;
 			else if (value > 1)
-				value = 1;
+				value = 1;*/
 			_ambient = value;
 			updateAmbient();
 		}
@@ -178,7 +178,7 @@ package away3d.lights
 		 * @param target An optional target Matrix3D object. If not provided, an instance will be created.
 		 * @return A Matrix3D object containing the projection transformation.
 		 */
-		arcane function getObjectProjectionMatrix(renderable:IRenderable, target:Matrix3D = null):Matrix3D
+		arcane function getObjectProjectionMatrix(renderable:IRenderable, camera:Camera3D, target:Matrix3D = null):Matrix3D
 		{
 			throw new AbstractMethodError();
 		}
@@ -227,10 +227,9 @@ package away3d.lights
 		public function set shadowMapper(value:ShadowMapperBase):void
 		{
 			_shadowMapper = value;
-			if (_shadowMapper)
-			{
+			
+			if (_shadowMapper) 
 				_shadowMapper.light = this;
-			}
 		}
 	}
 }

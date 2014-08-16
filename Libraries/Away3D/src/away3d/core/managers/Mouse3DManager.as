@@ -299,7 +299,7 @@ package away3d.core.managers
 		
 		private function onMouseOver(event:MouseEvent):void
 		{
-			_activeView = (event.currentTarget as View3D);
+			_activeView = (event.currentTarget as View3D);			
 			if (_collidingObject && _previousCollidingObject != _collidingObject)
 				queueDispatch(_mouseOver, event, _collidingObject);
 			else
@@ -351,8 +351,8 @@ package away3d.core.managers
 		{
 			if (_collidingObject)
 				queueDispatch(_mouseWheel, event);
-			else
-				reThrowEvent(event);
+			else						
+				reThrowEvent(event);			
 			_updateDirty = true;
 		}
 		

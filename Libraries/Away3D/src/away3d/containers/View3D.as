@@ -403,7 +403,7 @@
 				return;
 			
 			if (_camera)
-			{
+			{				
 				_camera.removeEventListener(CameraEvent.LENS_CHANGED, onLensChanged);
 			}
 			
@@ -413,13 +413,11 @@
 			{				
 				entityCollector.camera = _camera;
 				_camera.addEventListener(CameraEvent.LENS_CHANGED, onLensChanged);
+				
+				if (_scene)				
+					_camera.partition = _scene.partition;				
 			}
-			
-			if (_scene)
-			{
-				_camera.partition = _scene.partition;
-			}
-			
+				
 			_scissorRectDirty = true;
 			_viewportDirty = true;
 			
@@ -455,10 +453,10 @@
 			{
 				_scene.addView3D(this);
 				_scene.addEventListener(Scene3DEvent.PARTITION_CHANGED, onScenePartitionChanged);
-			}
-			
-			if (_camera)
-				_camera.partition = _scene.partition;
+				
+				if (_camera)
+					_camera.partition = _scene.partition;
+			}		
 			
 			if (hasEventListener(View3DEvent.CHANGE_SCENE))
 				dispatchEvent(new View3DEvent(View3DEvent.CHANGE_SCENE, this));
@@ -836,6 +834,7 @@
 		{
 			_stage3DProxy.removeEventListener(Stage3DEvent.VIEWPORT_UPDATED, onViewportUpdated);
 			_stage3DProxy.removeEventListener(Stage3DEvent.CONTEXT3D_RECREATED, onContext3DRecreated);
+			
 			if (!shareContext)
 				_stage3DProxy.dispose();
 			_renderer.dispose();
@@ -851,6 +850,10 @@
 			
 			_touch3DManager.disableTouchListeners(this);
 			_touch3DManager.dispose();
+						
+			background = null;			
+			scene = null;		
+			camera = null;
 			
 			_rttBufferManager = null;
 			_depthRender = null;

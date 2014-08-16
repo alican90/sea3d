@@ -6,7 +6,7 @@ package away3d.core.base
 	import flash.geom.Matrix3D;
 	
 	import away3d.arcane;
-	import away3d.core.managers.Stage3DProxy;
+	import away3d.core.managers.Stage3DProxy;	
 	
 	use namespace arcane;
 	
@@ -14,12 +14,16 @@ package away3d.core.base
 	{
 		protected var _vertexDataInvalid:Vector.<Boolean> = new Vector.<Boolean>(8, true);
 		protected var _vertexBuffer:Vector.<VertexBuffer3D> = new Vector.<VertexBuffer3D>(8);
+		protected var _vertexColorInvalid:Vector.<Boolean> = new Vector.<Boolean>(8, true);
+		protected var _vertexColorBuffer:Vector.<VertexBuffer3D> = new Vector.<VertexBuffer3D>(8);
 		protected var _bufferContext:Vector.<Context3D> = new Vector.<Context3D>(8);
+		protected var _bufferColorContext:Vector.<Context3D> = new Vector.<Context3D>(8);
 		protected var _numVertices:uint;
 		protected var _contextIndex:int;
 		protected var _activeBuffer:VertexBuffer3D;
 		protected var _activeContext:Context3D;
 		protected var _activeDataInvalid:Boolean;
+		protected var _vertexColor:Vector.<Number>;
 		private var _isolatedVertexPositionData:Vector.<Number>;
 		private var _isolatedVertexPositionDataDirty:Boolean;
 		
@@ -67,6 +71,12 @@ package away3d.core.base
 			invalidateBounds();
 		}
 		
+		public function updateVertexColorData(data:Vector.<Number>):void
+		{
+			_vertexColor = data;
+			invalidateBuffers(_vertexColorInvalid);
+		}
+		
 		public function activateVertexBuffer(index:int, stage3DProxy:Stage3DProxy):void
 		{
 			var contextIndex:int = stage3DProxy._stage3DIndex;
@@ -81,6 +91,26 @@ package away3d.core.base
 				uploadData(contextIndex);
 			
 			context.setVertexBufferAt(index, _activeBuffer, 0, Context3DVertexBufferFormat.FLOAT_3);
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function activateVertexColorBuffer(index:int, stage3DProxy:Stage3DProxy):void
+		{
+			var contextIndex:int = stage3DProxy._stage3DIndex;
+			var context:Context3D = stage3DProxy._context3D;
+			if (!_vertexColorBuffer[contextIndex] || _bufferColorContext[contextIndex] != context) {
+				_vertexColorBuffer[contextIndex] = context.createVertexBuffer(_numVertices, 4);
+				_bufferColorContext[contextIndex] = context;
+				_vertexColorInvalid[contextIndex] = true;
+			}
+			if (_vertexColorInvalid[contextIndex]) {
+				_vertexColorBuffer[contextIndex].uploadFromVector(_vertexColor ||= new Vector.<Number>(_numVertices * 4), 0, _numVertices);
+				_vertexColorInvalid[contextIndex] = false;
+			}
+			
+			context.setVertexBufferAt(index, _vertexColorBuffer[contextIndex], 0, Context3DVertexBufferFormat.FLOAT_4);
 		}
 		
 		public function activateUVBuffer(index:int, stage3DProxy:Stage3DProxy):void
@@ -304,7 +334,9 @@ package away3d.core.base
 		{
 			super.dispose();
 			disposeVertexBuffers(_vertexBuffer);
+			disposeVertexBuffers(_vertexColorBuffer);
 			_vertexBuffer = null;
+			_vertexColorBuffer = null;
 		}
 		
 		override protected function disposeVertexBuffers(buffers:Vector.<VertexBuffer3D>):void
@@ -332,6 +364,7 @@ package away3d.core.base
 			clone.updateUVData(stripBuffer(9, 2));
 			clone.updateSecondaryUVData(stripBuffer(11, 2));
 			clone.updateIndexData(indexData.concat());
+			clone.updateVertexColorData(_vertexColor);
 			return clone;
 		}
 		

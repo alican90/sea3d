@@ -45,6 +45,7 @@ package away3d.materials.compilation
 		protected var _uvBufferIndex:int = -1;
 		protected var _uvTransformIndex:int = -1;
 		protected var _secondaryUVBufferIndex:int = -1;
+		protected var _vertexColorBufferIndex:int = -1;
 		protected var _normalBufferIndex:int = -1;
 		protected var _tangentBufferIndex:int = -1;
 		protected var _lightFragmentConstantIndex:int = -1;
@@ -278,6 +279,8 @@ package away3d.materials.compilation
 				compileUVCode();
 			if (_dependencyCounter.secondaryUVDependencies > 0)
 				compileSecondaryUVCode();
+			if (_dependencyCounter.vertexColorDependencies > 0)
+				compileVertexColorCode();
 			if (_dependencyCounter.normalDependencies > 0)
 				compileNormalCode();
 			if (_dependencyCounter.viewDirDependencies > 0)
@@ -353,6 +356,18 @@ package away3d.materials.compilation
 			_vertexCode += "mov " + _sharedRegisters.secondaryUVVarying + ", " + uvAttributeReg + "\n";
 		}
 
+		/**
+		 * Provide the vertex colors.
+		 */
+		private function compileVertexColorCode():void
+		{
+			var vcAttributeReg:ShaderRegisterElement = _registerCache.getFreeVertexAttribute();
+			_vertexColorBufferIndex = vcAttributeReg.index;
+			_sharedRegisters.vertexColorFragment = vcAttributeReg;
+			_sharedRegisters.vertexColorVarying = _registerCache.getFreeVarying();
+			_vertexCode += "mov " + _sharedRegisters.vertexColorVarying + ", " + vcAttributeReg + "\n";
+		}
+		
 		/**
 		 * Compile the world-space position.
 		 */
@@ -708,6 +723,14 @@ package away3d.materials.compilation
 			return _secondaryUVBufferIndex;
 		}
 
+		/**
+		 * The index for the vertex colors attribute stream.
+		 */
+		public function get vertexColorBufferIndex():int
+		{
+			return _vertexColorBufferIndex;
+		}
+		
 		/**
 		 * The index for the vertex normal attribute stream.
 		 */

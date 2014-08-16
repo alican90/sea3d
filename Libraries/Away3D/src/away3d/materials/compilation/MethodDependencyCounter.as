@@ -15,6 +15,7 @@ package away3d.materials.compilation
 	{
 		private var _projectionDependencies:uint;
 		private var _normalDependencies:uint;
+		private var _vertexColorDependencies:uint;
 		private var _viewDirDependencies:uint;
 		private var _uvDependencies:uint;
 		private var _secondaryUVDependencies:uint;
@@ -37,12 +38,13 @@ package away3d.materials.compilation
 		public function reset():void
 		{
 			_projectionDependencies = 0;
-			_normalDependencies = 0;
+			_normalDependencies = 0;			
 			_viewDirDependencies = 0;
 			_uvDependencies = 0;
 			_secondaryUVDependencies = 0;
 			_globalPosDependencies = 0;
 			_tangentDependencies = 0;
+			_vertexColorDependencies = 0;
 			_usesGlobalPosFragment = false;
 		}
 
@@ -76,13 +78,15 @@ package away3d.materials.compilation
 			if (methodVO.needsNormals)
 				++_normalDependencies;
 			if (methodVO.needsTangents)
-				++_tangentDependencies;
+				++_tangentDependencies;			
 			if (methodVO.needsView)
 				++_viewDirDependencies;
 			if (methodVO.needsUV)
 				++_uvDependencies;
 			if (methodVO.needsSecondaryUV)
 				++_secondaryUVDependencies;
+			if (methodVO.needsVertexColor)
+				++_vertexColorDependencies;
 		}
 
 		/**
@@ -116,7 +120,7 @@ package away3d.materials.compilation
 		{
 			return _normalDependencies;
 		}
-
+		
 		/**
 		 * The amount of dependencies on the view direction.
 		 */
@@ -139,6 +143,14 @@ package away3d.materials.compilation
 		public function get secondaryUVDependencies():uint
 		{
 			return _secondaryUVDependencies;
+		}
+		
+		/**
+		 * The amount of dependencies on the vertex colors.
+		 */
+		public function get vertexColorDependencies():uint
+		{
+			return _vertexColorDependencies;
 		}
 
 		/**

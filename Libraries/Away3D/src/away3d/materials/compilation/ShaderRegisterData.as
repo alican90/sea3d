@@ -10,6 +10,7 @@ package away3d.materials.compilation
 		public var bitangentVarying:ShaderRegisterElement;
 		public var uvVarying:ShaderRegisterElement;
 		public var secondaryUVVarying:ShaderRegisterElement;
+		public var vertexColorVarying:ShaderRegisterElement;
 		public var viewDirVarying:ShaderRegisterElement;
 		public var shadedTarget:ShaderRegisterElement;
 		public var globalPositionVertex:ShaderRegisterElement;
@@ -22,6 +23,7 @@ package away3d.materials.compilation
 		public var commons:ShaderRegisterElement;
 		public var projectionFragment:ShaderRegisterElement;
 		public var normalFragment:ShaderRegisterElement;
+		public var vertexColorFragment:ShaderRegisterElement;
 		public var viewDirFragment:ShaderRegisterElement;
 		public var bitangent:ShaderRegisterElement;
 		

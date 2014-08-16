@@ -44,7 +44,7 @@ package away3d.materials.passes
 			_polyOffset = new <Number>[polyOffset, 0, 0, 0];
 			_enc = Vector.<Number>([    1.0, 255.0, 65025.0, 16581375.0,
 				1.0/255.0, 1.0/255.0, 1.0/255.0, 0.0
-				]);
+			]);
 			
 			_animatableAttributes = Vector.<String>(["va0", "va1"]);
 			_animationTargetRegisters = Vector.<String>(["vt0", "vt1"]);
@@ -65,7 +65,7 @@ package away3d.materials.passes
 				_textures = null;
 			}
 		}
-
+		
 		/**
 		 * Updates the projection textures used to contain the depth renders.
 		 */
@@ -121,7 +121,7 @@ package away3d.materials.passes
 			
 			return code;
 		}
-
+		
 		/**
 		 * Gets the depth maps rendered for this object from all lights.
 		 * @param renderable The renderable for which to retrieve the depth maps.
@@ -164,7 +164,7 @@ package away3d.materials.passes
 			// local position = enough
 			light = lights[0];
 			
-			matrix = light.getObjectProjectionMatrix(renderable, _projections[renderable]);
+			matrix = light.getObjectProjectionMatrix(renderable, camera, _projections[renderable]);
 			
 			// todo: use texture proxy?
 			var target:Texture = _textures[contextIndex][renderable] ||= context.createTexture(_textureSize, _textureSize, Context3DTextureFormat.BGRA, true);

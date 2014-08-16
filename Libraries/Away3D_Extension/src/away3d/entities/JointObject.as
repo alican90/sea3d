@@ -56,12 +56,9 @@ package away3d.entities
 		
 		public function set target(target:Mesh):void
 		{
-			if (target)
-			{
-				_mesh = target;
-				_animationState = _mesh.animator as SkeletonAnimator;
-				this.jointIndex = _index;
-			}
+			_mesh = target;
+			_animationState = _mesh ? _mesh.animator as SkeletonAnimator : null;
+			this.jointIndex = _index;
 		}
 		
 		public function get target():Mesh

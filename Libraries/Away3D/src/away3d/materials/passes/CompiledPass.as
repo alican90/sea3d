@@ -48,6 +48,7 @@ package away3d.materials.passes
 		protected var _probeWeightsIndex:int;
 		protected var _uvBufferIndex:int;
 		protected var _secondaryUVBufferIndex:int;
+		protected var _vertexColorBufferIndex:int;
 		protected var _normalBufferIndex:int;
 		protected var _tangentBufferIndex:int;
 		protected var _sceneMatrixIndex:int;
@@ -258,6 +259,7 @@ package away3d.materials.passes
 			_uvBufferIndex = _compiler.uvBufferIndex;
 			_uvTransformIndex = _compiler.uvTransformIndex;
 			_secondaryUVBufferIndex = _compiler.secondaryUVBufferIndex;
+			_vertexColorBufferIndex = _compiler.vertexColorBufferIndex;
 			_normalBufferIndex = _compiler.normalBufferIndex;
 			_tangentBufferIndex = _compiler.tangentBufferIndex;
 			_lightFragmentConstantIndex = _compiler.lightFragmentConstantIndex;
@@ -596,6 +598,8 @@ package away3d.materials.passes
 				renderable.activateUVBuffer(_uvBufferIndex, stage3DProxy);
 			if (_secondaryUVBufferIndex >= 0)
 				renderable.activateSecondaryUVBuffer(_secondaryUVBufferIndex, stage3DProxy);
+			if (_vertexColorBufferIndex >= 0)
+				renderable.activateVertexColorBuffer(_vertexColorBufferIndex, stage3DProxy);
 			if (_normalBufferIndex >= 0)
 				renderable.activateVertexNormalBuffer(_normalBufferIndex, stage3DProxy);
 			if (_tangentBufferIndex >= 0)

@@ -120,7 +120,7 @@ package away3d.core.pick
 						pickingCollisionVO.rayEntryDistance = t;
 						pickingCollisionVO.localPosition = new Vector3D(cx, cy, cz);
 						pickingCollisionVO.localNormal = new Vector3D(nx, ny, nz);
-						pickingCollisionVO.uv = getCollisionUV(indexData, uvData, index, v, w, u, uvOffset, uvStride);
+						if (uvData) pickingCollisionVO.uv = getCollisionUV(indexData, uvData, index, v, w, u, uvOffset, uvStride);
 						pickingCollisionVO.index = index;
 						pickingCollisionVO.subGeometryIndex = getMeshSubMeshIndex(subMesh);
 						

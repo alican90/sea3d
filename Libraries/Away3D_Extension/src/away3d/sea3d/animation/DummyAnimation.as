@@ -36,7 +36,7 @@ package away3d.sea3d.animation
 	{
 		protected var _dummy:ObjectContainer3D;
 		
-		public function DummyAnimation(animationSet:AnimationSet, dummy:ObjectContainer3D)
+		public function DummyAnimation(dummy:ObjectContainer3D, animationSet:AnimationSet)
 		{			
 			super(_dummy = dummy, animationSet);				
 		}

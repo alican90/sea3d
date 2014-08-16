@@ -11,30 +11,30 @@ package away3d.lights
 		public var lightFill:PointLight;
 		public var lightBack:PointLight;
 		
-		public function ThreePointLight(a:Number=1.3, b:Number=1, c:Number=.7)
+		public function ThreePointLight(a:Number=1, b:Number=.3, c:Number=.5)
 		{
 			lightKey = new PointLight();
-			lightKey.position = new Vector3D(0,1000000,-1000000);
-			lightKey.color = 0xC7CDC0;			
+			lightKey.position = new Vector3D(1000000000,1000000000,-1000000000);
+			lightKey.color = 0xFFFFFF; // 0xC7CDC0		
 			lightKey.ambient = 0;
 			lightKey.ambientColor = 0;
-			lightKey.fallOff = lightKey.radius = Number.MAX_VALUE;
+			lightKey.fallOff = lightKey.radius = 0xFFFFFFFF;
 			addChild(lightKey);
 			
 			lightFill = new PointLight();
-			lightFill.position = new Vector3D(1000000,1000000,1000000);			
+			lightFill.position = new Vector3D(-1000000000,1000000000,-1000000000);			
 			lightFill.color = 0xFFFFFF;	// 0x7E753F		
 			lightFill.ambient = 1;
 			lightFill.ambientColor = 0xFFFFFF;
-			lightFill.fallOff = lightFill.radius = Number.MAX_VALUE;
+			lightFill.fallOff = lightFill.radius = 0xFFFFFFFF;
 			addChild(lightFill);
 			
 			lightBack = new PointLight();
-			lightBack.position = new Vector3D(-1000000,-1000000,0);
-			lightBack.color = 0xDF965B;			
+			lightBack.position = new Vector3D(1000000000,-1000000000,1000000000);
+			lightBack.color = 0xFFFFFF; // 0xDF965B	
 			lightBack.ambient = 0;
 			lightBack.ambientColor = 0;
-			lightBack.fallOff = lightBack.radius = Number.MAX_VALUE;
+			lightBack.fallOff = lightBack.radius = 0xFFFFFFFF;
 			addChild(lightBack);
 			
 			this.a = a;

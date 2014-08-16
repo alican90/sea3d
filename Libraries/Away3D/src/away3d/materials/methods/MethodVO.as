@@ -25,9 +25,10 @@ package away3d.materials.methods
 		public var needsProjection:Boolean;
 		public var needsView:Boolean;
 		public var needsNormals:Boolean;
-		public var needsTangents:Boolean;
+		public var needsTangents:Boolean;		
 		public var needsUV:Boolean;
 		public var needsSecondaryUV:Boolean;
+		public var needsVertexColor:Boolean;
 		public var needsGlobalVertexPos:Boolean;
 		public var needsGlobalFragmentPos:Boolean;
 		
@@ -61,6 +62,7 @@ package away3d.materials.methods
 			needsTangents = false;
 			needsUV = false;
 			needsSecondaryUV = false;
+			needsVertexColor = false;
 			needsGlobalVertexPos = false;
 			needsGlobalFragmentPos = false;
 			

@@ -425,7 +425,7 @@
 		{
 			_alphaBlending = value;
 			_screenPass.setBlendMode(blendMode == BlendMode.NORMAL && requiresBlending? BlendMode.LAYER : blendMode);
-			_screenPass.preserveAlpha = requiresBlending;
+			_screenPass.preserveAlpha = false;//requiresBlending;
 		}
 		
 		/**

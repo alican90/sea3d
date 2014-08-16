@@ -93,6 +93,10 @@ package away3d.primitives
 		{
 		}
 		
+		public function activateVertexColorBuffer(index:int, stage3DProxy:Stage3DProxy):void
+		{
+		}
+		
 		/**
 		 * @inheritDoc
 		 */

@@ -40,7 +40,7 @@ package away3d.materials
 			else if (value < 0)
 				value = 0;
 			_screenPass.diffuseMethod.diffuseAlpha = _diffuseAlpha = value;
-			_screenPass.preserveAlpha = requiresBlending;
+			_screenPass.preserveAlpha = false;//requiresBlending;
 			_screenPass.setBlendMode(blendMode == BlendMode.NORMAL && requiresBlending? BlendMode.LAYER : blendMode);
 		}
 		

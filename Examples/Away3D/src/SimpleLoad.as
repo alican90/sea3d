@@ -53,7 +53,6 @@ package
 			 * */			
 			
 			var config:DefaultConfig = new DefaultConfig();
-			config.forceMorphCPU = true; //BUG IN BETA VERSION USING MORPH GPU
 			config.player = player;
 			
 			/**

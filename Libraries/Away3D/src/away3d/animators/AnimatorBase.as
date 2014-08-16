@@ -74,6 +74,11 @@ package away3d.animators
 			return getAnimationState(_animationSet.getAnimation(name));
 		}
 		
+		public function get isPlaying():Boolean
+		{
+			return _isPlaying;
+		}
+		
 		/**
 		 * Returns the internal absolute time of the animator, calculated by the current time and the playback speed.
 		 *

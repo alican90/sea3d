@@ -54,14 +54,14 @@
 		
 		public function set alpha(value:Number):void
 		{
-			if (value > 1)
+			/*if (value > 1)
 				value = 1;
 			else if (value < 0)
-				value = 0;
+				value = 0;*/
 			
 			colorTransform ||= new ColorTransform();
 			colorTransform.alphaMultiplier = value;
-			_screenPass.preserveAlpha = requiresBlending;
+			_screenPass.preserveAlpha = false;//requiresBlending;
 			_screenPass.setBlendMode(blendMode == BlendMode.NORMAL && requiresBlending? BlendMode.LAYER : blendMode);
 		}
 		

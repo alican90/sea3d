@@ -157,7 +157,7 @@ package away3d.animators.states
 			}
 			if (changed)
 				animationSubGeometry.invalidateBuffer();
-		
+			
 		}
 		
 		private function precessRotation(currentTime:Number, deltaTime:Number, animationSubGeometry:AnimationSubGeometry):void
@@ -201,7 +201,7 @@ package away3d.animators.states
 			}
 			if (changed)
 				animationSubGeometry.invalidateBuffer();
-		
+			
 		}
 		
 		private function processPositionAndRotation(currentTime:Number, deltaTime:Number, animationSubGeometry:AnimationSubGeometry):void
@@ -258,7 +258,7 @@ package away3d.animators.states
 			if (changed)
 				animationSubGeometry.invalidateBuffer();
 		}
-	
+		
 	}
-
+	
 }

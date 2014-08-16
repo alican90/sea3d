@@ -37,7 +37,7 @@ package away3d.sea3d.animation
 	{
 		protected var _camera:Camera3D;
 		
-		public function CameraAnimation(animationSet:AnimationSet, camera:Camera3D)
+		public function CameraAnimation(camera:Camera3D, animationSet:AnimationSet)
 		{						
 			super(_camera = camera, animationSet);		
 		}

@@ -31,7 +31,7 @@ package away3d.sea3d.animation
 	{
 		protected var _light:LightBase;
 		
-		public function LightAnimationBase(animationSet:AnimationSet, light:LightBase, lerpFuncs:Object=null)
+		public function LightAnimationBase(light:LightBase, animationSet:AnimationSet, lerpFuncs:Object=null)
 		{
 			super(_light = light, animationSet, lerpFuncs);			
 		}

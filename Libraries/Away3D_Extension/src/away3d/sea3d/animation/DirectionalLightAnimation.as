@@ -37,7 +37,7 @@ package away3d.sea3d.animation
 	{		
 		public function DirectionalLightAnimation(animationSet:AnimationSet, light:DirectionalLight)
 		{
-			super(animationSet, light);
+			super(light, animationSet);
 		}
 		
 		public override function set light(value:LightBase):void

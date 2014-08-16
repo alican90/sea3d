@@ -26,26 +26,30 @@
 		protected var _secondaryUvs:Vector.<Number>;
 		protected var _vertexNormals:Vector.<Number>;
 		protected var _vertexTangents:Vector.<Number>;
-		
+		protected var _vertexColor:Vector.<Number>;	
+				
 		protected var _verticesInvalid:Vector.<Boolean> = new Vector.<Boolean>(8, true);
 		protected var _uvsInvalid:Vector.<Boolean> = new Vector.<Boolean>(8, true);
 		protected var _secondaryUvsInvalid:Vector.<Boolean> = new Vector.<Boolean>(8, true);
 		protected var _normalsInvalid:Vector.<Boolean> = new Vector.<Boolean>(8, true);
 		protected var _tangentsInvalid:Vector.<Boolean> = new Vector.<Boolean>(8, true);
-		
+		protected var _verticesColorInvalid:Vector.<Boolean> = new Vector.<Boolean>(8, true);
+					
 		// buffers:
 		protected var _vertexBuffer:Vector.<VertexBuffer3D> = new Vector.<VertexBuffer3D>(8);
 		protected var _uvBuffer:Vector.<VertexBuffer3D> = new Vector.<VertexBuffer3D>(8);
 		protected var _secondaryUvBuffer:Vector.<VertexBuffer3D> = new Vector.<VertexBuffer3D>(8);
 		protected var _vertexNormalBuffer:Vector.<VertexBuffer3D> = new Vector.<VertexBuffer3D>(8);
-		protected var _vertexTangentBuffer:Vector.<VertexBuffer3D> = new Vector.<VertexBuffer3D>(8);
+		protected var _vertexTangentBuffer:Vector.<VertexBuffer3D> = new Vector.<VertexBuffer3D>(8);		
+		protected var _vertexColorBuffer:Vector.<VertexBuffer3D> = new Vector.<VertexBuffer3D>(8);
 		
 		// buffer dirty flags, per context:
 		protected var _vertexBufferContext:Vector.<Context3D> = new Vector.<Context3D>(8);
 		protected var _uvBufferContext:Vector.<Context3D> = new Vector.<Context3D>(8);
 		protected var _secondaryUvBufferContext:Vector.<Context3D> = new Vector.<Context3D>(8);
 		protected var _vertexNormalBufferContext:Vector.<Context3D> = new Vector.<Context3D>(8);
-		protected var _vertexTangentBufferContext:Vector.<Context3D> = new Vector.<Context3D>(8);
+		protected var _vertexTangentBufferContext:Vector.<Context3D> = new Vector.<Context3D>(8);		
+		protected var _vertexColorBufferContext:Vector.<Context3D> = new Vector.<Context3D>(8);
 		
 		protected var _numVertices:uint;
 		
@@ -130,6 +134,26 @@
 		}
 		
 		/**
+		 * @inheritDoc
+		 */
+		public function activateVertexColorBuffer(index:int, stage3DProxy:Stage3DProxy):void
+		{
+			var contextIndex:int = stage3DProxy._stage3DIndex;
+			var context:Context3D = stage3DProxy._context3D;
+			if (!_vertexColorBuffer[contextIndex] || _vertexColorBufferContext[contextIndex] != context) {
+				_vertexColorBuffer[contextIndex] = context.createVertexBuffer(_numVertices, 4);
+				_vertexColorBufferContext[contextIndex] = context;
+				_verticesColorInvalid[contextIndex] = true;
+			}
+			if (_verticesColorInvalid[contextIndex]) {
+				_vertexColorBuffer[contextIndex].uploadFromVector(_vertexColor ||= new Vector.<Number>(_numVertices * 4), 0, _numVertices);
+				_verticesColorInvalid[contextIndex] = false;
+			}
+			
+			context.setVertexBufferAt(index, _vertexColorBuffer[contextIndex], 0, Context3DVertexBufferFormat.FLOAT_4);
+		}
+		
+		/**
 		 * Retrieves the VertexBuffer3D object that contains vertex normals.
 		 * @param context The Context3D for which we request the buffer
 		 * @return The VertexBuffer3D object that contains vertex normals.
@@ -185,7 +209,7 @@
 			super.applyTransformation(transform);
 			invalidateBuffers(_verticesInvalid);
 			invalidateBuffers(_normalsInvalid);
-			invalidateBuffers(_tangentsInvalid);
+			invalidateBuffers(_tangentsInvalid);			
 		}
 		
 		/**
@@ -197,13 +221,15 @@
 			var clone:SubGeometry = new SubGeometry();
 			clone.updateVertexData(_vertexData.concat());
 			clone.updateUVData(_uvs.concat());
-			clone.updateIndexData(_indices.concat());
+			clone.updateIndexData(_indices.concat());			
 			if (_secondaryUvs)
 				clone.updateSecondaryUVData(_secondaryUvs.concat());
 			if (!_autoDeriveVertexNormals)
 				clone.updateVertexNormalData(_vertexNormals.concat());
 			if (!_autoDeriveVertexTangents)
 				clone.updateVertexTangentData(_vertexTangents.concat());
+			if (_vertexColor)
+				clone.updateVertexColorData(_vertexColor);
 			return clone;
 		}
 		
@@ -237,16 +263,19 @@
 			_uvBuffer = null;
 			_secondaryUvBuffer = null;
 			_vertexTangentBuffer = null;
+			_vertexColorBuffer = null;
 			_indexBuffer = null;
 			_uvs = null;
 			_secondaryUvs = null;
 			_vertexNormals = null;
 			_vertexTangents = null;
+			_vertexColor = null;
 			_vertexBufferContext = null;
 			_uvBufferContext = null;
 			_secondaryUvBufferContext = null;
 			_vertexNormalBufferContext = null;
 			_vertexTangentBufferContext = null;
+			_vertexColorBufferContext = null;
 		}
 		
 		protected function disposeAllVertexBuffers():void
@@ -256,6 +285,7 @@
 			disposeVertexBuffers(_uvBuffer);
 			disposeVertexBuffers(_secondaryUvBuffer);
 			disposeVertexBuffers(_vertexTangentBuffer);
+			disposeVertexBuffers(_vertexColorBuffer);
 		}
 		
 		/**
@@ -293,6 +323,12 @@
 			invalidateBuffers(_verticesInvalid);
 			
 			invalidateBounds();
+		}
+		
+		public function updateVertexColorData(colors:Vector.<Number>):void
+		{
+			_vertexColor = colors;			
+			invalidateBuffers(_verticesColorInvalid);
 		}
 		
 		arcane function invalidateVertexData(vertices : Vector.<Number>) : void
@@ -507,7 +543,7 @@
 		
 		public function cloneWithSeperateBuffers():SubGeometry
 		{
-			return SubGeometry(clone());
+			return clone() as SubGeometry;
 		}
 	}
 }

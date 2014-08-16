@@ -14,7 +14,7 @@ package away3d.container
 	
 	public class DynamicScene3D extends away3d.containers.Scene3D
 	{
-		private static const DefaultLights : Array = new ThreePointLight(1.3, .9, .8).toArray();
+		private static const DefaultLights : Array = new ThreePointLight().toArray();
 		
 		private var _fog : FogMethod;
 		private var _lights : Array = [];			

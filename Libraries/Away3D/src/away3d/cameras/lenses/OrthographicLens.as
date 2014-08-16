@@ -54,7 +54,7 @@ package away3d.cameras.lenses
 			var translation:Vector3D = Matrix3DUtils.CALCULATION_VECTOR3D;
 			matrix.copyColumnTo(3, translation);
 			v.x = nX + translation.x;
-			v.y = nX + translation.y;
+			v.y = -nY + translation.y;
 			v.z = sZ;
 			v.w = 1;
 

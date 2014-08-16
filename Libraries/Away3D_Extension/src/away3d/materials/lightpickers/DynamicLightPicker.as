@@ -122,7 +122,7 @@ package away3d.materials.lightpickers
 			{
 				cache.push( _pLights[i] = new PointLight() );
 				
-				if (i == 1)
+				if (i == 0)
 				{
 					_pLights[i].ambientColor = 0xFFFFFF;
 					_pLights[i].ambient = 1;

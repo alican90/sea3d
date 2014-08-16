@@ -1,6 +1,13 @@
 package away3d.loaders.parsers
 
 {
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.Loader;
+	import flash.events.Event;
+	import flash.utils.ByteArray;
+	import flash.utils.Endian;
+	
 	import away3d.arcane;
 	import away3d.events.AssetEvent;
 	import away3d.library.assets.BitmapDataAsset;
@@ -8,12 +15,6 @@ package away3d.loaders.parsers
 	import away3d.textures.BitmapTexture;
 	import away3d.textures.Texture2DBase;
 	import away3d.tools.utils.TextureUtils;
-	
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.Loader;
-	import flash.events.Event;
-	import flash.utils.ByteArray;
 	
 	use namespace arcane;
 	
@@ -69,25 +70,42 @@ package away3d.loaders.parsers
 				return false;
 			
 			var ba:ByteArray = data as ByteArray;
+			var en:String = ba.endian;
+			ba.endian = Endian.BIG_ENDIAN;
 			ba.position = 0;
 			if (ba.readUnsignedShort() == 0xffd8)
+			{
+				ba.endian = en;
 				return true; // JPEG, maybe check for "JFIF" as well?
+			}
 			
 			ba.position = 0;
 			if (ba.readShort() == 0x424D)
+			{
+				ba.endian = en;
 				return true; // BMP
+			}
 			
 			ba.position = 1;
 			if (ba.readUTFBytes(3) == 'PNG')
+			{
+				ba.endian = en;
 				return true;
+			}
 			
 			ba.position = 0;
 			if (ba.readUTFBytes(3) == 'GIF' && ba.readShort() == 0x3839 && ba.readByte() == 0x61)
+			{
+				ba.endian = en;
 				return true;
+			}
 			
 			ba.position = 0;
 			if (ba.readUTFBytes(3) == 'ATF')
+			{
+				ba.endian = en;
 				return true;
+			}
 			
 			return false;
 		}

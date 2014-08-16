@@ -49,7 +49,7 @@ package away3d.animators.states
 			var index:int = animationRegisterCache.getRegisterIndex(_animationNode, ParticleRotateToPositionNode.POSITION_INDEX);
 			
 			if (animationRegisterCache.hasBillboard) {
-				_matrix.copyFrom(renderable.sceneTransform);
+				_matrix.copyFrom(renderable.getRenderSceneTransform(camera));
 				_matrix.append(camera.inverseSceneTransform);
 				animationRegisterCache.setVertexConstFromMatrix(animationRegisterCache.getRegisterIndex(_animationNode, ParticleRotateToPositionNode.MATRIX_INDEX), _matrix);
 			}
@@ -59,9 +59,9 @@ package away3d.animators.states
 				animationRegisterCache.setVertexConst(index, _offset.x, _offset.y, _offset.z);
 			} else
 				animationSubGeometry.activateVertexBuffer(index, _particleRotateToPositionNode.dataOffset, stage3DProxy, Context3DVertexBufferFormat.FLOAT_3);
-		
+			
 		}
-	
+		
 	}
-
+	
 }

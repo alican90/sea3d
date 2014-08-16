@@ -113,6 +113,11 @@ package away3d.entities
 			_geometry.activateSecondaryUVBuffer(index, stage3DProxy);
 		}
 		
+		public function activateVertexColorBuffer(index:int, stage3DProxy:Stage3DProxy):void
+		{
+			_geometry.activateVertexColorBuffer(index, stage3DProxy);
+		}
+		
 		public function activateVertexNormalBuffer(index:int, stage3DProxy:Stage3DProxy):void
 		{
 			_geometry.activateVertexNormalBuffer(index, stage3DProxy);

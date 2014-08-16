@@ -36,7 +36,7 @@ package away3d.sea3d.animation
 	{
 		protected var _sound3d:Sound3D;		
 		
-		public function Sound3DAnimation(animationSet:AnimationSet, sound3d:Sound3D)
+		public function Sound3DAnimation(sound3d:Sound3D, animationSet:AnimationSet)
 		{
 			super(_sound3d = sound3d, animationSet);			
 		}			

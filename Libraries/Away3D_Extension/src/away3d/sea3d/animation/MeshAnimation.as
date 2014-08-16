@@ -36,7 +36,7 @@ package away3d.sea3d.animation
 	{
 		protected var _mesh:Mesh;
 		
-		public function MeshAnimation(animationSet:AnimationSet, mesh:Mesh)
+		public function MeshAnimation(mesh:Mesh, animationSet:AnimationSet)
 		{			
 			super(_mesh = mesh, animationSet);						
 		}			

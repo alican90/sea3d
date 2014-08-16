@@ -91,6 +91,13 @@ package away3d.core.base
 		function activateSecondaryUVBuffer(index:int, stage3DProxy:Stage3DProxy):void;
 		
 		/**
+		 * Assigns the attribute stream for vertex colors.
+		 * @param index The attribute stream index for the vertex shader
+		 * @param stage3DProxy The Stage3DProxy to assign the stream to
+		 */
+		function activateVertexColorBuffer(index:int, stage3DProxy:Stage3DProxy):void;
+		
+		/**
 		 * Assigns the attribute stream for vertex normals
 		 * @param index The attribute stream index for the vertex shader
 		 * @param stage3DProxy The Stage3DProxy to assign the stream to

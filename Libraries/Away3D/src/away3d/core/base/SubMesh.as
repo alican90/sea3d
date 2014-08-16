@@ -222,6 +222,14 @@ package away3d.core.base
 		/**
 		 * @inheritDoc
 		 */
+		public function activateVertexColorBuffer(index:int, stage3DProxy:Stage3DProxy):void
+		{
+			_subGeometry.activateVertexColorBuffer(index, stage3DProxy);
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
 		public function getIndexBuffer(stage3DProxy:Stage3DProxy):IndexBuffer3D
 		{
 			return _subGeometry.getIndexBuffer(stage3DProxy);

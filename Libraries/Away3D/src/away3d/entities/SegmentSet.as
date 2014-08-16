@@ -363,6 +363,10 @@
 		{
 		}
 		
+		public function activateVertexColorBuffer(index:int, stage3DProxy:Stage3DProxy):void
+		{
+		}
+		
 		private function reOrderIndices(subSetIndex:uint, index:int):void
 		{
 			var segRef:SegRef;

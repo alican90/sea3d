@@ -23,14 +23,13 @@
 
 package away3d.morph
 {
-	import away3d.arcane;
-	import away3d.core.base.Geometry;
-	import away3d.core.managers.Stage3DProxy;
-	
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DVertexBufferFormat;
 	import flash.display3D.VertexBuffer3D;
 	import flash.events.EventDispatcher;
+	
+	import away3d.arcane;
+	import away3d.core.managers.Stage3DProxy;
 
 	use namespace arcane;
 	

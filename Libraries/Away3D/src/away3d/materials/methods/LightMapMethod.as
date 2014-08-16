@@ -77,11 +77,11 @@ package away3d.materials.methods
 		}
 		
 		public function set blendMode(value:String):void
-		{
-			if (value != ADD && value != MULTIPLY)
-				throw new Error("Unknown blendmode!");
+		{			
 			if (_blendMode == value)
 				return;
+			if (value != ADD && value != MULTIPLY)
+				throw new Error("Unknown blendmode!");
 			_blendMode = value;
 			invalidateShaderProgram();
 		}
@@ -124,10 +124,10 @@ package away3d.materials.methods
 			
 			switch (_blendMode) {
 				case MULTIPLY:
-					code += "mul " + targetReg + ", " + targetReg + ", " + temp + "\n";
+					code += "mul " + targetReg + ".xyz, " + targetReg + ".xyz, " + temp + ".xyz\n";
 					break;
 				case ADD:
-					code += "add " + targetReg + ", " + targetReg + ", " + temp + "\n";
+					code += "add " + targetReg + ".xyz, " + targetReg + ".xyz, " + temp + ".xyz\n";
 					break;
 			}
 			

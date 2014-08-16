@@ -37,9 +37,9 @@ package away3d.sea3d.animation
 	{
 		protected var _pointLight:PointLight;
 		
-		public function PointLightAnimation(animationSet:AnimationSet, light:PointLight)
+		public function PointLightAnimation(light:PointLight, animationSet:AnimationSet)
 		{
-			super(animationSet, _pointLight = light);			
+			super(_pointLight = light, animationSet);	
 		}
 				
 		public override function set light(value:LightBase):void

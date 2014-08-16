@@ -41,12 +41,12 @@ package away3d.textures
 	{
 		private static const bitmap:BitmapData = new BitmapData(1,1,false,0x999999);
 		
-		private var _posX:Loader = new Loader();
-		private var _negX:Loader = new Loader();		
-		private var _posY:Loader = new Loader();
-		private var _negY:Loader = new Loader();		
-		private var _posZ:Loader = new Loader();
-		private var _negZ:Loader = new Loader();		
+		private var _posX:Loader;
+		private var _negX:Loader;		
+		private var _posY:Loader;
+		private var _negY:Loader;	
+		private var _posZ:Loader;
+		private var _negZ:Loader;		
 		
 		private var pX:BitmapData;
 		private var nX:BitmapData;
@@ -56,9 +56,21 @@ package away3d.textures
 		private var nZ:BitmapData;
 		private var count:int = 0;		
 		
-		public function AsynBitmapCubeTexture(posX : *, negX : *, posY : *, negY : *, posZ : *, negZ : *)
+		public function AsynBitmapCubeTexture(posX : *=null, negX : *=null, posY : *=null, negY : *=null, posZ : *=null, negZ : *=null)
 		{
 			super(bitmap,bitmap,bitmap,bitmap,bitmap,bitmap);
+			
+			load(posX, negX, posY, negY, posZ, negZ);
+		}		
+		
+		public function load(posX : *, negX : *, posY : *, negY : *, posZ : *, negZ : *):void
+		{
+			_posX = new Loader();
+			_negX = new Loader();		
+			_posY = new Loader();
+			_negY = new Loader();		
+			_posZ = new Loader();
+			_negZ = new Loader();
 			
 			loaderData(_posX, posX);
 			loaderData(_negX, negX);
@@ -73,7 +85,7 @@ package away3d.textures
 			_negY.contentLoaderInfo.addEventListener(Event.COMPLETE, onNegY);
 			_posZ.contentLoaderInfo.addEventListener(Event.COMPLETE, onPosZ);
 			_negZ.contentLoaderInfo.addEventListener(Event.COMPLETE, onNegZ);
-		}		
+		}
 		
 		private function loaderData(loader:Loader, data:*):void
 		{
