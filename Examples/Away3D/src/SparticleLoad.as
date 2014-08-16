@@ -85,7 +85,7 @@ package
 			sea3d.addModule( particle = new ParticleModule() );
 			
 			sea3d.addEventListener(SEAEvent.COMPLETE, onComplete);			
-			sea3d.load(new URLRequest("../assets/Particle.sea"));						
+			sea3d.load(new URLRequest("../assets/Sparticle.sea"));						
 		}
 		
 		private function onEnterFrame(e:Event):void
