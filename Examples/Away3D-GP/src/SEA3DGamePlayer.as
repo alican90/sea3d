@@ -3,16 +3,19 @@ package
 	import flash.display.Sprite;
 	import flash.net.FileFilter;
 	
+	import sunag.sea3dgp;
 	import sunag.player.PlayerEvent;
 	import sunag.player.SEA3DLogo;
 	import sunag.player.UploadButton;
 	import sunag.sea3d.engine.SEA3DGP;
+	import sunag.sea3d.framework.Scene3D;
 	
 	[SWF(width="1024", height="632", backgroundColor="0x333333", frameRate="60")]
 	public class SEA3DGamePlayer extends Sprite
 	{
 		private var uploadButton:UploadButton;
 		private var sea3dLogo:SEA3DLogo;
+		private var game:Scene3D;
 		
 		public function SEA3DGamePlayer()
 		{							
@@ -29,20 +32,19 @@ package
 		
 		private function onUpload(e:PlayerEvent):void
 		{
-			/*
-			SEA3DGP.unload();
-			
 			if (sea3dLogo)
 			{
 				removeChild( sea3dLogo );
 				sea3dLogo = null;
 			}
 			
-			var sea3d:SEA3DLoader = new SEA3DLoader();
-			sea3d.loadBytes( uploadButton.data );
+			if (game)
+			{
+				game.dispose();
+			}
 			
-			SEA3DGP.addLoader( sea3d );
-			*/
+			game = new Scene3D();
+			game.sea3dgp::loadScene( uploadButton.data );
 		}
 	}
 }
