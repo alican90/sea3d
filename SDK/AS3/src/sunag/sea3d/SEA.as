@@ -44,10 +44,10 @@ package sunag.sea3d
 	import sunag.sea3d.objects.SEAATF;
 	import sunag.sea3d.objects.SEAATFCube;
 	import sunag.sea3d.objects.SEAAnimation;
-	import sunag.sea3d.objects.SEACamera;
 	import sunag.sea3d.objects.SEAComposite;
 	import sunag.sea3d.objects.SEAContainer3D;
 	import sunag.sea3d.objects.SEACubeMap;
+	import sunag.sea3d.objects.SEACubeURL;
 	import sunag.sea3d.objects.SEADirectionalLight;
 	import sunag.sea3d.objects.SEAFileInfo;
 	import sunag.sea3d.objects.SEAGIF;
@@ -62,10 +62,13 @@ package sunag.sea3d
 	import sunag.sea3d.objects.SEAMorph;
 	import sunag.sea3d.objects.SEAMorphAnimation;
 	import sunag.sea3d.objects.SEAObject;
+	import sunag.sea3d.objects.SEAOrthographicCamera;
 	import sunag.sea3d.objects.SEAPNG;
+	import sunag.sea3d.objects.SEAPerspectiveCamera;
 	import sunag.sea3d.objects.SEAPointLight;
 	import sunag.sea3d.objects.SEAPoonyaScript;
 	import sunag.sea3d.objects.SEAProperties;
+	import sunag.sea3d.objects.SEAReference;
 	import sunag.sea3d.objects.SEASingleCube;
 	import sunag.sea3d.objects.SEASkeleton;
 	import sunag.sea3d.objects.SEASkeletonAnimation;
@@ -188,7 +191,8 @@ package sunag.sea3d
 			_typeClass[SEAMorph.TYPE] = SEAMorph;
 			_typeClass[SEAMorphAnimation.TYPE] = SEAMorphAnimation;
 			_typeClass[SEAMesh.TYPE] = SEAMesh;						
-			_typeClass[SEACamera.TYPE] = SEACamera;
+			_typeClass[SEAPerspectiveCamera.TYPE] = SEAPerspectiveCamera;
+			_typeClass[SEAOrthographicCamera.TYPE] = SEAOrthographicCamera;
 			_typeClass[SEAProperties.TYPE] = SEAProperties;		
 			_typeClass[SEADirectionalLight.TYPE] = SEADirectionalLight;			
 			_typeClass[SEAPointLight.TYPE] = SEAPointLight;			
@@ -199,7 +203,9 @@ package sunag.sea3d
 			_typeClass[SEAJointObject.TYPE] = SEAJointObject;
 			_typeClass[SEAPoonyaScript.TYPE] = SEAPoonyaScript;
 			_typeClass[SEATextureURL.TYPE] = SEATextureURL;
-						
+			_typeClass[SEACubeURL.TYPE] = SEACubeURL;
+			_typeClass[SEAReference.TYPE] = SEAReference;
+			
 			_typeRead[SEAFileInfo.TYPE] = readFileInfo;
 		}
 		
@@ -403,7 +409,7 @@ package sunag.sea3d
 		}
 		
 		/**
-		 * Returns one SEA3D object already loaded
+		 * Returns or load one SEA3D object
 		 * @param ns Namespace of an object. Example: <b>Box001.m3d</b>
 		 */
 		public function getObject(name:String):*
@@ -414,6 +420,15 @@ package sunag.sea3d
 		public function get compressionAlgorithm():String
 		{
 			return _compressionAlgorithm;
+		}
+		
+		public function close():void
+		{
+			if (_urlStream)
+			{								
+				_urlStream.close();
+				onStreamComplete();
+			}
 		}
 		
 		public function get protectionAlgorithm():String

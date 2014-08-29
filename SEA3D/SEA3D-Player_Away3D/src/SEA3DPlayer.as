@@ -65,6 +65,9 @@ package
 	import away3d.filters.MotionBlurFilter3D;
 	import away3d.filters.RadialBlurFilter3D;
 	import away3d.lights.ThreePointLight;
+	import away3d.loaders.misc.SingleFileLoader;
+	import away3d.loaders.parsers.Parsers;
+	import away3d.loaders.parsers.ParticleGroupParser;
 	import away3d.materials.lightpickers.StaticLightPicker;
 	import away3d.materials.methods.DynamicFogMethod;
 	import away3d.sea3d.animation.SkeletonAnimation;
@@ -99,6 +102,7 @@ package
 	import sunag.sea3d.debug.IDebug;
 	import sunag.sea3d.modules.ActionModuleDebug;
 	import sunag.sea3d.modules.HelperModule;
+	import sunag.sea3d.modules.ParticleModule;
 	import sunag.sea3d.modules.PhysicsModule;
 	import sunag.sea3d.modules.RTTModule;
 	import sunag.sea3d.modules.SoundModuleDebug;
@@ -178,7 +182,7 @@ package
 			stage3DManager = Stage3DManager.getInstance(stage);
 						
 			view = new View3D(scene);	
-			view.stage3DProxy = stage3DManager.getFreeStage3DProxy(false, Context3DProfile.BASELINE_EXTENDED);
+			view.stage3DProxy = stage3DManager.getFreeStage3DProxy(false, Context3DProfile.BASELINE);
 			view.backgroundColor = stage.color;
 			view.antiAlias = 4;
 			view.rightClickMenuEnabled = false;	
@@ -200,7 +204,7 @@ package
 				AWPDebugDraw.DBG_DrawRay | 
 				AWPDebugDraw.DBG_DrawTransform | 
 				AWPDebugDraw.DBG_DrawCollisionShapes;
-			
+									
 			//
 			//	SEA3D CONFIG
 			//
@@ -218,7 +222,16 @@ package
 			
 			sea3dConfig.updateGlobalPose = true;			
 			sea3dConfig.autoUpdate = false;			
-			sea3dConfig.container = container;			
+			sea3dConfig.container = container;
+			sea3dConfig.forceStreaming = true;
+			
+			//
+			//	Enable Sparticle Parser
+			//
+			
+			SingleFileLoader.enableParser(ParticleGroupParser);
+			
+			Parsers.enableAllBundled();
 			
 			//
 			//	SEA3D
@@ -230,6 +243,7 @@ package
 			sea3d.addModule(rttModule = new RTTModule());
 			sea3d.addModule(new ActionModuleDebug(view));
 			sea3d.addModule(new PhysicsModule(physicsWorld));
+			sea3d.addModule(new ParticleModule());
 			
 			if (isDebug) scene.addChild(sea3dDebug.container);	
 			
@@ -332,6 +346,7 @@ package
 			sea3dConfig.enabledFog = enabledFog;
 			sea3dConfig.shadowMethod = shadowMethod;
 			sea3dConfig.forceCompactGeometry = compactGeometry;
+			sea3dConfig.forceStreaming = true;
 			
 			player.markerVisible = false;			
 			player.progress = 0;

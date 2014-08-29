@@ -49,7 +49,7 @@ package sunag.sea3d.objects
 			{
 				length = data.readUnsignedInt();
 				
-				for(var i:int = 0;i < length;i++)
+				for(var i:int = 0;i < length; i++)
 					object[i] = sea.getSEAObject( data.readUnsignedInt() ) as SEAObject3D;
 			}
 		}

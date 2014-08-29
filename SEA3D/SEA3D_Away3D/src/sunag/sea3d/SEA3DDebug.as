@@ -1,5 +1,6 @@
 package sunag.sea3d
 {
+	import away3d.cameras.lenses.LensBase;
 	import away3d.entities.Mesh;
 	import away3d.materials.TextureMaterial;
 	
@@ -9,7 +10,7 @@ package sunag.sea3d
 	import sunag.sea3d.debug.IDebug;
 	import sunag.sea3d.objects.SEACamera;
 	import sunag.sea3d.objects.SEADirectionalLight;
-	import sunag.sea3d.objects.SEAGeometryBase;
+	import sunag.sea3d.objects.SEAGeometryData;
 	import sunag.sea3d.objects.SEAMesh;
 	import sunag.sea3d.objects.SEAPointLight;
 	
@@ -49,7 +50,7 @@ package sunag.sea3d
 			}
 		}
 		
-		override protected function readGeometry(sea:SEAGeometryBase):void
+		override protected function readGeometry(sea:SEAGeometryData):void
 		{
 			super.readGeometry(sea);
 			
@@ -59,9 +60,9 @@ package sunag.sea3d
 			}
 		}
 		
-		override protected function readCamera(sea:SEACamera):void
+		override protected function readCamera(sea:SEACamera, lens:LensBase):void
 		{
-			super.readCamera(sea);
+			super.readCamera(sea, lens);
 			_debug.creatCamera(sea.tag);
 		}
 		

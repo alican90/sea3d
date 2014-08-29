@@ -152,7 +152,7 @@ package sunag.sea3d.player
 			if (_status)
 			{
 				stringBuilder.push('<b>FPS:</b> ' + Math.round(_timeStep.averageFrameRate));
-				stringBuilder.push('<b>Memory:</b> ' + compactNumberString(((System.totalMemory)/1024)/1024) + "MB\n");
+				stringBuilder.push('<b>Memory:</b> ' + compactNumberString(((System.privateMemory)/1024)/1024) + "MB\n");
 				
 				if (_camera) stringBuilder.push('<b><font color="#00FF99">Camera:</font></b> ' + _camera + "\n");
 				if (_error) stringBuilder.push('<b><font color="#FF9900">Error:</font></b> ' + _error);			

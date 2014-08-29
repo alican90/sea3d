@@ -25,8 +25,8 @@ package sunag.animation
 {
 	import flash.events.EventDispatcher;
 	
-	import sunag.events.AnimationEvent;
 	import sunag.sunag;
+	import sunag.events.AnimationEvent;
 
 	use namespace sunag;
 	
@@ -42,10 +42,11 @@ package sunag.animation
 		sunag var _node:AnimationNode;
 		sunag var _offset:Number = 0;
 		sunag var _weight:Number = 0;
-		sunag var _time:Number = 0;
+		sunag var _time:Number = 0;		
 		
 		sunag var oldWeight:Number = 0;		
 		sunag var notifyCompleted:Boolean = false;
+		sunag var positiveTime:Boolean = true;
 		
 		public function AnimationState(node:AnimationNode)
 		{
@@ -67,9 +68,12 @@ package sunag.animation
 			return _weight;
 		}
 		
-		public function set time(value:Number):void
+		public function set time(val:Number):void
 		{
-			_node.time = _time = value;
+			if (positiveTime && val < 0)
+				val = 0;
+			
+			_node.time = _time = val;
 		}
 		
 		public function get time():Number

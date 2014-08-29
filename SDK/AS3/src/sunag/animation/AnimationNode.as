@@ -189,7 +189,7 @@ package sunag.animation
 		public function set time(value:Number):void
 		{			
 			_frame = validFrame( value / _frameMill );						
-			_time = _frame * _frameRate;			
+			_time = _frame * _frameRate;	
 			_invalidState = true;
 		}
 		
@@ -210,12 +210,12 @@ package sunag.animation
 		
 		public function set position(value:Number):void
 		{
-			frame = value * _numFrames;
+			frame = value * _length;
 		}
 		
 		public function get position():Number
 		{
-			return frame / _numFrames;
+			return frame / _length;
 		}				
 		
 		protected function validFrame(value:Number):Number

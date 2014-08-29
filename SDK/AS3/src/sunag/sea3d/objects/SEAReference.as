@@ -1,6 +1,6 @@
 /*
 *
-* Copyright (c) 2013 Sunag Entertainment
+* Copyright (c) 2014 Sunag Entertainment
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy of
 * this software and associated documentation files (the "Software"), to deal in
@@ -23,58 +23,42 @@
 
 package sunag.sea3d.objects
 {
-	import sunag.sunag;
 	import sunag.sea3d.SEA;
-	import sunag.sea3d.field.FieldData;
 	import sunag.utils.ByteArrayUtils;
-	import sunag.utils.DataTable;
 	
-	use namespace sunag;
-	
-	public class SEAProperties extends SEAObject
+	public class SEAReference extends SEAObject
 	{
-		public static const TYPE:String = "prop";
+		public static const TYPE:String = "refs";
 		
-		public static var DETAILED:Boolean = false;
-		
-		public var attribs:*;
-		
-		public function SEAProperties(name:String, sea:SEA)
+		public var refs:Object = [];		
+							
+		public function SEAReference(name:String, sea:SEA)
 		{
-			super(name, TYPE, sea);						
+			super(name, TYPE, sea);
 		}
-		
+						
 		public override function load():void
-		{	
-			var count:int, i:int, type:int, name:String,
-				objects:Vector.<SEAObject> = sea.objects;
+		{
+			var count:int = data.readUnsignedShort();
 			
-			if (DETAILED)
-			{								
-				count = data.readUnsignedByte();
+			refs = [];
+			
+			for(var i:int = 0; i < count; i++)
+			{
+				var flags:int = data.readUnsignedByte();
+				var ref:Object = {};
+				 		
+				ref.flags = flags;
 				
-				attribs = new Vector.<FieldData>(count);
+				ref.name = ByteArrayUtils.readUTFTiny( data );
 				
-				for(i = 0; i < count; i++)
+				if (flags & 1)
 				{
-					name = ByteArrayUtils.readUTFTiny(data);
-					type = data.readUnsignedByte();
+					ref.data = ByteArrayUtils.readDataObject( data );
+				}
 					
-					attribs[i] = new FieldData(name, type, DataTable.readToken(type, data, objects));
-				}
-			}
-			else
-			{								
-				count = data.readUnsignedByte();
-				
-				attribs = {};
-				
-				for(i = 0; i < count; i++)
-				{
-					name = ByteArrayUtils.readUTFTiny(data);		
-					attribs[name] = DataTable.readObject(data, objects);
-				}
-			}
-		}		
+				refs.push( ref );
+			}			
+		}
 	}
 }

@@ -25,6 +25,7 @@ package sunag.sea3d.objects
 {
 	import sunag.sunag;
 	import sunag.sea3d.SEA;
+	import sunag.utils.BlendMode;
 	import sunag.utils.ByteArrayUtils;
 	
 	use namespace sunag;
@@ -48,8 +49,10 @@ package sunag.sea3d.objects
 		public static const TRANSLUCENT:uint = 12;
 		public static const BLEND_NORMAL_MAP:uint = 13;
 		public static const MIRROR_REFLECTION:uint = 14;
-		public static const EMISSIVE_MAP:uint = 15;
+		public static const AMBIENT_MAP:uint = 15;		
 		public static const ALPHA_MAP:uint = 16;
+		public static const EMISSIVE_MAP:uint = 17;
+		public static const VERTEX_COLOR:uint = 18;		
 		
 		public var animations:Array;				
 		
@@ -58,7 +61,7 @@ package sunag.sea3d.objects
 		public var depthMask:Boolean;
 		
 		public var alpha:Number = 1;	
-		public var blendMode:String = null;
+		public var blendMode:String = BlendMode.NORMAL;
 		
 		public var receiveShadows:Boolean;
 		public var receiveLights:Boolean;
@@ -238,7 +241,7 @@ package sunag.sea3d.objects
 								alpha:data.readFloat()				
 							}
 						break;
-					case EMISSIVE_MAP:
+					case AMBIENT_MAP:
 						tech =
 							{
 								texture:sea.getSEAObject(data.readUnsignedInt())			
@@ -249,6 +252,18 @@ package sunag.sea3d.objects
 								texture:sea.getSEAObject(data.readUnsignedInt())			
 							}
 						break;
+					case EMISSIVE_MAP:
+						tech =
+							{
+								texture:sea.getSEAObject(data.readUnsignedInt())			
+							}
+						break;
+					case VERTEX_COLOR:
+						tech = 
+							{	
+								blendMode:ByteArrayUtils.readBlendMode(data)
+							}
+						break;						
 					default:						
 						trace("MaterialTechnique not found:", kind.toString(16));
 						data.position = pos += size;

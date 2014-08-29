@@ -1,6 +1,6 @@
 /*
 *
-* Copyright (c) 2013 Sunag Entertainment
+* Copyright (c) 2014 Sunag Entertainment
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy of
 * this software and associated documentation files (the "Software"), to deal in
@@ -25,56 +25,16 @@ package sunag.sea3d.objects
 {
 	import sunag.sunag;
 	import sunag.sea3d.SEA;
-	import sunag.sea3d.field.FieldData;
-	import sunag.utils.ByteArrayUtils;
-	import sunag.utils.DataTable;
 	
 	use namespace sunag;
 	
-	public class SEAProperties extends SEAObject
+	public class SEAAssets extends SEAObject
 	{
-		public static const TYPE:String = "prop";
+		public static const TYPE:String = "sea";
 		
-		public static var DETAILED:Boolean = false;
-		
-		public var attribs:*;
-		
-		public function SEAProperties(name:String, sea:SEA)
+		public function SEAAssets(name:String, sea:SEA)
 		{
-			super(name, TYPE, sea);						
-		}
-		
-		public override function load():void
-		{	
-			var count:int, i:int, type:int, name:String,
-				objects:Vector.<SEAObject> = sea.objects;
-			
-			if (DETAILED)
-			{								
-				count = data.readUnsignedByte();
-				
-				attribs = new Vector.<FieldData>(count);
-				
-				for(i = 0; i < count; i++)
-				{
-					name = ByteArrayUtils.readUTFTiny(data);
-					type = data.readUnsignedByte();
-					
-					attribs[i] = new FieldData(name, type, DataTable.readToken(type, data, objects));
-				}
-			}
-			else
-			{								
-				count = data.readUnsignedByte();
-				
-				attribs = {};
-				
-				for(i = 0; i < count; i++)
-				{
-					name = ByteArrayUtils.readUTFTiny(data);		
-					attribs[name] = DataTable.readObject(data, objects);
-				}
-			}
-		}		
+			super(name, TYPE, sea);
+		}	
 	}
 }

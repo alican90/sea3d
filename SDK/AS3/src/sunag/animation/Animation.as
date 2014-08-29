@@ -23,10 +23,10 @@
 
 package sunag.animation
 {
+	import sunag.sunag;
 	import sunag.animation.data.AnimationData;
 	import sunag.animation.data.AnimationFrame;
 	import sunag.events.AnimationEvent;
-	import sunag.sunag;
 	import sunag.utils.MathHelper;
 
 	use namespace sunag;
@@ -229,6 +229,11 @@ package sunag.animation
 			
 			_currentState = getStateByName(name);
 			
+			if (_currentState)
+			{
+				_currentState.positiveTime = _currentState._time > 0;
+			}
+			
 			super.setAnimation(name, blendSpeed);
 		}
 		
@@ -358,10 +363,22 @@ package sunag.animation
 					{		
 						frame = currentNode._getInterpolationFrame(currentNode._dataList[i], iFunc);
 						
-						if (!currentNode._repeat && currentNode.position == 1)
-						{														
-							if (_currentState.notifyCompleted)
-								_currentState.dispatchComplete();								
+						if (!currentNode._repeat)
+						{
+							if (_timeScale > 0 && currentNode.position == 1)
+							{
+								state._offset = _time - currentNode._duration;
+								
+								if (_currentState.notifyCompleted)
+									_currentState.dispatchComplete();
+							}
+							else if (_timeScale < 0 && currentNode.position == 0)
+							{
+								state._offset = state.positiveTime ? _time : _time + currentNode._duration;								
+								
+								if (_currentState.notifyCompleted)
+									_currentState.dispatchComplete();								
+							}
 						}
 					}
 					

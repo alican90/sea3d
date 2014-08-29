@@ -39,6 +39,8 @@ package sunag.sea3d
 	import away3d.animators.nodes.SkeletonClipNode;
 	import away3d.animators.nodes.VertexClipNode;
 	import away3d.cameras.Camera3D;
+	import away3d.cameras.lenses.LensBase;
+	import away3d.cameras.lenses.OrthographicLens;
 	import away3d.cameras.lenses.PerspectiveLens;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.core.base.Geometry;
@@ -52,6 +54,7 @@ package sunag.sea3d
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
+	import away3d.loaders.misc.AssetLoaderContext;
 	import away3d.materials.IPassMaterial;
 	import away3d.materials.ITextureMaterial;
 	import away3d.materials.ITranslucentMaterial;
@@ -74,6 +77,7 @@ package sunag.sea3d
 	import away3d.materials.methods.RimLightMethod;
 	import away3d.materials.methods.ShadowMapMethodBase;
 	import away3d.materials.methods.SubsurfaceScatteringDiffuseMethod;
+	import away3d.materials.methods.VertexColorMethod;
 	import away3d.morph.MorphNode;
 	import away3d.sea3d.animation.CameraAnimation;
 	import away3d.sea3d.animation.DirectionalLightAnimation;
@@ -116,7 +120,7 @@ package sunag.sea3d
 	import sunag.sea3d.objects.SEAFileInfo;
 	import sunag.sea3d.objects.SEAGIF;
 	import sunag.sea3d.objects.SEAGeometry;
-	import sunag.sea3d.objects.SEAGeometryBase;
+	import sunag.sea3d.objects.SEAGeometryData;
 	import sunag.sea3d.objects.SEAGeometryDelta;
 	import sunag.sea3d.objects.SEAJPEG;
 	import sunag.sea3d.objects.SEAJPEGXR;
@@ -128,8 +132,11 @@ package sunag.sea3d
 	import sunag.sea3d.objects.SEAMorph;
 	import sunag.sea3d.objects.SEAMorphAnimation;
 	import sunag.sea3d.objects.SEAObject3D;
+	import sunag.sea3d.objects.SEAOrthographicCamera;
 	import sunag.sea3d.objects.SEAPNG;
+	import sunag.sea3d.objects.SEAPerspectiveCamera;
 	import sunag.sea3d.objects.SEAPointLight;
+	import sunag.sea3d.objects.SEAReference;
 	import sunag.sea3d.objects.SEASingleCube;
 	import sunag.sea3d.objects.SEASkeleton;
 	import sunag.sea3d.objects.SEASkeletonAnimation;
@@ -154,6 +161,7 @@ package sunag.sea3d
 		protected var _material:Vector.<MaterialBase>;
 		protected var _texture:Vector.<Texture2DBase>;
 		protected var _light:Vector.<LightBase>;
+		protected var _reference:Vector.<AssetLoaderContext>;
 		protected var _animation:Vector.<Animation>;
 		protected var _animationSet:Vector.<AnimationSet>;
 		protected var _composite:Vector.<LayeredDiffuseMethod>;			
@@ -196,15 +204,17 @@ package sunag.sea3d
 			_typeRead[SEASkeletonAnimation.TYPE] = readSkeletonAnimation;
 			_typeRead[SEAGeometry.TYPE] = readGeometry;
 			_typeRead[SEAGeometryDelta.TYPE] = readGeometry;			
-			_typeRead[SEAMesh.TYPE] = readMesh;						
+			_typeRead[SEAMesh.TYPE] = readMesh;				
 			_typeRead[SEAMesh2D.TYPE] = readSprite3D;
-			_typeRead[SEACamera.TYPE] = readCamera;		
+			_typeRead[SEAPerspectiveCamera.TYPE] = readPerspectiveCamera;
+			_typeRead[SEAOrthographicCamera.TYPE] = readOrthographicCamera;
 			_typeRead[SEADirectionalLight.TYPE] = readDirectionalLight;
 			_typeRead[SEAPointLight.TYPE] = readPointLight;					
 			_typeRead[SEAFileInfo.TYPE] = readFileInfo;
 			_typeRead[SEAJointObject.TYPE] = readJointObject;
 			_typeRead[SEAContainer3D.TYPE] = readContainer3D;
 			_typeRead[SEATextureURL.TYPE] = readTextureURL;
+			_typeRead[SEAReference.TYPE] = readReference;
 			
 			// UNIVERSAL
 			_typeRead[SEAJPEG.TYPE] = 
@@ -233,6 +243,7 @@ package sunag.sea3d
 			_matTechRead[SEAMaterial.CEL] = applyCelTechnique;
 			_matTechRead[SEAMaterial.BLEND_NORMAL_MAP] = applyBlendNormalMapTechnique;
 			_matTechRead[SEAMaterial.ALPHA_MAP] = applyAlphaMapTechnique;
+			_matTechRead[SEAMaterial.VERTEX_COLOR] = applyVertexColorTechnique;
 		}
 		
 		//
@@ -427,6 +438,11 @@ package sunag.sea3d
 				ITranslucentMaterial(mat).alphaBlending = true;
 				ITranslucentMaterial(mat).alphaThreshold = .5;
 			}
+		}
+		
+		protected function applyVertexColorTechnique(mat:IPassMaterial, tech:Object):void
+		{
+			mat.addMethod(new VertexColorMethod(tech.blendMode));
 		}
 		
 		protected function readComposite(sea:SEAComposite):void
@@ -674,7 +690,7 @@ package sunag.sea3d
 			addSceneObject(sea, sprite);			
 		}
 				
-		protected function readGeometry(sea:SEAGeometryBase):void
+		protected function readGeometry(sea:SEAGeometryData):void
 		{
 			var	geo:Geometry = new Geometry(),
 				index:Vector.<uint>;
@@ -837,7 +853,7 @@ package sunag.sea3d
 				}
 				else if (tag is SEAAnimation)
 				{
-					addAnimation(new MeshAnimation((tag as SEAAnimation).tag, mesh), sea.name, anm);		
+					addAnimation(new MeshAnimation(mesh, (tag as SEAAnimation).tag), sea.name, anm);		
 				}
 				else if (tag is SEASkeletonAnimation)
 				{
@@ -940,15 +956,21 @@ package sunag.sea3d
 				jointObj.update();
 		}
 			
-		protected function readCamera(sea:SEACamera):void
+		protected function readCamera(sea:SEACamera, lens:LensBase):void
 		{
-			var lens:PerspectiveLens = new PerspectiveLens(sea.fov);
+			//
+			// Lens
+			//
 			
 			lens.near = _config.cameraNear;
 			lens.far = _config.cameraFar;
 			
+			//
+			//	Camera
+			//
+			
 			var cam:Camera3D = new Camera3D(lens);
-						
+			
 			cam.transform = sea.transform;
 			
 			//
@@ -961,10 +983,10 @@ package sunag.sea3d
 				
 				if (tag is SEAAnimation)
 				{
-					addAnimation(new CameraAnimation((tag as SEAAnimation).tag, cam), sea.name, anm);		
+					addAnimation(new CameraAnimation(cam, (tag as SEAAnimation).tag), sea.name, anm);		
 				}
 			}
-				
+			
 			//
 			//	Common
 			//											
@@ -973,6 +995,16 @@ package sunag.sea3d
 			_camera.push(object[sea.filename] = cam);	
 			
 			addSceneObject(sea, cam);
+		}
+		
+		protected function readOrthographicCamera(sea:SEAPerspectiveCamera):void
+		{
+			readCamera(sea, new OrthographicLens(1));
+		}
+		
+		protected function readPerspectiveCamera(sea:SEAPerspectiveCamera):void
+		{
+			readCamera(sea, new PerspectiveLens(sea.fov));
 		}
 		
 		protected function readPointLight(sea:SEAPointLight):void
@@ -999,7 +1031,7 @@ package sunag.sea3d
 				
 				if (tag is SEAAnimation)
 				{
-					addAnimation(new PointLightAnimation((tag as SEAAnimation).tag, light), sea.name, anm);		
+					addAnimation(new PointLightAnimation(light, (tag as SEAAnimation).tag), sea.name, anm);		
 				}
 			}
 			
@@ -1011,9 +1043,27 @@ package sunag.sea3d
 			{
 				light.radius = sea.attenuation.start;
 				light.fallOff = sea.attenuation.end;				
-			}				
+			}			
+			else
+			{
+				light.radius = 0xFFFFFFFF;
+				light.fallOff = 0xFFFFFFFF;
+			}
 			
 			addSceneObject(sea, light);
+		}
+		
+		protected function readReference(sea:SEAReference):void
+		{
+			var context:AssetLoaderContext = new AssetLoaderContext();
+			
+			for each(var ref:Object in sea.refs)
+			{
+				context.mapUrlToData(ref.name, ref.data);
+			}
+			
+			_reference ||=  new Vector.<AssetLoaderContext>();
+			_reference.push(object[sea.name + '.refs'] = sea.tag = context);
 		}
 		
 		protected function readDirectionalLight(sea:SEADirectionalLight):void
@@ -1327,6 +1377,14 @@ package sunag.sea3d
 		public function get lights():Vector.<LightBase>
 		{
 			return _light;
+		}
+		
+		/**
+		 * List of all references
+		 */
+		public function get references():Vector.<AssetLoaderContext>
+		{
+			return _reference;
 		}
 		
 		/**

@@ -26,6 +26,8 @@ package sunag.utils
 	import flash.utils.IDataInput;
 	import flash.utils.IDataOutput;
 	
+	import sunag.sea3d.objects.SEAObject;
+	
 	public class DataTable
 	{		
 		public static const NONE:int = 0;		
@@ -67,6 +69,7 @@ package sunag.utils
 		public static const STRING_LONG:int = 130;
 				
 		public static const ASSET:int = 200;
+		public static const GROUP:int = 255;
 		
 		public static const MAX_SIZE:uint = 4;
 		
@@ -99,12 +102,12 @@ package sunag.utils
 				"bounce.in","bounce.out","bounce.inout"
 			]);
 		
-		public static function readObject(data:IDataInput):*
+		public static function readObject(data:IDataInput, objects:Vector.<SEAObject>=null):*
 		{			
-			return readToken(data.readUnsignedByte(), data);
+			return readToken(data.readUnsignedByte(), data, objects);
 		}
 		
-		public static function readToken(type:int, data:IDataInput):*
+		public static function readToken(type:int, data:IDataInput, objects:Vector.<SEAObject>=null):*
 		{						
 			switch(type)
 			{
@@ -164,6 +167,10 @@ package sunag.utils
 					break;
 				case STRING_LONG:
 					return ByteArrayUtils.readUTFLong(data);						
+					break;
+				
+				case ASSET:
+					return objects[ data.readUnsignedInt() ].tag;		
 					break;
 			}
 						
@@ -231,6 +238,10 @@ package sunag.utils
 					break;
 				case STRING_LONG:
 					ByteArrayUtils.writeUTFLong(data, val);						
+					break;
+				
+				case ASSET:
+					data.writeUnsignedInt(val);		
 					break;
 			}
 		}

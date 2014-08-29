@@ -24,40 +24,18 @@
 package sunag.sea3d.objects
 {
 	import flash.geom.Matrix3D;
-	import flash.utils.ByteArray;
 	
 	import sunag.sea3d.SEA;
-	import sunag.utils.ByteArrayUtils;
 	
 	public class SEACamera extends SEAObject3D
 	{
-		public static const TYPE:String = "cam";
+		public static const TYPE:String = "cmbe";
 		
-		public var fov:Number;
-		public var transform:Matrix3D;
-		public var dof:Object;
+		public var transform:Matrix3D;		
 		
-		public function SEACamera(name:String, sea:SEA)
+		public function SEACamera(name:String, type:String, sea:SEA)
 		{
-			super(name, TYPE, sea);						
-		}
-		
-		protected override function read(data:ByteArray):void
-		{
-			super.read(data);
-			
-			if (attrib & 64)
-			{
-				dof = 
-					{
-						distance:data.readFloat(), 
-						range:data.readFloat()
-					};
-			}
-			
-			transform = ByteArrayUtils.readMatrix3D(data);
-			
-			fov = data.readFloat();				
+			super(name, type, sea);						
 		}
 	}
 }

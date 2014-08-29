@@ -29,6 +29,8 @@ package sunag.utils
 	import flash.display.PNGEncoderOptions;
 	import flash.display.PixelSnapping;
 	import flash.display.StageQuality;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
 	
 	import sunag.sea3d.objects.SEAJPEG;
@@ -82,6 +84,38 @@ package sunag.utils
 			}
 			
 			return bitmapData;
+		}
+		
+		public static function fitScreen(source:BitmapData, target:BitmapData, preserveAspect:Boolean=true, center:Boolean=false):BitmapData
+		{			
+			var rect:Rectangle = source.getColorBoundsRect(0xFFFFFF, 0xFFFFFF, false);
+			
+			var aspectX:Number = 1,
+				aspectY:Number = 1;
+			
+			if (preserveAspect)
+			{
+				if (rect.width > rect.height) aspectY = rect.height / rect.width;
+				else aspectX = rect.width / rect.height;
+			}
+			
+			var bmp2:BitmapData = new BitmapData(rect.width, rect.height, true, 0x00);
+			bmp2.copyPixels(source, rect, new Point());
+			
+			var bitmap:Bitmap = new Bitmap(bmp2);
+			
+			if (preserveAspect)
+			{
+				bitmap.x = -(target.width/2) * (aspectX-1);
+				bitmap.y = -(target.height/2) * (aspectY-1);
+			}
+			
+			bitmap.width = target.width * aspectX;
+			bitmap.height = target.height * aspectY;
+			
+			target.drawWithQuality(bmp2, bitmap.transform.matrix, null, null, null, true, StageQuality.HIGH_16X16);
+			
+			return target;
 		}
 		
 		public static function encoder(bitmapData:BitmapData, format:String):ByteArray

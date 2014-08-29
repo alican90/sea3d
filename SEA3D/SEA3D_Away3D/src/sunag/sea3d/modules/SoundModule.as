@@ -114,7 +114,7 @@ package sunag.sea3d.modules
 				{
 					sea3d.addAnimation				
 						(
-							new Sound3DAnimation((tag as SEAAnimation).tag, snd),
+							new Sound3DAnimation(snd, (tag as SEAAnimation).tag),
 							sea.name, anm
 						);
 				}

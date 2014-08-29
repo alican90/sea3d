@@ -34,6 +34,12 @@ package sunag.sea3d.objects
 	{
 		public static const TYPE:String = "o3d";
 		
+		public static const TAG_STARTUP:uint = 1;
+		public static const TAG_CHILDRENS:uint = 2;
+		
+		public var tags:Array;
+		
+		
 		public var attrib:uint;	
 		
 		public var parent:SEAObject3D;
@@ -98,6 +104,31 @@ package sunag.sea3d.objects
 		
 		protected function readTag(kind:uint, data:ByteArray, size:uint):Boolean
 		{
+			tags ||= [];
+			
+			switch(kind)
+			{
+				case TAG_STARTUP:
+					tags.push({
+						kind : kind,
+						startup : data.readBoolean()
+					});		
+					return true;
+					
+				case TAG_CHILDRENS:
+					var i:int;
+					var childrens:Vector.<SEAObject3D> = new Vector.<SEAObject3D>( data.readUnsignedInt() );										
+					
+					for(i = 0; i < childrens.length; i++)					
+						childrens[i] = sea.getSEAObject(data.readUnsignedInt()) as SEAObject3D;					
+					
+					tags.push({
+						kind : kind,
+						childrens : childrens
+					});	
+					return true;
+			}
+			
 			return false;		
 		}
 	}

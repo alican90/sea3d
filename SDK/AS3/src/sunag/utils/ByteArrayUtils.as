@@ -122,7 +122,10 @@ package sunag.utils
 			var bytes:ByteArray = new ByteArray();
 			bytes.endian = Endian.LITTLE_ENDIAN;
 			
-			bytes.writeBytes(data, data.position, data.readUnsignedInt());
+			var len:uint = data.readUnsignedInt();
+			
+			bytes.writeBytes(data, data.position, len);
+			data.position += len;
 			
 			return bytes;
 		}

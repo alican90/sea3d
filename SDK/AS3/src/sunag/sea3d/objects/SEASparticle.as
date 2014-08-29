@@ -23,58 +23,29 @@
 
 package sunag.sea3d.objects
 {
-	import sunag.sunag;
 	import sunag.sea3d.SEA;
-	import sunag.sea3d.field.FieldData;
 	import sunag.utils.ByteArrayUtils;
-	import sunag.utils.DataTable;
 	
-	use namespace sunag;
-	
-	public class SEAProperties extends SEAObject
+	public class SEASparticle extends SEAParticle
 	{
-		public static const TYPE:String = "prop";
+		public static const TYPE:String = "awp";				
+				
+		public var reference:SEAReference;
+		public var source:String;
 		
-		public static var DETAILED:Boolean = false;
-		
-		public var attribs:*;
-		
-		public function SEAProperties(name:String, sea:SEA)
+		public function SEASparticle(name:String, sea:SEA)
 		{
-			super(name, TYPE, sea);						
-		}
+			super(name, TYPE, sea);
+		}			
 		
 		public override function load():void
-		{	
-			var count:int, i:int, type:int, name:String,
-				objects:Vector.<SEAObject> = sea.objects;
+		{
+			super.load();
 			
-			if (DETAILED)
-			{								
-				count = data.readUnsignedByte();
-				
-				attribs = new Vector.<FieldData>(count);
-				
-				for(i = 0; i < count; i++)
-				{
-					name = ByteArrayUtils.readUTFTiny(data);
-					type = data.readUnsignedByte();
-					
-					attribs[i] = new FieldData(name, type, DataTable.readToken(type, data, objects));
-				}
-			}
-			else
-			{								
-				count = data.readUnsignedByte();
-				
-				attribs = {};
-				
-				for(i = 0; i < count; i++)
-				{
-					name = ByteArrayUtils.readUTFTiny(data);		
-					attribs[name] = DataTable.readObject(data, objects);
-				}
-			}
-		}		
+			if (attrib & 2)
+				reference = sea.getSEAObject(data.readUnsignedInt()) as SEAReference;
+			
+			source = ByteArrayUtils.readUTFLong( data );
+		}				
 	}
 }

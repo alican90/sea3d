@@ -66,7 +66,7 @@ package sunag.sea3d.modules
 				{
 					sea3d.addAnimation				
 						(
-							new DummyAnimation((tag as SEAAnimation).tag, dummy),
+							new DummyAnimation(dummy, (tag as SEAAnimation).tag),
 							sea.name, anm
 						);
 				}

@@ -26,7 +26,7 @@ package sunag.sea3d.objects
 	import sunag.sea3d.SEA;
 	import sunag.utils.ByteArrayUtils;
 	
-	public class SEAGeometryDelta extends SEAGeometryBase 
+	public class SEAGeometryDelta extends SEAGeometryData 
 	{
 		public static const TYPE:String = "geDL";				
 		

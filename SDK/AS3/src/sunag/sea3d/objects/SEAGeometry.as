@@ -25,7 +25,7 @@ package sunag.sea3d.objects
 {
 	import sunag.sea3d.SEA;
 	
-	public class SEAGeometry extends SEAGeometryBase 
+	public class SEAGeometry extends SEAGeometryData 
 	{
 		public static const TYPE:String = "geo";				
 								

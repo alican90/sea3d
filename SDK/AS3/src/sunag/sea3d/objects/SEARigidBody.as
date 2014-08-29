@@ -1,10 +1,8 @@
 package sunag.sea3d.objects
 {
-	import flash.geom.Matrix3D;
 	import flash.utils.ByteArray;
 	
 	import sunag.sea3d.SEA;
-	import sunag.utils.ByteArrayUtils;
 	
 	public class SEARigidBody extends SEAPhysics
 	{
