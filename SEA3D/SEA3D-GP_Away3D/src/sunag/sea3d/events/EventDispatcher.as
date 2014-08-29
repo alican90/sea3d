@@ -8,39 +8,30 @@ package sunag.sea3d.events
 	
 	public class EventDispatcher
 	{
-		sea3dgp var deps:int = 0;
-		
 		sea3dgp static const PROXY:Class = flash.events.EventDispatcher;
 		
-		private var _eDict:Object = {};
+		sea3dgp var eDict:Object = {};
 		
 		public function addEventListener(type:String, listener:Function):void
 		{
-			if (!_eDict[type]) _eDict[type] = [];
+			if (!eDict[type]) eDict[type] = [];
 			
-			if (_eDict[type].indexOf( listener) == -1)
+			if (eDict[type].indexOf( listener) == -1)
 			{				
-				_eDict[type].push( listener );
-				++deps;
+				eDict[type].push( listener );
 			}
 		}
 		
 		public function removeEventListener(type:String, listener:Function):void
 		{
-			var list:Array = _eDict[type];
+			var list:Array = eDict[type];
 			
 			delete list.splice( list.indexOf( listener, 1 ) );
-						
-			if (list.length == 0)
-			{
-				delete _eDict[type];
-				--deps;
-			}
 		}
 		
 		public function hasEvent(type:String):Boolean
 		{
-			return _eDict[type];
+			return eDict[type];
 		}
 		
 		public function dispatchEvent(e:Event):Boolean
@@ -48,7 +39,7 @@ package sunag.sea3d.events
 			e.preventDefault = false;
 			e.target = this; 
 			
-			var list:Array = _eDict[e.type];												
+			var list:Array = eDict[e.type];												
 			
 			if (list) 
 			{							

@@ -3,22 +3,21 @@ package sunag.sea3d.framework
 	import away3d.textures.AsynBitmapTexture;
 	
 	import sunag.sea3dgp;
+	import sunag.sea3d.engine.SEA3DGP;
+	import sunag.sea3d.loader.TextureLoader;
 	import sunag.sea3d.objects.SEAObject;
+	import sunag.sea3d.objects.SEATextureURL;
 	
 	use namespace sea3dgp;
 	
 	public class TextureFile extends Texture
 	{
+		sea3dgp var cache:Boolean = SEA3DGP.config.cacheable;
 		sea3dgp var bitmapTex:AsynBitmapTexture;		
 		
-		public static function getAsset(name:String):TextureFile
+		public function TextureFile(url:String=null)
 		{
-			return Texture.getAsset(name) as TextureFile;
-		}
-		
-		public function TextureFile()
-		{
-			super(bitmapTex = new AsynBitmapTexture());			
+			if (url) loadData( url );
 		}
 		
 		//
@@ -33,16 +32,59 @@ package sunag.sea3d.framework
 			//	TEXTURE FILE
 			//
 			
-			bitmapTex.load(sea.data);			
+			if ( sea is SEATextureURL )
+			{
+				loadURL( SEATextureURL(sea).url );
+			}
+			else
+			{
+				loadData( sea.data );	
+			}
+					
 		}
 		
 		//
 		//	PUBLIC
 		//
 		
+		public function set cacheable(val:Boolean):void
+		{
+			cache = val;
+		}
+		
+		public function get cacheable():Boolean
+		{
+			return cache;
+		}
+		
+		sea3dgp function loadData(data:*):void
+		{
+			if (cache)
+			{
+				bitmapTex = TextureLoader.get(data);
+				
+				if (!bitmapTex)
+				{
+					bitmapTex = TextureLoader.create(data);
+				}
+			}
+			else if (!bitmapTex)
+			{
+				bitmapTex = new AsynBitmapTexture(data);
+			}
+			else
+			{
+				bitmapTex.load( data );
+			}
+			
+			scope = bitmapTex;
+		}
+		
 		public function loadURL(url:String):void
 		{
-			bitmapTex.load(url);
+			if ( SEA3DGP.isEnv( url ) ) url = SEA3DGP.parseEnv( url );
+			
+			loadData( url );
 		}
 	}
 }

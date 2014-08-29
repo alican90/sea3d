@@ -1,5 +1,7 @@
 package sunag.sea3d.framework
 {
+	import flash.geom.Vector3D;
+	
 	import away3d.animator.IMorphAnimator;
 	import away3d.animator.MorphAnimator;
 	import away3d.animator.MorphGeometry;
@@ -7,16 +9,16 @@ package sunag.sea3d.framework
 	import away3d.animators.VertexAnimator;
 	import away3d.animators.transitions.CrossfadeTransition;
 	import away3d.core.base.SubMesh;
+	import away3d.core.pick.PickingColliderType;
 	import away3d.entities.Mesh;
 	import away3d.events.AnimationStateEvent;
-	import away3d.events.MouseEvent3D;
+	import away3d.sea3d.animation.MeshAnimation;
 	import away3d.sea3d.animation.MorphAnimation;
 	import away3d.tools.SkeletonTools;
 	
 	import sunag.sea3dgp;
 	import sunag.sea3d.engine.TopLevel;
 	import sunag.sea3d.events.AnimationEvent;
-	import sunag.sea3d.events.TouchEvent;
 	import sunag.sea3d.objects.IAnimator;
 	import sunag.sea3d.objects.SEAMaterialBase;
 	import sunag.sea3d.objects.SEAMesh;
@@ -29,38 +31,17 @@ package sunag.sea3d.framework
 	use namespace sea3dgp;
 	
 	public class Mesh extends Object3D		
-	{				
-		public static function getAsset(name:String):sunag.sea3d.framework.Mesh
-		{
-			return Object3D.getAsset(name) as sunag.sea3d.framework.Mesh;
-		}
-		
-		sea3dgp static var MouseDict:Object = 
-			{
-				click3d : TouchEvent.CLICK,
-				doubleClick3d : TouchEvent.DOUBLE_CLICK,
-				mouseDown3d : TouchEvent.TOUCH_DOWN,
-				mouseMove3d : TouchEvent.TOUCH_MOVE,
-				mouseOut3d : TouchEvent.TOUCH_OUT,
-				mouseOver3d : TouchEvent.TOUCH_OVER,
-				mouseUp3d : TouchEvent.TOUCH_UP,
-				mouseWheel3d : TouchEvent.WHELL
-			}
-		
-		sea3dgp var usesVertexCPU:Boolean = true;
-		sea3dgp var usesSkeletonCPU:Boolean = true;
-		sea3dgp var usesMorphCPU:Boolean = true;
-		
+	{					
 		sea3dgp var mesh:away3d.entities.Mesh;
 		
-		sea3dgp var multiMaterial:Array;
-		sea3dgp var material:Material;
+		sea3dgp var multiMtl:Array;
+		sea3dgp var mtl:Material;
 		
-		sea3dgp var skeleton:Skeleton;
+		sea3dgp var skl:Skeleton;
 		sea3dgp var skeletonAnm:SkeletonAnimation;
 		sea3dgp var sklAnimator:SkeletonAnimator;		
 		
-		sea3dgp var geometry:Geometry;
+		sea3dgp var geo:GeometryBase;
 		
 		sea3dgp var vertexAnm:VertexAnimation; 
 		sea3dgp var vertexAnimator:VertexAnimator;
@@ -68,40 +49,42 @@ package sunag.sea3d.framework
 		sea3dgp var morphAnm:sunag.sea3d.framework.MorphAnimation;
 		sea3dgp var morphAnimator:away3d.sea3d.animation.MorphAnimation;
 		
-		sea3dgp var morph:Morph;		
+		sea3dgp var mph:Morph;		
 		sea3dgp var morpher:IMorphAnimator;
 		
-		public function Mesh(geometry:Geometry=null, material:Material=null)
+		public function Mesh(geometry:GeometryBase=null, material:Material=null)
 		{
-			super(mesh = new away3d.entities.Mesh( Geometry.NULL ));
+			super(mesh = new away3d.entities.Mesh( GeometryBase.NULL ), MeshAnimation);
 			
-			setGeometry(geometry);
-			setMaterial(material);
+			mesh.pickingCollider = PickingColliderType.AS3_BEST_HIT;
+			mesh.shaderPickingDetails = false;
+			
+			this.geometry = geometry;
+			this.material = material;			
 		}
 		
 		//
 		//	SKELETON ANIMATION
 		//
 		
-		public function setSkeleton(skl:Skeleton, usesCPU:Boolean=false):void
+		public function set skeleton(val:Skeleton):void
 		{
-			skeleton = skl;
-			usesSkeletonCPU = usesCPU;
+			skl = val;
 			updateAnimation();
 		}
 		
-		public function getSkeleton():Skeleton
+		public function get skeleton():Skeleton
 		{
-			return skeleton;
+			return skl;
 		}
 		
-		public function setSkeletonAnimation(animation:SkeletonAnimation):void
+		public function set skeletonAnimation(val:SkeletonAnimation):void
 		{
-			skeletonAnm = animation;				
+			skeletonAnm = val;				
 			updateAnimation();
 		}
 		
-		public function getSkeletonAnimation():SkeletonAnimation
+		public function get skeletonAnimation():SkeletonAnimation
 		{
 			return skeletonAnm;
 		}
@@ -118,22 +101,22 @@ package sunag.sea3d.framework
 			sklAnimator.stop();			
 		}
 		
-		public function setSkeletonBlendMode(blendMode:String):void
+		public function set skeletonBlendMode(blendMode:String):void
 		{
 			TopLevel.warn('Unavailable: Mesh.setSkeletonBlendMode');
 		}
 		
-		public function getSkeletonBlendMode():String
+		public function get skeletonBlendMode():String
 		{
 			return AnimationBlendMode.LINEAR;
 		}
 		
-		public function setSkeletonTimeScale(scale:Number):void
+		public function set skeletonTimeScale(scale:Number):void
 		{
 			sklAnimator.playbackSpeed = scale;
 		}
 		
-		public function getSkeletonTimeScale():Number
+		public function get skeletonTimeScale():Number
 		{
 			return sklAnimator.playbackSpeed;
 		}
@@ -153,7 +136,7 @@ package sunag.sea3d.framework
 			
 			if (skeleton && skeletonAnm && geometry && geometry.jointPerVertex > 0)
 			{
-				sklAnimator = new SkeletonAnimator(skeletonAnm.creatAnimationSet(geometry.jointPerVertex), skeleton.scope, usesSkeletonCPU);
+				sklAnimator = new SkeletonAnimator(skeletonAnm.creatAnimationSet(geometry.jointPerVertex), skeleton.scope, false);
 				
 				SkeletonTools.poseFromSkeleton(sklAnimator.globalPose, skeleton.scope);
 			}
@@ -161,7 +144,7 @@ package sunag.sea3d.framework
 			mesh.animator = sklAnimator;
 		}
 		
-		public function getCurrentSkeletonAnimation():String
+		public function get currentSkeletonAnimation():String
 		{
 			return sklAnimator.activeAnimationName;
 		}
@@ -175,16 +158,15 @@ package sunag.sea3d.framework
 		//	MORPHER
 		//
 		
-		public function setMorph(morph:Morph, usesCPU:Boolean=false):void
+		public function set morph(val:Morph):void
 		{
-			this.morph = morph;
-			usesMorphCPU = usesCPU;
+			mph = val;
 			updateAnimation();
 		}
 		
-		public function getMorph():Morph
+		public function get morph():Morph
 		{
-			return morph;
+			return mph;
 		}
 		
 		public function setMorphWeight(name:String, weight:Number):void
@@ -203,21 +185,21 @@ package sunag.sea3d.framework
 			{
 				if (morpher is MorphGeometry)
 					MorphGeometry(morpher).dispose();
-				else if (morph is MorphAnimator)
+				else if (mph is MorphAnimator)
 					mesh.animator = null;
 				
 				morpher = null;
 			}
 			
-			if (morph && geometry && morph.numVertex == geometry.numVertex)
+			if (mph && geometry && mph.numVertex == geometry.numVertex)
 			{
-				if (usesMorphCPU || mesh.animator)
+				if (mesh.animator)
 				{
-					morpher = new MorphGeometry(morph.scope, geometry.scope);
+					morpher = new MorphGeometry(mph.scope, geometry.scope);
 				}
 				else
 				{
-					morpher = new MorphAnimator(morph.scope);
+					morpher = new MorphAnimator(mph.scope);
 					mesh.animator = morpher as MorphAnimator;
 				}
 			}
@@ -227,13 +209,13 @@ package sunag.sea3d.framework
 		//	MORPH ANIMATION
 		//
 		
-		public function setMorphAnimation(morphAnm:sunag.sea3d.framework.MorphAnimation):void
+		public function set morphAnimation(morphAnm:sunag.sea3d.framework.MorphAnimation):void
 		{			
 			this.morphAnm = morphAnm;
 			updateAnimation();
 		}
 		
-		public function getMorphAnimation():sunag.sea3d.framework.MorphAnimation
+		public function get morphAnimation():sunag.sea3d.framework.MorphAnimation
 		{
 			return morphAnm;
 		}
@@ -248,22 +230,22 @@ package sunag.sea3d.framework
 			morphAnimator.stop();			
 		}
 		
-		public function setMorphAnimationBlendMode(blendMode:String):void
+		public function set morphAnimationBlendMode(blendMode:String):void
 		{
 			morphAnimator.blendMethod = AnimationBlendMode.BLEND_MODE[blendMode];
 		}
 		
-		public function getMorphAnimationBlendMode():String
+		public function get morphAnimationBlendMode():String
 		{
 			return AnimationBlendMode.BLEND_MODE[morphAnimator.blendMethod];
 		}
 		
-		public function setMorphTimeScale(scale:Number):void
+		public function set morphTimeScale(scale:Number):void
 		{
 			morphAnimator.timeScale = scale;
 		}
 		
-		public function getMorphTimeScale():Number
+		public function get morphTimeScale():Number
 		{
 			return morphAnimator.timeScale;
 		}
@@ -286,14 +268,13 @@ package sunag.sea3d.framework
 		//	VERTEX ANIMATION
 		//
 		
-		public function setVertexAnimation(vertex:VertexAnimation, usesCPU:Boolean=false):void
+		public function set vertexAnimation(val:VertexAnimation):void
 		{			
-			vertexAnm = vertex;
-			usesVertexCPU = usesCPU;
+			vertexAnm = val;
 			updateAnimation();
 		}
 		
-		public function getVertexAnimation():VertexAnimation
+		public function get vertexAnimation():VertexAnimation
 		{
 			return vertexAnm;
 		}
@@ -308,22 +289,22 @@ package sunag.sea3d.framework
 			vertexAnimator.stop();			
 		}
 		
-		public function setVertexTimeScale(scale:Number):void
+		public function set vertexTimeScale(scale:Number):void
 		{
 			vertexAnimator.playbackSpeed = scale;
 		}
 		
-		public function getVertexTimeScale():Number
+		public function get vertexTimeScale():Number
 		{
 			return vertexAnimator.playbackSpeed;
 		}
 		
-		public function setVertexAnimationBlendMode(blendMode:String):void
+		public function set vertexAnimationBlendMode(blendMode:String):void
 		{
 			TopLevel.warn('Unavailable: Mesh.setVertexAnimationBlendMode');
 		}
 		
-		public function getVertexAnimationBlendMode():String
+		public function get vertexAnimationBlendMode():String
 		{
 			return AnimationBlendMode.LINEAR;
 		}
@@ -347,45 +328,12 @@ package sunag.sea3d.framework
 		//	TOUCH
 		//
 		
-		protected function onMouseEvent(e:MouseEvent3D):void
+		public function set touch(val:Boolean):void
 		{
-			var type:String = MouseDict[e.type];
-			
-			if (hasEvent(type))
-			{
-				dispatchEvent( new TouchEvent(type, e.scenePosition, e.sceneNormal, e.delta) );
-			}
+			mesh.mouseEnabled = val;					
 		}
 		
-		public function setTouch(enabled:Boolean):void
-		{
-			mesh.mouseEnabled = mesh.mouseChildren = enabled;
-			
-			if (enabled)
-			{
-				mesh.addEventListener(MouseEvent3D.CLICK, onMouseEvent);
-				mesh.addEventListener(MouseEvent3D.DOUBLE_CLICK, onMouseEvent);
-				mesh.addEventListener(MouseEvent3D.MOUSE_DOWN, onMouseEvent);
-				mesh.addEventListener(MouseEvent3D.MOUSE_MOVE, onMouseEvent);
-				mesh.addEventListener(MouseEvent3D.MOUSE_OUT, onMouseEvent);
-				mesh.addEventListener(MouseEvent3D.MOUSE_OVER, onMouseEvent);
-				mesh.addEventListener(MouseEvent3D.MOUSE_UP, onMouseEvent);
-				mesh.addEventListener(MouseEvent3D.MOUSE_WHEEL, onMouseEvent);
-			}
-			else
-			{
-				mesh.removeEventListener(MouseEvent3D.CLICK, onMouseEvent);
-				mesh.removeEventListener(MouseEvent3D.DOUBLE_CLICK, onMouseEvent);
-				mesh.removeEventListener(MouseEvent3D.MOUSE_DOWN, onMouseEvent);
-				mesh.removeEventListener(MouseEvent3D.MOUSE_MOVE, onMouseEvent);
-				mesh.removeEventListener(MouseEvent3D.MOUSE_OUT, onMouseEvent);
-				mesh.removeEventListener(MouseEvent3D.MOUSE_OVER, onMouseEvent);
-				mesh.removeEventListener(MouseEvent3D.MOUSE_UP, onMouseEvent);
-				mesh.removeEventListener(MouseEvent3D.MOUSE_WHEEL, onMouseEvent);
-			}						
-		}
-		
-		public function getTouch():Boolean
+		public function get touch():Boolean
 		{
 			return mesh.mouseEnabled;
 		}
@@ -405,51 +353,109 @@ package sunag.sea3d.framework
 		//
 		//	GEOMETRY
 		//
-		
-		public function setGeometry(geometry:Geometry):void
+				
+		public function set offsetU(val:Number):void
 		{
-			if (this.geometry = geometry)
+			for each(var g:SubMesh in mesh.subMeshes)			
+				g.offsetU = val;			
+		}
+		
+		public function get offsetU():Number
+		{					
+			return mesh.subMeshes[0].offsetU;			
+		}
+		
+		public function set offsetV(val:Number):void
+		{
+			for each(var g:SubMesh in mesh.subMeshes)			
+				g.offsetV = val;			
+		}
+		
+		public function get offsetV():Number
+		{					
+			return mesh.subMeshes[0].offsetV;			
+		}
+		
+		public function set scaleU(val:Number):void
+		{
+			for each(var g:SubMesh in mesh.subMeshes)			
+				g.scaleU = val;			
+		}
+		
+		public function get scaleU():Number
+		{					
+			return mesh.subMeshes[0].scaleU;			
+		}
+		
+		public function set scaleV(val:Number):void
+		{
+			for each(var g:SubMesh in mesh.subMeshes)			
+				g.scaleV = val;			
+		}
+		
+		public function get scaleV():Number
+		{					
+			return mesh.subMeshes[0].scaleV;			
+		}
+		
+		public function set uvRotation(val:Number):void
+		{
+			for each(var g:SubMesh in mesh.subMeshes)			
+				g.uvRotation = val;			
+		}
+		
+		public function get uvRotation():Number
+		{					
+			return mesh.subMeshes[0].uvRotation;			
+		}
+		
+		public function set geometry(val:GeometryBase):void
+		{
+			if ((geo = val))
 			{
-				mesh.geometry = geometry.scope;
+				mesh.geometry = geo.scope;
 			}
-			else mesh.geometry = Geometry.NULL;
+			else mesh.geometry = GeometryBase.NULL;
 			
 			updateAnimation();
 		}
 		
-		public function getGeometry():Geometry
+		public function get geometry():GeometryBase
 		{
-			return geometry;
+			return geo;
 		}
 		
 		//
 		//	MATERIAL
 		//
 		
-		public function setMaterial(material:Material):void
+		public function set material(val:Material):void
 		{
-			if (multiMaterial)
+			if (multiMtl)
 			{
 				for each(var subMesh:SubMesh in mesh)
 					subMesh.material = null;
 					
-				multiMaterial = null;
+				multiMtl = null;
 			}
 			
-			mesh.material = (this.material = material) ? material.scope : null;
+			mesh.material = (mtl = val) ? mtl.scope : null;
 		}
 		
-		public function getMaterial():Material
+		public function get material():Material
 		{
-			return material;
+			return mtl;
 		}
 		
-		public function setMultiMaterial(materials:Array):void
+		public function set multiMaterial(materials:Array):void
 		{
-			if (!multiMaterial)
+			if (!multiMtl)
+			{
+				mtl = null;
 				mesh.material = null;
+			}
 			
-			multiMaterial = materials;
+			multiMtl = materials;
 			
 			var subMeshes:Vector.<SubMesh> = mesh.subMeshes;
 			for(var i:int = 0; i < subMeshes.length; i++)
@@ -458,24 +464,58 @@ package sunag.sea3d.framework
 			}						
 		}
 		
-		public function getMultiMaterial():Array
+		public function get multiMaterial():Array
 		{
-			return multiMaterial;
-		}			
+			return mtl ? [mtl] : multiMtl;
+		}		
 		
-		public function isNumMaterial():Boolean
+		public function get numMaterial():uint
 		{
-			return multiMaterial != null;
+			return multiMtl ? multiMtl.length : mtl ? 1 : 0;
 		}
 		
-		public function getNumMaterial():uint
+		//
+		//	HIERARCHY
+		//
+		
+		override public function get min():Vector3D			
 		{
-			return multiMaterial ? multiMaterial.length : material ? 1 : 0;
+			return mesh.bounds.min;
+		}
+		
+		override public function get max():Vector3D			
+		{
+			return mesh.bounds.max;
 		}
 		
 		//
 		//	LOADER
 		//
+		
+		override public function clone():Asset			
+		{
+			var asset:sunag.sea3d.framework.Mesh = new sunag.sea3d.framework.Mesh();
+			asset.copyFrom( this );
+			return asset;
+		}
+		
+		sea3dgp override function copyFrom(asset:Asset):void
+		{
+			super.copyFrom( asset );
+			
+			var mesh:sunag.sea3d.framework.Mesh = asset as sunag.sea3d.framework.Mesh;
+			
+			geometry = mesh.geometry;
+			
+			if (mesh.numMaterial > 1) multiMaterial = mesh.multiMaterial;
+			else material = mesh.material;
+			
+			skeleton = mesh.skeleton;
+			skeletonAnimation = mesh.skeletonAnimation;
+			morph = mesh.morph;
+			morphAnimation = mesh.morphAnimation;		
+			vertexAnimation = mesh.vertexAnimation;						
+		}
 		
 		override sea3dgp function load(sea:SEAObject):void
 		{
@@ -489,13 +529,13 @@ package sunag.sea3d.framework
 			
 			scope.transform = mesh.transform;
 			
-			setGeometry( mesh.geometry.tag );
+			geometry = mesh.geometry.tag;
 			
 			if (mesh.material)
 			{
 				if (mesh.material.length == 1)
 				{
-					setMaterial( mesh.material[0].tag );
+					material = mesh.material[0].tag;
 				}
 				else
 				{
@@ -506,7 +546,7 @@ package sunag.sea3d.framework
 						mats.push( m.tag );
 					}
 					
-					setMultiMaterial( mats );
+					multiMaterial = mats;
 				}
 			}
 			
@@ -514,11 +554,11 @@ package sunag.sea3d.framework
 			{
 				if (mod is SEASkeleton)
 				{
-					setSkeleton( mod.tag );
+					skeleton = mod.tag;
 				}
 				else if (mod is SEAMorph)
 				{
-					setMorph( mod.tag );
+					morph = mod.tag;
 				}
 			}
 			
@@ -528,7 +568,7 @@ package sunag.sea3d.framework
 				
 				if (tag is SEASkeletonAnimation)
 				{
-					setSkeletonAnimation( SEASkeletonAnimation(tag).tag );
+					skeletonAnimation = SEASkeletonAnimation(tag).tag;
 				}
 			}
 		}

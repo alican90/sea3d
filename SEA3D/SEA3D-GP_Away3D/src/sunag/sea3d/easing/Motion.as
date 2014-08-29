@@ -91,7 +91,7 @@ package sunag.sea3d.easing
 		
 		sea3dgp static function update():void
 		{
-			mTime = TimeStep.getTime();
+			mTime = TimeStep.time;
 			
 			for each(var m:Object in objectsList)
 			{

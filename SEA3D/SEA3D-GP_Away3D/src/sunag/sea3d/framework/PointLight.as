@@ -11,11 +11,6 @@ package sunag.sea3d.framework
 	
 	public class PointLight extends Light
 	{
-		public static function getAsset(name:String):PointLight
-		{
-			return Object3D.getAsset(name) as PointLight;
-		}
-		
 		sea3dgp var pointLight:away3d.lights.PointLight;
 		
 		public function PointLight(color:Number=0xFFFFFF, intensity:Number=1)
@@ -25,29 +20,32 @@ package sunag.sea3d.framework
 			pointLight.color = color;
 			pointLight.diffuse = intensity;
 			pointLight.ambient = 1;
+			
+			pointLight.radius = 0xFFFFFFFF;
+			pointLight.fallOff = 0xFFFFFFFF;
 		}
 		
-		public function setColor(color:Number):void
+		public function set color(color:Number):void
 		{
 			pointLight.color = color;
 		}
 		
-		public function getColor():Number
+		public function get color():Number
 		{
 			return pointLight.color;
 		}
 		
-		public function setIntensity(intensity:Number):void
+		public function set intensity(intensity:Number):void
 		{
 			pointLight.specular = pointLight.diffuse = intensity;
 		}
 		
-		public function getIntensity():Number
+		public function get intensity():Number
 		{
 			return pointLight.diffuse;
 		}
 				
-		public function setAttenuationEnabled(enabled:Boolean):void
+		public function set attenuationEnabled(enabled:Boolean):void
 		{
 			if (enabled)
 			{
@@ -61,34 +59,54 @@ package sunag.sea3d.framework
 			}
 		}
 		
-		public function getAttenuationEnabled():Boolean
+		public function get attenuationEnabled():Boolean
 		{
 			return pointLight.fallOff == Number.MAX_VALUE;
 		}
 		
-		public function setAttenuationStart(radius:Number):void
+		public function set attenuationStart(radius:Number):void
 		{
 			pointLight.radius = radius;
 		}
 		
-		public function getAttenuationStart():Number
+		public function get attenuationStart():Number
 		{
 			return pointLight.radius;
 		}
 		
-		public function setAttenuationEnd(end:Number):void
+		public function set attenuationEnd(end:Number):void
 		{
 			pointLight.fallOff = end;
 		}
 		
-		public function getAttenuationEnd():Number
+		public function get attenuationEnd():Number
 		{
 			return pointLight.fallOff;
 		}
-		
+				
 		//
 		//	LOADER
 		//
+		
+		override public function clone():Asset			
+		{
+			var asset:sunag.sea3d.framework.PointLight = new sunag.sea3d.framework.PointLight();
+			asset.copyFrom( this );
+			return asset;
+		}
+		
+		sea3dgp override function copyFrom(asset:Asset):void
+		{
+			super.copyFrom( asset );
+			
+			var light:sunag.sea3d.framework.PointLight = asset as sunag.sea3d.framework.PointLight;
+			
+			color = light.color;
+			intensity = light.intensity;			
+			attenuationEnabled = light.attenuationEnabled;
+			attenuationStart = light.attenuationStart;
+			attenuationEnd = light.attenuationEnd;
+		}
 		
 		override sea3dgp function load(sea:SEAObject):void
 		{

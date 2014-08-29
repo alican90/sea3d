@@ -41,7 +41,7 @@ package sunag.sea3d.input
 			}
 		}
 		
-		private function getKeyCode(name:String):int
+		private function getKeyCode(name:String):Number
 		{		
 			return Keyboard[name.toUpperCase()];
 		}

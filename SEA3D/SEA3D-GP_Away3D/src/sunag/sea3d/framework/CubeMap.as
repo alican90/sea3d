@@ -8,13 +8,8 @@ package sunag.sea3d.framework
 	
 	public class CubeMap extends Asset
 	{
-		private static const TYPE:String = 'CubeMap/';
-		
-		public static function getAsset(name:String):CubeMap
-		{
-			return Asset.getAsset(TYPE+name) as CubeMap;
-		}
-		
+		sea3dgp static const TYPE:String = 'CubeMap/';
+				
 		sea3dgp var scope:CubeTextureBase;
 		sea3dgp var transparent:Boolean = false;
 		

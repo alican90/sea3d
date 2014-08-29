@@ -10,6 +10,7 @@ package sunag.sea3d.framework
 	import sunag.sea3dgp;
 	import sunag.sea3d.engine.SEA3DGP;
 	import sunag.sea3d.engine.SEA3DGPEvent;
+	import sunag.sea3d.engine.TopLevel;
 	import sunag.sea3d.objects.SEAMaterial;
 	import sunag.sea3d.objects.SEAObject;
 	import sunag.utils.BlendMode;
@@ -18,19 +19,14 @@ package sunag.sea3d.framework
 	
 	public class StandardMaterial extends Material
 	{
-		public static function getAsset(name:String):StandardMaterial
-		{
-			return Material.getAsset(name) as StandardMaterial;
-		}
-		
-		sea3dgp var fog:Boolean = true;
+		sea3dgp var fg:Boolean = true;
 		sea3dgp var shadow:Boolean = true;
 		sea3dgp var material:TextureMaterial;
 		
-		sea3dgp var diffuseMap:Texture;
-		sea3dgp var specularMap:Texture;
-		sea3dgp var normalMap:Texture;
-		sea3dgp var lightMap:Texture;
+		sea3dgp var diffuseTex:Texture;
+		sea3dgp var specularTex:Texture;
+		sea3dgp var normalTex:Texture;
+		sea3dgp var lightMapTex:Texture;
 		sea3dgp var refractionMap:CubeMap;
 		sea3dgp var reflectionMap:CubeMap;
 		sea3dgp var fresnelReflectionMap:CubeMap;
@@ -44,6 +40,15 @@ package sunag.sea3d.framework
 		{
 			super(material = new TextureMaterial(null, true, true, true));
 			
+			material.lightPicker = SEA3DGP.lightPicker;
+			
+			material.autoWriteDepth = false;
+			material.specular = 0;
+			material.gloss = 50;
+			material.specularColor = 0xFFFFFF; 
+			material.ambientColor = 0x000000;
+			material.color = 0xFFFFFF
+			
 			SEA3DGP.events.addEventListener(SEA3DGPEvent.INVALIDATE_MATERIAL, onInvalidate);			
 		}
 		
@@ -51,74 +56,84 @@ package sunag.sea3d.framework
 		//	MATERIAL
 		//
 		
-		public function setFog(val:Boolean):void
+		public function set depthMask(val:Boolean):void
 		{
-			fog = val;
+			material.writeDepth = val;
+		}
+		
+		public function get depthMask():Boolean
+		{
+			return material.writeDepth;
+		}
+		
+		public function set fog(val:Boolean):void
+		{
+			fg = val;
 			onInvalidate();
 		}
 		
-		public function getFog():Boolean
+		public function get fog():Boolean
 		{
-			return fog;
+			return fg;
 		}
 		
-		public function setReceiveLights(val:Boolean):void
+		public function set receiveLights(val:Boolean):void
 		{
-			material.lightPicker = val ? Game.lightPicker : null;
+			material.lightPicker = val ? SEA3DGP.lightPicker : null;
 		}
 		
-		public function getReceiveLights():Boolean
+		public function get receiveLights():Boolean
 		{
 			return material.lightPicker != null;
 		}
 		
-		public function setReceiveShadows(val:Boolean):void
+		public function set receiveShadows(val:Boolean):void
 		{
 			shadow = val;
 			onInvalidate();
 		}
 		
-		public function getReceiveShadows():Boolean
+		public function get receiveShadows():Boolean
 		{
 			return shadow;
 		}
 		
-		public function setDoubleSided(val:Boolean):void
+		public function set doubleSided(val:Boolean):void
 		{
 			material.bothSides = val;
 		}
 		
-		public function getDoubleSided():Boolean
+		public function get doubleSided():Boolean
 		{
 			return material.bothSides;
 		}
 		
-		public function setSmooth(val:Boolean):void
+		public function set smooth(val:Boolean):void
 		{
 			material.smooth = val;
 		}
 		
-		public function getSmooth():Boolean
+		public function get smooth():Boolean
 		{
 			return material.smooth;
 		}				
 		
-		public function setAlpha(val:Number):void
+		public function set alpha(val:Number):void
 		{
 			material.alpha = val;
 		}
 		
-		public function getAlpha():Number
+		public function get alpha():Number
 		{
 			return material.alpha;
 		}
 		
-		public function setBlendMode(val:String):void
+		public function set blendMode(val:String):void
 		{
 			material.blendMode = val;
 		}
 		
-		public function getBlendMode():String
+		public function get blendMode():String
 		{
 			return material.blendMode;
 		}
@@ -127,61 +142,61 @@ package sunag.sea3d.framework
 		//	DEFAULT
 		//
 		
-		public function setAmbientColor(color:Number):void
+		public function set ambientColor(color:Number):void
 		{			
 			material.ambientColor = color;
 		}
 		
-		public function getAmbientColor():Number
+		public function get ambientColor():Number
 		{
 			return material.ambientColor;
 		}
 		
-		public function setColor(color:Number):void
+		public function set color(color:Number):void
 		{			
 			material.color = color;
 		}
 		
-		public function getColor():Number
+		public function get color():Number
 		{
 			return material.color;
 		}
 		
-		public function setSpecularColor(color:Number):void
+		public function set specularColor(color:Number):void
 		{			
 			material.specularColor = color;
 		}
 		
-		public function getSpecularColor():Number
+		public function get specularColor():Number
 		{
 			return material.specularColor;
 		}
 		
-		public function setSpecular(intensity:Number):void
+		public function set specular(intensity:Number):void
 		{			
 			material.specular = intensity;
 		}
 		
-		public function getSpecular():Number
+		public function get specular():Number
 		{
 			return material.specular;
 		}
 		
-		public function setGloss(sheen:Number):void
+		public function set gloss(sheen:Number):void
 		{			
-			material.specular = sheen;
+			material.gloss = sheen;
 		}
 		
-		public function getGloss():Number
+		public function get gloss():Number
 		{
-			return material.specular;
+			return material.gloss;
 		}
 		
 		//
 		//	DIFFUSE MAP
 		//
 		
-		public function setDiffuseMap(tex:Texture):void
+		public function set diffuseMap(tex:Texture):void
 		{			
 			if (tex && tex.transparent)
 			{
@@ -193,41 +208,41 @@ package sunag.sea3d.framework
 				material.alphaBlending = false;
 			}
 			
-			if (diffuseMap = tex)
+			if ((diffuseTex = tex))
 			{
-				material.texture = diffuseMap.scope;
+				material.texture = diffuseTex.scope;
 			}
 			else material.texture = null;
 		}
 		
-		public function getDiffuseMap():Texture
+		public function get diffuseMap():Texture
 		{
-			return diffuseMap;
+			return diffuseTex;
 		}
 		
 		//
 		//	SPECULAR MAP
 		//
 		
-		public function setSpecularMap(tex:Texture):void
+		public function set specularMap(tex:Texture):void
 		{			
-			if (specularMap = tex)
+			if ((specularTex = tex))
 			{
-				material.specularMap = specularMap.scope;
+				material.specularMap = specularTex.scope;
 			}
 			else material.specularMap = null;
 		}
 		
-		public function getSpecularMap():Texture
+		public function get specularMap():Texture
 		{
-			return specularMap;
+			return specularTex;
 		}
 		
 		//
 		//	RIM
 		//
 		
-		public function setRimBlendMode(blendMode:String):void
+		public function set rimBlendMode(blendMode:String):void
 		{			
 			if (blendMode)
 			{
@@ -253,37 +268,37 @@ package sunag.sea3d.framework
 			}			
 		}
 		
-		public function getRimBlendMode():String
+		public function get rimBlendMode():String
 		{
-			return rimMethod.blendMode;
+			return rimMethod ? rimMethod.blendMode : '';
 		}
 		
-		public function setRimColor(color:Number):void
+		public function set rimColor(color:Number):void
 		{
 			rimMethod.color = color;
 		}
 		
-		public function getRimColor():Number
+		public function get rimColor():Number
 		{
 			return rimMethod.color;
 		}
 		
-		public function setRimStrength(strength:Number):void
+		public function set rimStrength(strength:Number):void
 		{
 			rimMethod.strength = strength;
 		}
 		
-		public function getRimStrength():Number
+		public function get rimStrength():Number
 		{
 			return rimMethod.strength;
 		}
 		
-		public function setRimPower(power:Number):void
+		public function set rimPower(power:Number):void
 		{
 			rimMethod.power = power;
 		}
 		
-		public function getRimPower():Number
+		public function get rimPower():Number
 		{
 			return rimMethod.power;
 		}
@@ -292,27 +307,27 @@ package sunag.sea3d.framework
 		//	NORMAL MAP
 		//
 		
-		public function setNormalMap(tex:Texture):void
+		public function set normalMap(tex:Texture):void
 		{			
-			if (normalMap = tex)
+			if ((normalTex = tex))
 			{
-				material.normalMap = normalMap.scope;
+				material.normalMap = normalTex.scope;
 			}
 			else material.normalMap = null;
 		}
 		
-		public function getNormalMap():Texture
+		public function get normalMap():Texture
 		{
-			return normalMap;
+			return normalTex;
 		}
 		
 		//
 		//	LIGHT MAP
 		//
 		
-		public function setLightMap(tex:Texture):void
+		public function set lightMap(tex:Texture):void
 		{			
-			if (lightMap = tex)
+			if ((lightMapTex = tex))
 			{
 				if (!lightMapMethod) 
 				{
@@ -334,27 +349,27 @@ package sunag.sea3d.framework
 			}			
 		}
 		
-		public function getLightMap():Texture
+		public function get lightMap():Texture
 		{
-			return lightMap;
+			return lightMapTex;
 		}
 		
-		public function setLightMapChannel(channel:Number):void
+		public function set lightMapChannel(channel:Number):void
 		{
 			lightMapMethod.useSecondaryUV = channel > 0;
 		}
 		
-		public function getLightMapChannel():Number
+		public function get lightMapChannel():Number
 		{
 			return int(lightMapMethod.useSecondaryUV);
 		}
 			
-		public function setLightMapBlendMode(blendMode:String):void
+		public function set lightMapBlendMode(blendMode:String):void
 		{
 			lightMapMethod.blendMode = blendMode;
 		}
 		
-		public function getLightMapBlendMode():String
+		public function get lightMapBlendMode():String
 		{
 			return lightMapMethod.blendMode;
 		}
@@ -363,9 +378,9 @@ package sunag.sea3d.framework
 		//	REFRACTION
 		//
 		
-		public function setRefraction(cube:CubeMap):void
+		public function set refraction(cube:CubeMap):void
 		{
-			if (refractionMap = cube)
+			if ((refractionMap = cube))
 			{
 				if (reflectionMethod && !(reflectionMethod is RefractionEnvMapMethod))
 				{
@@ -394,38 +409,48 @@ package sunag.sea3d.framework
 			}
 		}
 		
-		public function getRefraction():CubeMap
+		public function get refraction():CubeMap
 		{
 			return refractionMap;
 		}
 		
-		public function setRefractionAlpha(alpha:Number):void
+		public function set refractionAlpha(alpha:Number):void
 		{
 			reflectionMethod.alpha = alpha;
 		}
 		
-		public function getRefractionAlpha():Number
+		public function get refractionAlpha():Number
 		{
 			return reflectionMethod.alpha;
 		}
 		
-		public function setRefractionIOR(ior:Number):void
+		public function set refractionIOR(ior:Number):void
 		{
 			reflectionMethod.refractionIndex = ior;
 		}
 		
-		public function getRefractionIOR():Number
+		public function get refractionIOR():Number
 		{
 			return reflectionMethod.refractionIndex;
+		}
+		
+		public function set animateUVs(val:Boolean):void
+		{
+			material.animateUVs = val;		
+		}
+		
+		public function get animateUVs():Boolean
+		{
+			return material.animateUVs;					
 		}
 		
 		//
 		//	REFLECTION
 		//
 		
-		public function setReflection(cube:CubeMap):void
+		public function set reflection(cube:CubeMap):void
 		{
-			if (reflectionMap = cube)
+			if ((reflectionMap = cube))
 			{
 				if (reflectionMethod && !(reflectionMethod is EnvMapMethod))
 				{
@@ -453,14 +478,14 @@ package sunag.sea3d.framework
 			}
 		}
 		
-		public function getReflection():CubeMap
+		public function get reflection():CubeMap
 		{
 			return reflectionMap;
 		}
 		
-		public function setFresnelReflection(cube:CubeMap):void
+		public function set fresnelReflection(cube:CubeMap):void
 		{
-			if (fresnelReflectionMap = cube)
+			if ((fresnelReflectionMap = cube))
 			{
 				if (reflectionMethod && !(reflectionMethod is FresnelEnvMapMethod))
 				{
@@ -488,37 +513,37 @@ package sunag.sea3d.framework
 			}
 		}
 		
-		public function getFresnelReflection():CubeMap
+		public function get fresnelReflection():CubeMap
 		{
 			return fresnelReflectionMap;
 		}
 		
-		public function setReflectionAlpha(alpha:Number):void
+		public function set reflectionAlpha(alpha:Number):void
 		{
 			reflectionMethod.alpha = alpha;
 		}
 		
-		public function getReflectionAlpha():Number
+		public function get reflectionAlpha():Number
 		{
 			return reflectionMethod.alpha;
 		}
 		
-		public function setReflectionPower(power:Number):void
+		public function set reflectionPower(power:Number):void
 		{
 			reflectionMethod.fresnelPower = power;
 		}
 		
-		public function getReflectionPower():Number
+		public function get reflectionPower():Number
 		{
 			return reflectionMethod.fresnelPower;
 		}
 		
-		public function setReflectionNormal(normal:Number):void
+		public function set reflectionNormal(normal:Number):void
 		{
 			reflectionMethod.normalReflectance = normal;
 		}
 		
-		public function getReflectionNormal():Number
+		public function get reflectionNormal():Number
 		{
 			return reflectionMethod.normalReflectance;
 		}
@@ -536,13 +561,17 @@ package sunag.sea3d.framework
 			//
 			
 			var std:SEAMaterial = sea as SEAMaterial;
-						
+			
+			alpha = std.alpha;
+			
+			depthMask = std.depthMask;
+			blendMode = std.blendMode;
+			
 			fog = std.receiveFog;
-			shadow = std.receiveShadows;			
+			shadow = std.receiveShadows;						
 			
-			setDoubleSided( std.doubleSided );
-			
-			setReceiveLights( std.receiveLights );
+			doubleSided = std.doubleSided;			
+			receiveLights = std.receiveLights;
 			
 			for each(var tech:Object in std.technique)
 			{
@@ -558,46 +587,50 @@ package sunag.sea3d.framework
 						break;
 					
 					case SEAMaterial.DIFFUSE_MAP:							
-						setDiffuseMap( tech.texture.tag );
+						diffuseMap = tech.texture.tag;
 						break;
 					
 					case SEAMaterial.SPECULAR_MAP:							
-						setSpecularMap( tech.texture.tag );
+						specularMap = tech.texture.tag;
 						break;
 					
 					case SEAMaterial.NORMAL_MAP:							
-						setNormalMap( tech.texture.tag );
+						normalMap = tech.texture.tag;
 						break;
 															
 					case SEAMaterial.REFRACTION:	
-						setRefraction( tech.texture.tag );
-						setRefractionAlpha( tech.alpha );
-						setRefractionIOR( tech.ior );
+						refraction = tech.texture.tag;
+						refractionAlpha = tech.alpha;
+						refractionIOR = tech.ior;
 						break;
 					
 					case SEAMaterial.REFLECTION:
-						setReflection( tech.texture.tag );
-						setReflectionAlpha( tech.alpha );
+						reflection = tech.texture.tag;
+						reflectionAlpha = tech.alpha;
 						break;
 					
 					case SEAMaterial.FRESNEL_REFLECTION:
-						setFresnelReflection( tech.texture.tag );
-						setReflectionAlpha( tech.alpha );
-						setReflectionPower( tech.power );
-						setReflectionNormal( tech.normal );
+						fresnelReflection = tech.texture.tag;
+						reflectionAlpha = tech.alpha;
+						reflectionPower = tech.power;
+						reflectionNormal = tech.normal;
 						break;
 					
 					case SEAMaterial.RIM:							
-						setRimBlendMode( tech.blendMode );
-						setRimColor( tech.color );
-						setRimStrength( tech.strength );
-						setRimPower( tech.power  );
+						rimBlendMode = tech.blendMode;
+						rimColor = tech.color;
+						rimStrength = tech.strength;
+						rimPower = tech.power;
 						break;
 					
 					case SEAMaterial.LIGHT_MAP:							
-						setLightMap( tech.texture.tag );
-						setLightMapChannel( tech.channel );
-						setLightMapBlendMode( tech.blendMode );
+						lightMap = tech.texture.tag;
+						lightMapChannel = tech.channel;
+						lightMapBlendMode = tech.blendMode;
+						break;
+					
+					default:
+						TopLevel.warn("Material Technique not found: ", tech.kind);
 						break;
 				}
 			}
@@ -614,8 +647,8 @@ package sunag.sea3d.framework
 			while ( material.numMethods ) 
 				material.removeMethod( material.getMethodAt( 0 ) );
 			
-			if (shadow && !material.shadowMethod && Game.shadowLight)
-				material.shadowMethod = Game.shadowLight.shadowMapMethod;
+			if (shadow && !material.shadowMethod && SEA3DGP.shadowLight)
+				material.shadowMethod = SEA3DGP.shadowLight.shadowMapMethod;
 			else if (!shadow && material.shadowMethod)
 				material.shadowMethod = null;
 			
@@ -631,8 +664,8 @@ package sunag.sea3d.framework
 			if (rimMethod)
 				material.addMethod(rimMethod);
 			
-			if (fog && Game.fog)
-				material.addMethod(Game.fog);
+			if (fg && SEA3DGP.fogMtd)
+				material.addMethod(SEA3DGP.fogMtd);
 		}
 		
 		override public function dispose():void

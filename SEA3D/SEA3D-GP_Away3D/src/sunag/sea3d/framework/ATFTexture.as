@@ -11,11 +11,6 @@ package sunag.sea3d.framework
 	{
 		sea3dgp var tex:away3d.textures.ATFTexture;		
 		
-		public static function getAsset(name:String):ATFTexture
-		{
-			return Texture.getAsset(name) as ATFTexture;
-		}
-		
 		public function ATFTexture()
 		{					
 		}

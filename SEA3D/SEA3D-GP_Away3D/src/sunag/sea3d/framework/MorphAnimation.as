@@ -19,7 +19,7 @@ package sunag.sea3d.framework
 		
 		sea3dgp var scope:AnimationSet;
 		
-		override public function getNames():Array
+		override public function get names():Array
 		{
 			var names:Array = [];
 			

@@ -10,105 +10,112 @@ package sunag.sea3d.framework
 	
 	public class Asset extends EventDispatcher implements IDisposable
 	{
-		sea3dgp static var LIST:Vector.<Asset> = new Vector.<Asset>();
-		sea3dgp static var LIBRARY:Object = {};		
-		
-		public static function getAsset(ns:String):Asset
-		{
-			return LIBRARY[ns];
-		}
-		
-		public static function gc():void
-		{
-			var i:int = 0;
-			while (i < LIST.length)
-			{
-				if (LIST[i].deps == 0)
-				{
-					LIST[i].dispose();
-					continue;
-				}
-				++i;
-			}			
-		}
-		
-		sea3dgp static function gcLib():void
-		{						
-			LIB : do
-			{			
-				for each(var asset:Asset in LIBRARY)
-				{
-					if (asset.deps == 0)
-					{
-						asset.dispose();
-						
-						continue LIB;
-					}
-				}
-			}
-			while ( false );
-		}
-		
-		//
-		//	CLASS
-		//
+		sea3dgp static var INSTANCE:uint = 0;
 		
 		sea3dgp var _name:String;		
 		sea3dgp var _type:String;
-		sea3dgp var _library:Object;
+		sea3dgp var _scene:Scene3D;		
+		
+		public var tag:*;
 		
 		public function Asset(type:String):void
 		{
 			_type = type;
+			_name = 'asset' + INSTANCE++;
+		}
+		
+		sea3dgp function setScene(scene:Scene3D):void
+		{
+			if (_scene)
+			{
+				delete _scene.library[_type+_name];
+				
+				_scene.list.splice( _scene.list.indexOf(this), 1);								
+			}
 			
-			_library = LIBRARY; 
+			if ((_scene = scene))
+			{
+				_scene.list.push( this );
+				
+				updateName();
+			}
+		}
+				
+		sea3dgp function updateName():void
+		{
+			var lib:Object = _scene.library;			
 			
-			LIST.push( this );
-			
-			setName('');
+			while( lib[_type+_name] != null )
+			{
+				var s:int = _name.search(/[0-9]+$/),
+					l:int = _name.substring(s).length;
+				
+				if (s > -1)
+				{
+					var n:String = (parseInt(_name.substring(s)) + 1).toString();
+					
+					while (n.length < l)
+						n = '0' + n;
+					
+					_name = _name.substring(0, s) + n;					
+				}
+				else _name += "1";
+			}
+						
+			lib[_type+_name] = this;
 		}
 		
 		sea3dgp function load(sea:SEAObject):void
 		{
-			setName( sea.name );
+			name = sea.name;
 			
 			sea.tag = this;
 		}
 		
-		public function setName(val:String):void
+		public function set name(val:String):void
 		{
-			if (_name == val) return;
+			if (name == val) return;
 			
-			delete _library[_type+_name];
-			
-			_name = val;
-			
-			if (_name)
+			if (_scene)
 			{
-				// prevent repeat names [for many objects use particle or group]
-				while (_library[_type+_name])
-				{
-					_name += '@';
-				}
+				delete _scene.library[_type+_name];
 				
-				_library[_type+_name] = this;
+				_name = val;
+				
+				updateName();
+				
+				dispatchEvent(new AssetEvent(AssetEvent.RENAME));
 			}
-									
-			dispatchEvent(new AssetEvent(AssetEvent.RENAME));
+			else
+			{
+				_name = val as String;
+			}
 		}
 		
-		public function getName():String
+		public function get name():String
 		{
 			return _name;
 		}
 		
+		public function get scene():Scene3D
+		{
+			return _scene;
+		}
+		
+		public function clone():Asset
+		{
+			trace("Clone not implemented:", this);
+			return this;			
+		}
+		
+		sea3dgp function copyFrom(asset:Asset):void
+		{
+			name = asset.name;
+		}
+		
 		public function dispose():void
 		{
-			delete _library[_type+_name];
-			
-			LIST.splice( LIST.indexOf(this), 1);
-			
-			_library = null;
+			setScene( null );
 		}
 	}
 }

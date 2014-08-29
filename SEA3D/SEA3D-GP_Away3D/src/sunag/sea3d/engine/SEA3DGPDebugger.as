@@ -12,14 +12,14 @@ package sunag.sea3d.engine
 	import flash.utils.getQualifiedClassName;
 	
 	import sunag.sea3dgp;
+	import sunag.sea3d.framework.Scene3D;
 	import sunag.sea3d.gui.ProgressCircle;
-	import sunag.sea3d.loader.SEA3DLoader;
 
 	use namespace sea3dgp;
 	
 	public class SEA3DGPDebugger
 	{
-		private static const VERSION:String = "1.0.0A";
+		private static const VERSION:String = "1.1.0";
 		private static const STUDIO:String = "SEA3D-STUDIO";
 		
 		private static const PACK_LIMIT:int = 3;
@@ -30,6 +30,7 @@ package sunag.sea3d.engine
 		private static var buffer:ByteArray;
 		private static var loaderInfo:LoaderInfo;
 		private static var packCount:int = 0;
+		private static var game:Scene3D;
 		
 		public static function init(loaderInfo:LoaderInfo):void
 		{
@@ -129,22 +130,25 @@ package sunag.sea3d.engine
 		
 		private static function reset():void
 		{
+			game = new Scene3D();
+			
 			SEA3DGPDebugger.removeCircle();
 		}
 		
 		public static function unload():void
 		{
-			SEA3DGP.unload();
+			if (game)
+			{
+				game.dispose();
+				game = null;
+			}
 		}
 		
 		public static function load(url:URLRequest):void
 		{
 			reset();
 			
-			var loader:SEA3DLoader = new SEA3DLoader();
-			loader.load(url);
-						
-			SEA3DGP.addLoader( loader );
+			game.loadScene( url );
 			
 			send("[DEBUGGER] SEA3D LOADED - " + url.url, 0x666666);
 		}
@@ -153,10 +157,7 @@ package sunag.sea3d.engine
 		{			
 			reset();
 			
-			var loader:SEA3DLoader = new SEA3DLoader();
-			loader.loadBytes(data);
-			
-			SEA3DGP.addLoader( loader );						
+			game.loadScene( data );
 			
 			send("[DEBUGGER] SEA3D LOADED - " + (data.length / 1024).toFixed(3) + 'kB', 0x666666);
 		}

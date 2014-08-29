@@ -11,13 +11,8 @@ package sunag.sea3d.framework
 	
 	public class Skeleton extends Asset
 	{
-		private static const TYPE:String = 'Skeleton/';
-		
-		public static function getAsset(name:String):Skeleton
-		{
-			return Asset.getAsset(TYPE+name) as Skeleton;
-		}
-		
+		sea3dgp static const TYPE:String = 'Skeleton/';
+						
 		sea3dgp var scope:away3d.animators.data.Skeleton;		
 		
 		public function Skeleton()

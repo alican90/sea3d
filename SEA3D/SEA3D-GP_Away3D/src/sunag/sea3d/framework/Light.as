@@ -3,45 +3,56 @@ package sunag.sea3d.framework
 	import away3d.lights.LightBase;
 	
 	import sunag.sea3dgp;
+	import sunag.sea3d.engine.SEA3DGP;
 
 	use namespace sea3dgp;
 	
 	public class Light extends Object3D
 	{
-		public static function getAsset(name:String):Light
-		{
-			return Object3D.getAsset(name) as Light;
-		}		
-		
 		sea3dgp var light:LightBase;
 		
 		public function Light(scope:LightBase, animatorClass:Class=null)
 		{
 			super(light = scope, animatorClass);
+		}
+		
+		sea3dgp override function setScene(scene:Scene3D):void
+		{
+			if (_scene == scene) return;
 			
-			var lights:Array = Game.lightPicker.lights;
-			lights.push( light );			
-			Game.lightPicker.lights = lights;
+			super.setScene( scene );
+			
+			var lights:Array = SEA3DGP.lightPicker.lights;
+			
+			if (scene)
+			{
+				lights.push( light );				
+				SEA3DGP.lightPicker.lights = lights;
+			}
+			else
+			{
+				lights.splice( light, 1 );					
+				SEA3DGP.lightPicker.lights = lights;
+			}
 		}
 		
-		public function setShadow(enabled:Boolean):void
+		public function set shadow(val:Boolean):void
 		{			
-				
+			
 		}
 		
-		public function getShadow():Boolean
+		public function get shadow():Boolean
 		{
 			return false;
 		}
 		
-		override public function dispose():void
+		override sea3dgp function copyFrom(asset:Asset):void
 		{
-			super.dispose();
+			super.copyFrom( asset );
 			
-			var lights:Array = Game.lightPicker.lights;
-			lights.splice( light, 1 );	
+			var light:Light = asset as Light;
 			
-			Game.lightPicker.lights = lights;
+			shadow = light.shadow;
 		}
 	}
 }

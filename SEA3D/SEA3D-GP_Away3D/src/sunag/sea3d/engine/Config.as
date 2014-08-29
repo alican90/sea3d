@@ -12,15 +12,19 @@ package sunag.sea3d.engine
 		sea3dgp var antiAlias:int;
 		sea3dgp var profile:String;
 		sea3dgp var shaderPicker:Boolean;
+		sea3dgp var cacheable:Boolean;
+		sea3dgp var drawPhysics:Boolean;	
+		sea3dgp var showProgress:Boolean;
 		
-		sea3dgp var worker:Boolean;
-		
-		public function Config(autoPlay:Boolean=true, antiAlias:int=4, profile:String=Context3DProfile.BASELINE_EXTENDED, shaderPicker:Boolean=false)
+		public function Config(autoPlay:Boolean=true, antiAlias:int=4, profile:String=Context3DProfile.BASELINE_EXTENDED, shaderPicker:Boolean=false, cacheable:Boolean=false)
 		{
 			sea3dgp::autoPlay = autoPlay;
 			sea3dgp::antiAlias = antiAlias;
 			sea3dgp::profile = profile; 
-			sea3dgp::shaderPicker = shaderPicker;
+			sea3dgp::shaderPicker = shaderPicker;			
+			sea3dgp::cacheable = cacheable;
+			sea3dgp::drawPhysics = true;
+			sea3dgp::showProgress = true;
 		}
 	}
 }

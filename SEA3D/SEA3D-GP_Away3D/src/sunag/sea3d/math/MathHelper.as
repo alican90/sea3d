@@ -1,11 +1,59 @@
 package sunag.sea3d.math
 {
+	import flash.geom.Matrix3D;
+	import flash.geom.Vector3D;
 	
-
+	import away3d.core.math.Matrix3DUtils;
+	import away3d.core.math.Vector3DUtils;
+	
 	public class MathHelper
 	{
 		public static const RADIANS:Number = Math.PI/180;
 		public static const DEGREES:Number = 180/Math.PI;
+		
+		public static function centerBounds(min:flash.geom.Vector3D, max:flash.geom.Vector3D):flash.geom.Vector3D
+		{
+			return new flash.geom.Vector3D
+			(			
+				min.x + (max.x - min.x) * .5,
+				min.y + (max.y - min.y) * .5,
+				min.z + (max.z - min.z) * .5
+			);
+		}
+		
+		public static function normalRotation(normal:flash.geom.Vector3D, up:flash.geom.Vector3D=null):flash.geom.Vector3D
+		{
+			var m:Matrix3D = new Matrix3D(Matrix3DUtils.RAW_DATA_CONTAINER);
+			m.identity();
+			
+			Matrix3DUtils.lookAt(m, new flash.geom.Vector3D(), normal, up || flash.geom.Vector3D.Y_AXIS);
+			
+			var r:flash.geom.Vector3D = m.decompose()[1];
+			r.scaleBy(DEGREES);
+			
+			return r;
+		}
+		
+		public static function rotateBounds(bounds:flash.geom.Vector3D, rotation:flash.geom.Vector3D, scale:flash.geom.Vector3D=null):flash.geom.Vector3D
+		{
+			var out:flash.geom.Vector3D = bounds.clone();
+			
+			if (scale)
+			{
+				out.x *= scale.x;
+				out.y *= scale.y;
+				out.z *= scale.z;
+			}
+			
+			Vector3DUtils.rotatePoint(out, rotation);			
+			
+			return out;
+		}
+		
+		public static function rotatePoint(point:flash.geom.Vector3D, rotation:flash.geom.Vector3D):flash.geom.Vector3D
+		{
+			return Vector3DUtils.rotatePoint(point, rotation);
+		}
 		
 		public static function angleDifferenceRad(x:Number, y:Number):Number
 		{
@@ -24,16 +72,18 @@ package sunag.sea3d.math
 			return Math.abs( angleDifference(angle,target) ) <= area;
 		}
 		
-		public static function zero(val:Number, lim:Number=1.0E-3):Number
+		public static function zero(val:Number, precision:Number):Number
 		{
+			precision = Math.pow(10, precision);
 			var pValue:Number = val < 0 ? -val : val;			
-			if (pValue - lim < 0) val = 0;			
-			return lim;			
+			if (pValue - precision < 0) val = 0;			
+			return val;			
 		}
 		
-		public static function round(val:Number, lim:Number=1E-6):Number
+		public static function round(val:Number, precision:Number):Number
 		{			
-			return Math.round(val * lim) / lim;
+			precision = Math.pow(10, precision);
+			return Math.round(val * precision) / precision;
 		}
 		
 		public static function isPowerOfTwo(num:uint):Boolean
@@ -162,6 +212,34 @@ package sunag.sea3d.math
 			}
 			
 			return angle( val + ( (to - val) * (speed * delta) ) );			
+		}
+		
+		public static function distance(x1:Number, y1:Number, x2:Number, y2:Number):Number
+		{
+			var dx:Number = x1-x2;
+			var dy:Number = y1-y2;
+			return Math.sqrt(dx * dx + dy * dy);
+		}
+		
+		public static function direction(x1:Number, y1:Number, x2:Number, y2:Number):Number
+		{
+			return Math.atan2(y2 - y1, x2 - x1);
+		}
+		
+		public static function hitTestBox(objA:flash.geom.Vector3D, aMax:flash.geom.Vector3D, objB:flash.geom.Vector3D, bMax:flash.geom.Vector3D):Boolean
+		{
+			if(objA.x + aMax.x < objB.x - bMax.x
+				|| objA.x - aMax.x > objB.x + bMax.x) {
+				return false;
+			} else if(objA.y + aMax.y < objB.y - bMax.y
+				|| objA.y - aMax.y > objB.y + bMax.y) {
+				return false;
+			} else if(objA.z + aMax.z < objB.z - bMax.z
+				|| objA.z - aMax.z > objB.z + bMax.z) {
+				return false;
+			}
+			
+			return true;
 		}
 	}
 }

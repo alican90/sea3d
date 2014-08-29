@@ -10,50 +10,56 @@ package sunag.sea3d.loader
 	
 	public class Loader extends EventDispatcher
 	{
-		sea3dgp var _description:String;
+		sea3dgp var des:String;
+		sea3dgp var onLoad:Function;
+		
+		sea3dgp var _bytesLoaded:Number = 0;
+		sea3dgp var _bytesTotal:Number = 0;
 		
 		sea3dgp var request:URLRequest;
 		sea3dgp var data:ByteArray;
 		
 		public var tag:*;
 		
-		public function Loader(description:String)
+		public function Loader(description:String, onLoad:Function)
 		{
-			_description = description;
+			sea3dgp::des = description;
+			sea3dgp::onLoad = onLoad;
 		}
 		
 		public function get streaming():Boolean
 		{
-			return true;
+			return _bytesLoaded < _bytesTotal;
 		}
 		
 		public function get bytesLoaded():Number
 		{
-			return 0;
+			return _bytesLoaded;
 		}
 		
 		public function get bytesTotal():Number
 		{
-			return 0;
+			return _bytesTotal;
+		}
+		
+		public function set description(val:String):void
+		{
+			des = val;
 		}
 		
 		public function get description():String
 		{
-			return _description;
+			return des;
 		}
-		
-		protected function dispatchProgress():void
+						
+		sea3dgp function dispatchProgress():void
 		{
 			dispatchEvent(new LoaderEvent(LoaderEvent.PROGRESS));
 		}
 		
-		protected function dispatchComplete():void
+		sea3dgp function dispatchComplete():void
 		{
 			dispatchEvent(new LoaderEvent(LoaderEvent.COMPLETE));
-		}
-		
-		sea3dgp function onLoad():void
-		{
 		}
 		
 		public function load(request:URLRequest):void

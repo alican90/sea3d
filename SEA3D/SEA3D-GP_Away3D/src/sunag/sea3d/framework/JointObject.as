@@ -12,44 +12,46 @@ package sunag.sea3d.framework
 	{
 		sea3dgp var jointObj:away3d.entities.JointObject;
 		
-		sea3dgp var target:Mesh;
+		sea3dgp var mesh:Mesh;
 		
 		public function JointObject()
 		{
 			super(jointObj = new away3d.entities.JointObject(null, 0, false));
 		}
 		
-		public function setTarget(target:Mesh):void
+		public function set target(val:Mesh):void
 		{
-			if (this.target = target) 
+			if ((mesh = val)) 
 			{
 				jointObj.target = target.mesh;
 			}
 			
-			jointObj.autoUpdate = target != null;
+			jointObj.autoUpdate = mesh != null;
 		}
 		
-		public function getTarget():Mesh
+		public function get target():Mesh
 		{
-			return target;
+			return mesh;
 		}
 		
-		public function setJointIndex(index:Number):void
+		public function set jointIndex(index:Number):void
 		{
 			jointObj.jointIndex = index;
+			jointObj.update();
 		}
 		
-		public function getJointIndex():Number
+		public function get jointIndex():Number
 		{
 			return jointObj.jointIndex;
 		}
 		
-		public function setJointName(name:String):void
+		public function set jointName(name:String):void
 		{
 			jointObj.jointName = name;
+			jointObj.update();
 		}
 		
-		public function getJointName():String
+		public function get jointName():String
 		{
 			return jointObj.jointName;
 		}
@@ -68,9 +70,8 @@ package sunag.sea3d.framework
 			
 			var jnt:SEAJointObject = sea as SEAJointObject;
 			
-			setTarget( jnt.target.tag );
-			
-			jointObj.jointIndex = jnt.joint;
+			target = jnt.target.tag;			
+			jointIndex = jnt.joint;
 		}
 	}
 }

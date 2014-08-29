@@ -19,11 +19,6 @@ package sunag.sea3d.framework
 	
 	public class DirectionalLight extends Light
 	{
-		public static function getAsset(name:String):DirectionalLight
-		{
-			return Object3D.getAsset(name) as DirectionalLight;
-		}
-		
 		sea3dgp var dirLight:away3d.lights.DirectionalLight;
 		
 		sea3dgp var shadowMapper:ShadowMapperBase;
@@ -49,7 +44,7 @@ package sunag.sea3d.framework
 			shadowMapMethod = null;												
 			dirLight.shadowMapper = null;
 			
-			Game.shadowLight = null;
+			SEA3DGP.shadowLight = null;
 		}
 		
 		protected function createShadow():void
@@ -59,53 +54,54 @@ package sunag.sea3d.framework
 			shadowMap = new FilteredShadowMapMethod(dirLight);			
 			shadowMapMethod = new NearShadowMapMethod(shadowMap, .1);
 			
-			Game.shadowLight = this;
+			SEA3DGP.shadowLight = this;
 		}
 		
-		override public function setShadow(enabled:Boolean):void
+		override public function set shadow(val:Boolean):void
 		{
-			if (enabled == getShadow()) return;
+			if (val == shadow && !(SEA3DGP.shadowLight || SEA3DGP.shadowLight == this)) 
+				return;
 			
 			if (dirLight.shadowMapper)
 				disposeShadow();
 			
-			if (enabled)			
+			if (val)			
 				createShadow();								
 			
 			SEA3DGP.events.dispatchEvent(new SEA3DGPEvent(SEA3DGPEvent.INVALIDATE_MATERIAL));	
 		}
 		
-		override public function getShadow():Boolean
+		override public function get shadow():Boolean
 		{
 			return dirLight.shadowMapper != null;
 		}
 		
-		public function setShadowAlpha(alpha:Number):void
+		public function set shadowAlpha(alpha:Number):void
 		{
 			shadowMapMethod.alpha = alpha;
 		}
 		
-		public function getShadowAlpha():Number
+		public function get shadowAlpha():Number
 		{
 			return shadowMapMethod.alpha;
 		}
 		
-		public function setColor(color:Number):void
+		public function set color(color:Number):void
 		{
 			dirLight.color = color;
 		}
 		
-		public function getColor():Number
+		public function get color():Number
 		{
 			return dirLight.color;
 		}
 		
-		public function setIntensity(intensity:Number):void
+		public function set intensity(intensity:Number):void
 		{
 			dirLight.specular = dirLight.diffuse = intensity;
 		}
 		
-		public function getIntensity():Number
+		public function get intensity():Number
 		{
 			return dirLight.diffuse;
 		}
@@ -131,8 +127,8 @@ package sunag.sea3d.framework
 			
 			if (dir.shadow)
 			{
-				setShadow(true);
-				setShadowAlpha( dir.shadow.opacity );				
+				shadow  = true;
+				shadowAlpha = dir.shadow.opacity;				
 			}
 		}
 		

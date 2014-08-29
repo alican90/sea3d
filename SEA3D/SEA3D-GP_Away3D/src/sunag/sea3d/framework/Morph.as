@@ -12,12 +12,7 @@ package sunag.sea3d.framework
 	
 	public class Morph extends Asset
 	{
-		private static const TYPE:String = 'Morph/';
-		
-		public static function getAsset(name:String):Morph
-		{
-			return Asset.getAsset(TYPE+name) as Morph;
-		}
+		sea3dgp static const TYPE:String = 'Morph/';				
 		
 		sea3dgp var scope:MorphAnimationSet;
 		

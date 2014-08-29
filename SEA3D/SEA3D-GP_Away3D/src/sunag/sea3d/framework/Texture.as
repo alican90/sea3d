@@ -10,12 +10,7 @@ package sunag.sea3d.framework
 	
 	public class Texture extends Asset
 	{
-		private static const TYPE:String = 'Texture/';
-		
-		public static function getAsset(name:String):Texture
-		{
-			return Asset.getAsset(TYPE+name) as Texture;
-		}
+		sea3dgp static const TYPE:String = 'Texture/';
 		
 		sea3dgp var scope:Texture2DBase;
 		sea3dgp var transparent:Boolean = false;

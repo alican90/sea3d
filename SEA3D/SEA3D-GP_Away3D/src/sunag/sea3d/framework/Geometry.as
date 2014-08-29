@@ -6,30 +6,16 @@ package sunag.sea3d.framework
 	import away3d.core.base.SubGeometry;
 	
 	import sunag.sea3dgp;
-	import sunag.sea3d.objects.SEAGeometryBase;
+	import sunag.sea3d.objects.SEAGeometryData;
 	import sunag.sea3d.objects.SEAObject;
 
 	use namespace sea3dgp;
 	
-	public class Geometry extends Asset
+	public class Geometry extends GeometryBase
 	{
-		private static const TYPE:String = 'Geometry/';
-		
-		sea3dgp static const NULL:away3d.core.base.Geometry = new away3d.core.base.Geometry();
-		
-		public static function getAsset(name:String):Geometry
-		{
-			return Asset.getAsset(TYPE+name) as Geometry;
-		}
-		
-		sea3dgp var scope:away3d.core.base.Geometry;
-		
-		sea3dgp var numVertex:int = 0;
-		sea3dgp var jointPerVertex:int = 0;
-		
 		public function Geometry()
 		{
-			super(TYPE);
+			super(new away3d.core.base.Geometry());
 		}
 		
 		override sea3dgp function load(sea:SEAObject):void
@@ -40,9 +26,7 @@ package sunag.sea3d.framework
 			//	GEOMETRY
 			//
 			
-			var geo:SEAGeometryBase = sea as SEAGeometryBase;
-									
-			scope = new away3d.core.base.Geometry();			
+			var geo:SEAGeometryData = sea as SEAGeometryData;
 			
 			if (!geo.isBig)
 			{

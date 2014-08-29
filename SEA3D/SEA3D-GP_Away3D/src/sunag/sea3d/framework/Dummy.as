@@ -11,11 +11,6 @@ package sunag.sea3d.framework
 	
 	public class Dummy extends Object3D
 	{
-		public static function getAsset(name:String):Dummy
-		{
-			return Object3D.getAsset(name) as Dummy;
-		}		
-		
 		sea3dgp var dummy:WireframeCube;
 		
 		public function Dummy()
@@ -23,32 +18,32 @@ package sunag.sea3d.framework
 			super(dummy = new WireframeCube(100, 100, 100, 0x9AB9E5), DummyAnimation);
 		}
 		
-		public function setWidth(width:Number):void
+		public function set width(val:Number):void
 		{			
-			dummy.width = width;
+			dummy.width = val;
 		}
 		
-		public function getWidth():Number
+		public function get width():Number
 		{
 			return dummy.width;
 		}
 		
-		public function setHeight(height:Number):void
+		public function set height(val:Number):void
 		{			
-			dummy.height = height;
+			dummy.height = val;
 		}
 		
-		public function getHeight():Number
+		public function get height():Number
 		{
 			return dummy.height;
 		}
 		
-		public function setDepth(depth:Number):void
+		public function set depth(val:Number):void
 		{			
-			dummy.depth = depth;
+			dummy.depth = val;
 		}
 		
-		public function getDepth():Number
+		public function get depth():Number
 		{
 			return dummy.depth;
 		}

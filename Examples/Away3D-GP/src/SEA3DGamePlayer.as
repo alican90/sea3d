@@ -7,7 +7,6 @@ package
 	import sunag.player.SEA3DLogo;
 	import sunag.player.UploadButton;
 	import sunag.sea3d.engine.SEA3DGP;
-	import sunag.sea3d.loader.SEA3DLoader;
 	
 	[SWF(width="1024", height="632", backgroundColor="0x333333", frameRate="60")]
 	public class SEA3DGamePlayer extends Sprite
@@ -30,6 +29,7 @@ package
 		
 		private function onUpload(e:PlayerEvent):void
 		{
+			/*
 			SEA3DGP.unload();
 			
 			if (sea3dLogo)
@@ -42,6 +42,7 @@ package
 			sea3d.loadBytes( uploadButton.data );
 			
 			SEA3DGP.addLoader( sea3d );
+			*/
 		}
 	}
 }

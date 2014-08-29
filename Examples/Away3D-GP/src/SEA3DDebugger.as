@@ -11,7 +11,7 @@ package
 	{
 		public function SEA3DDebugger()
 		{		
-			addEventListener(Event.ADDED_TO_STAGE, onAdded);						
+			addEventListener(Event.ADDED_TO_STAGE, onAdded);		
 		}
 		
 		private function onAdded(e:Event):void

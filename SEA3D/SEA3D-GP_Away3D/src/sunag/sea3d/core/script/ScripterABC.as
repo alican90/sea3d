@@ -2,6 +2,7 @@ package sunag.sea3d.core.script
 {
 	import sunag.sea3dgp;
 	import sunag.sea3d.core.IGameObject;
+	import sunag.sea3d.core.assets.Script;
 
 	use namespace sea3dgp;
 	
@@ -10,12 +11,17 @@ package sunag.sea3d.core.script
 		sea3dgp var method:String;
 		sea3dgp var params:Object;
 		
-		public function ScripterABC(scope:IGameObject, method:String, params:Object=null)
+		public function ScripterABC(script:Script, scope:IGameObject, method:String, params:Object=null)
 		{
-			super(scope);
+			super(script, scope);
 			
 			sea3dgp::method = method;
 			sea3dgp::params = params;
 		}				
+		
+		override public function clone(scope:IGameObject):Scripter
+		{
+			return new ScripterABC(script, scope, method, params);
+		}
 	}
 }

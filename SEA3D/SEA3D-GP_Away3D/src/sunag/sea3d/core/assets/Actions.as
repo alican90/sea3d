@@ -2,7 +2,7 @@ package sunag.sea3d.core.assets
 {
 	import sunag.sea3dgp;
 	import sunag.sea3d.framework.Asset;
-	import sunag.sea3d.framework.Game;
+	import sunag.sea3d.framework.Scene3D;
 	import sunag.sea3d.objects.SEAAction;
 	import sunag.sea3d.objects.SEAObject;
 	
@@ -10,31 +10,18 @@ package sunag.sea3d.core.assets
 	
 	public class Actions extends Asset
 	{
-		public static const TYPE:String = 'Actions/'; 
+		sea3dgp static const TYPE:String = 'Actions/'; 
 		
-		public static function getAsset(name:String):Actions
-		{
-			return Asset.getAsset(name) as Actions;
-		}
+		sea3dgp var action:Array = [];
 		
 		public function Actions()
 		{
 			super(TYPE);
 		}
 		
-		//
-		//	LOADER
-		//
-		
-		override sea3dgp function load(sea:SEAObject):void
+		sea3dgp function update():void
 		{
-			super.load(sea);
-			
-			//
-			//	ABC
-			//
-			
-			for each(var act:Object in SEAAction(sea).action)
+			for each(var act:Object in action)
 			{
 				switch (act.kind)
 				{					
@@ -46,25 +33,44 @@ package sunag.sea3d.core.assets
 						//act.source.tag.target = act.target.tag;						
 						break;
 					
-					case SEAAction.FOG:			
-						Game.setFog( act.color );
-						Game.setFogMin( act.min );
-						Game.setFogMax( act.max ); 					
+					case SEAAction.FOG:
+						scene.fog = true;
+						scene.fogColor = act.color;
+						scene.fogMin = act.min;
+						scene.fogMax = act.max; 				
 						break;
 					
 					case SEAAction.ENVIRONMENT:
-						Game.setEnvironment( act.texture.tag );												
+						scene.environment = act.texture.tag;									
 						break;
 					
 					case SEAAction.ENVIRONMENT_COLOR:
-						Game.setEnvironmentColor( act.color );		
+						scene.environmentColor = act.color;						
 						break;
 					
 					case SEAAction.CAMERA:
-						Game.setCamera( act.camera.tag );	
+						scene.camera = act.camera.tag;						
 						break;
 				}
 			}
+		}
+		
+		sea3dgp override function setScene(scene:Scene3D):void
+		{
+			super.setScene( scene );
+			
+			if (scene) update();
+		}
+		
+		//
+		//	LOADER
+		//
+		
+		override sea3dgp function load(sea:SEAObject):void
+		{
+			super.load(sea);
+			
+			action = SEAAction(sea).action;
 		}
 	}
 }

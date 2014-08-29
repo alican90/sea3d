@@ -16,7 +16,7 @@ package sunag.sea3d.framework
 			super(TYPE);
 		}
 		
-		public function getNames():Array
+		public function get names():Array
 		{
 			return [];
 		}

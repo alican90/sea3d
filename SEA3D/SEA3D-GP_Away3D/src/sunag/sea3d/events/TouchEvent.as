@@ -1,9 +1,23 @@
 package sunag.sea3d.events
 {
 	import flash.geom.Vector3D;
+	
+	import sunag.sea3dgp;
 
 	public class TouchEvent extends Event
 	{
+		sea3dgp static var MouseDict:Object = 
+			{
+				click : CLICK,			
+				doubleClick : DOUBLE_CLICK,
+				mouseDown : TOUCH_DOWN,
+				mouseMove : TOUCH_MOVE,
+				mouseOut : TOUCH_OUT,
+				mouseOver : TOUCH_OVER,
+				mouseUp : TOUCH_UP,
+				mouseWheel : WHELL
+			}
+		
 		public static const CLICK:String = "click";
 		public static const DOUBLE_CLICK:String = "doubleClick";
 		public static const TOUCH_DOWN:String = "touchDown";

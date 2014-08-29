@@ -35,7 +35,7 @@ package sunag.sea3d.framework
 			return scope;
 		}
 		
-		override public function getNames():Array
+		override public function get names():Array
 		{
 			var names:Array = [];
 			

@@ -11,12 +11,12 @@ package sunag.sea3d.utils
 	{	
 		private static const FRAME_RATE:int = 60;
 		
-		private static var time:Number = 0;
-		private static var oldTime:int = 0;
-		private static var step:int = 0;
-		private static var timeScale:Number = 1;
-		private static var deltaTime:Number = 0;
-		private static var delta:Number = 0;
+		private static var _time:Number = 0;
+		private static var _oldTime:int = 0;
+		private static var _step:int = 0;
+		private static var _timeScale:Number = 1;
+		private static var _deltaTime:Number = 0;
+		private static var _delta:Number = 0;
 				
 		sea3dgp static function init(stage:Stage):void
 		{
@@ -26,20 +26,20 @@ package sunag.sea3d.utils
 		{
 			var t:int = getTimer();		
 			
-			step = t - oldTime;
-			deltaTime =  step / 1000;			
+			_step = t - _oldTime;
+			_deltaTime =  _step / 1000;			
 			
-			if (deltaTime > .25) 
-				deltaTime = .25;			
+			if (_deltaTime > .25) 
+				_deltaTime = .25;			
 			
-			delta = deltaTime * FRAME_RATE;
+			_delta = _deltaTime * FRAME_RATE;
 		}
 		
 		sea3dgp static function updateTime():void
 		{									
-			time += getStep() * timeScale;
+			_time += step * _timeScale;
 			
-			oldTime = getTimer();	
+			_oldTime = getTimer();	
 		}
 		
 		/**
@@ -47,7 +47,7 @@ package sunag.sea3d.utils
 		 * 
 		 * @see #getDelta
 		 * */
-		public static function getFixedFrameRate():Number
+		public static function get fixedFrameRate():Number
 		{
 			return FRAME_RATE;
 		}
@@ -55,35 +55,35 @@ package sunag.sea3d.utils
 		/**
 		 * Return delta time.
 		 * */
-		public static function getDelta():Number
+		public static function get delta():Number
 		{
 			update();			
-			return delta * timeScale;
+			return _delta * _timeScale;
 		}
 		
 		/**
 		 * Return time in milliseconds of an update to another.
 		 * */
-		public static function getStep():Number
+		public static function get step():Number
 		{
 			update();
-			return step;
+			return _step * _timeScale;
 		}
 		
 		/**
 		 * Return total time
 		 * */
-		public static function getTime():Number
+		public static function get time():Number
 		{
-			return time;
+			return _time;
 		}
 		
 		/**
 		 * Return actual frame rate
 		 * */
-		public static function getFrameRate():Number
+		public static function get frameRate():Number
 		{
-			return 1000 / step;
+			return 1000 / _step;
 		}
 		
 		/**
@@ -92,9 +92,9 @@ package sunag.sea3d.utils
 		 * @param friction
 		 * @see #getDelta
 		 * */
-		public static function getDeltaCoff(friction:Number):Number
+		public static function deltaCoff(friction:Number):Number
 		{
-			return Math.pow(friction, getDelta());
+			return Math.pow(friction, delta);
 		}
 	}
 }
