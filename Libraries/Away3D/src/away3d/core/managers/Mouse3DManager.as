@@ -121,10 +121,9 @@ package away3d.core.managers
 					queueDispatch(_mouseOut, _mouseMoveEvent, _previousCollidingObject);
 				if (_collidingObject)
 					queueDispatch(_mouseOver, _mouseMoveEvent, _collidingObject);
-			}
-			
+			}			
 			// Fire mouse move events here if forceMouseMove is on.
-			if (_forceMouseMove && _collidingObject)
+			else if (_forceMouseMove && _collidingObject)
 				queueDispatch(_mouseMove, _mouseMoveEvent, _collidingObject);
 			
 			// Dispatch all queued events.

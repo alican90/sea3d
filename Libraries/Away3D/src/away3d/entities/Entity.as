@@ -50,7 +50,8 @@ package away3d.entities
 			if (_controller)
 				_controller.targetObject = null;
 			
-			value.targetObject = this;			
+			if (value)
+				value.targetObject = this;			
 		}
 		
 		public function get controller():ControllerBase
