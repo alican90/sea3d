@@ -127,7 +127,7 @@ package away3d.materials.methods
 				"sat " + temp2 + ".w, " + temp2 + ".w										\n" +
 				"sub " + temp + ", " + fogColor + ", " + targetReg + "\n" + 			// (fogColor- col)
 				"mul " + temp + ", " + temp + ", " + temp2 + ".w					\n" +			// (fogColor- col)*fogRatio
-				"add " + targetReg + ", " + targetReg + ", " + temp + "\n"; // fogRatio*(fogColor- col) + col
+				"add " + targetReg + ".xyz, " + targetReg + ".xyz, " + temp + ".xyz\n"; // fogRatio*(fogColor- col) + col
 			
 			regCache.removeFragmentTempUsage(temp);
 			
