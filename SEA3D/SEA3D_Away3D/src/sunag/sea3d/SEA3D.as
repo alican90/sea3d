@@ -320,7 +320,7 @@ package sunag.sea3d
 			{
 				if ( (ITranslucentMaterial(mat).alphaBlending = tech.texture.transparent) )
 				{
-					ITranslucentMaterial(mat).alphaThreshold = .5;
+					ITranslucentMaterial(mat).alphaThreshold = .3;
 				}
 			}
 		}
@@ -782,7 +782,7 @@ package sunag.sea3d
 			var mesh:Mesh = new Mesh(sea.geometry.tag); 
 			
 			mesh.transform = sea.transform;			
-			mesh.castsShadows = sea.castShadows;
+			mesh.castsShadows = sea.castShadow;
 			
 			//
 			//	Material
@@ -997,7 +997,7 @@ package sunag.sea3d
 			addSceneObject(sea, cam);
 		}
 		
-		protected function readOrthographicCamera(sea:SEAPerspectiveCamera):void
+		protected function readOrthographicCamera(sea:SEAOrthographicCamera):void
 		{
 			readCamera(sea, new OrthographicLens(1));
 		}
