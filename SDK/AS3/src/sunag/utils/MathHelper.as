@@ -51,7 +51,7 @@ package sunag.utils
 		{
 			var pValue:Number = val < 0 ? -val : val;			
 			if (pValue - lim < 0) val = 0;			
-			return lim;			
+			return val;			
 		}
 		
 		public static function round(val:Number, lim:Number=1E-6):Number
@@ -271,12 +271,20 @@ package sunag.utils
 			return result;
 		}
 		
-		public static function physicLerp(val:Number, to:Number, delta:Number, speed:Number):Number			
+		public static function ease(val:Number, to:Number, smothness:Number):Number	
 		{
-			return val + ( (to - val) * (speed * delta) );
+			return val + (to - val) / smothness;
+		}
+		
+		public static function physicLerp(val:Number, to:Number, deltaTime:Number, duration:Number):Number			
+		{
+			var t:Number = deltaTime/duration;			
+			if (t > 1) t = 1;
+				
+			return val + ((to - val) * t);
 		}	
 		
-		public static function physicLerpAngle(val:Number, to:Number, delta:Number, speed:Number):Number			
+		public static function physicLerpAngle(val:Number, to:Number, deltaTime:Number, duration:Number):Number			
 		{				
 			if (Math.abs(val - to) > 180)
 			{
@@ -290,7 +298,10 @@ package sunag.utils
 				}
 			}
 			
-			return angle( val + ( (to - val) * (speed * delta) ) );			
+			var t:Number = deltaTime/duration;			
+			if (t > 1) t = 1;
+			
+			return angle( val + ((to - val) * t) );			
 		}
 		
 		// http://away3d.com/forum/viewthread/797/

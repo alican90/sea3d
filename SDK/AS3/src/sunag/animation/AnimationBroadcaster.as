@@ -28,8 +28,8 @@ package sunag.animation
 	import flash.events.EventDispatcher;
 	import flash.utils.getTimer;
 	
-	import sunag.events.AnimationEvent;
 	import sunag.sunag;
+	import sunag.events.AnimationEvent;
 	
 	use namespace sunag;
 	
@@ -71,6 +71,11 @@ package sunag.animation
 		public function set time(value:Number):void
 		{
 			_time = value;					
+		}
+		
+		public function set absoluteTime(val:Number):void
+		{
+			_absoluteTime = val;
 		}
 		
 		public function get absoluteTime():Number

@@ -34,7 +34,7 @@ package sunag.sea3d.objects
 	{
 		public static const TYPE:String = "e3d";
 				
-		public var castShadows:Boolean = true;
+		public var castShadow:Boolean = true;
 				
 		public function SEAEntity3D(name:String, type:String, sea:SEA)
 		{						
@@ -48,7 +48,7 @@ package sunag.sea3d.objects
 			if (attrib & 64)
 			{
 				var lightType:int = data.readUnsignedByte();			
-				castShadows = (lightType & 1) == 0;
+				castShadow = (lightType & 1) == 0;
 			}
 		}
 	}
