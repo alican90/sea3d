@@ -45,7 +45,7 @@ SEA3D GP or SEA3D Game Player is an improvement from SEA3D Player with support f
 
 *Click on the first button to open your file*
 
-SEA3D WebGL
+WebGL Examples
 --
 
 **Mascot** http://sunag.github.io/sea3d/webgl/
